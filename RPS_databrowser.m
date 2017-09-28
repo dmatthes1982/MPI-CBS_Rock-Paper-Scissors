@@ -1,12 +1,12 @@
-function cfgArtifacts = JAI_databrowser( cfg, data )
-% JAI_DATABROWSER displays a certain hyperscanning pilot project dataset 
+function cfgArtifacts = RPS_databrowser( cfg, data )
+% RPS_DATABROWSER displays a certain hyperscanning pilot project dataset 
 % using a appropriate scaling.
 %
 % Use as
-%   JAI_databrowser( data )
+%   RPS_databrowser( data )
 %
-% where the input can be the result of JAI_IMPORTDATASET,
-% JAI_PREPROCESSING or JAI_SEGMENTATION
+% where the input can be the result of RPS_IMPORTDATASET,
+% RPS_PREPROCESSING or RPS_SEGMENTATION
 %
 % The configuration options are
 %   cfg.part      = number of participant (default: 1)
@@ -14,8 +14,8 @@ function cfgArtifacts = JAI_databrowser( cfg, data )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also JAI_IMPORTALLDATASETS, JAI_PREPROCESSING, JAI_SEGMENTATION, 
-% JAI_DATASTRUCTURE, FT_DATABROWSER
+% See also RPS_IMPORTALLDATASETS, RPS_PREPROCESSING, RPS_SEGMENTATION, 
+% RPS_DATASTRUCTURE, FT_DATABROWSER
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

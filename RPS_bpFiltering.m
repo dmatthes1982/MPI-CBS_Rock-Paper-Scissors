@@ -1,12 +1,12 @@
-function [ data ] = JAI_bpFiltering( cfg, data) 
-% JAI_BPFILTERING applies a specific bandpass filter to every channel in
-% the JAI_DATASTRUCTURE
+function [ data ] = RPS_bpFiltering( cfg, data) 
+% RPS_BPFILTERING applies a specific bandpass filter to every channel in
+% the RPS_DATASTRUCTURE
 %
 % Use as
-%   [ data ] = JAI_bpFiltering( cfg, data)
+%   [ data ] = RPS_bpFiltering( cfg, data)
 %
-% where the input data have to be the result from JAI_IMPORTDATASET,
-% JAI_PREPROCESSING or JAI_SEGMENTATION 
+% where the input data have to be the result from RPS_IMPORTDATASET,
+% RPS_PREPROCESSING or RPS_SEGMENTATION 
 %
 % The configuration options are
 %   cfg.bpfreq      = passband range [begin end] (default: [1.9 2.1])
@@ -17,8 +17,8 @@ function [ data ] = JAI_bpFiltering( cfg, data)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also JAI_IMPORTDATASET, JAI_PREPROCESSING, JAI_SEGMENTATION, 
-% JAI_DATASTRUCTURE, FT_PREPROCESSING
+% See also RPS_IMPORTDATASET, RPS_PREPROCESSING, RPS_SEGMENTATION, 
+% RPS_DATASTRUCTURE, FT_PREPROCESSING
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

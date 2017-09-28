@@ -1,11 +1,11 @@
-function [ data ] = JAI_timeFreqanalysis( cfg, data )
-% JAI_TIMEFREQANALYSIS performs a time frequency analysis.
+function [ data ] = RPS_timeFreqanalysis( cfg, data )
+% RPS_TIMEFREQANALYSIS performs a time frequency analysis.
 %
 % Use as
-%   [ data ] = JAI_timeFreqanalysis(cfg, data)
+%   [ data ] = RPS_timeFreqanalysis(cfg, data)
 %
-% where the input data have to be the result from JAI_IMPORTDATASET,
-% JAI_PREPROCESSING or JAI_SEGMENTATION
+% where the input data have to be the result from RPS_IMPORTDATASET,
+% RPS_PREPROCESSING or RPS_SEGMENTATION
 %
 % The configuration options are
 %   config.foi = frequency of interest - begin:resolution:end (default: 2:1:50)
@@ -13,8 +13,8 @@ function [ data ] = JAI_timeFreqanalysis( cfg, data )
 %   
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_IMPORTDATASET, JAI_PREPROCESSING, JAI_SEGMENTATION, 
-% JAI_DATASTRUCTURE
+% See also RPS_IMPORTDATASET, RPS_PREPROCESSING, RPS_SEGMENTATION, 
+% RPS_DATASTRUCTURE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

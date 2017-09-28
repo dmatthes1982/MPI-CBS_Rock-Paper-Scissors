@@ -1,5 +1,5 @@
-function [ num ] = JAI_checkCondition( condition )
-% JAI_CHECKCONDITION - This functions checks the defined condition. 
+function [ num ] = RPS_checkCondition( condition )
+% RPS_CHECKCONDITION - This functions checks the defined condition. 
 %
 % If condition is a number the function checks, if this number is equal to 
 % one of the default values and return this number in case of confirmity. 

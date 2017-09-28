@@ -1,22 +1,22 @@
-function JAI_easyPlot( cfg, data )
-% JAI_EASYPLOT is a function, which makes it easier to plot the data of a 
-% specific condition and trial from the JAI-data-structure.
+function RPS_easyPlot( cfg, data )
+% RPS_EASYPLOT is a function, which makes it easier to plot the data of a 
+% specific condition and trial from the RPS-data-structure.
 %
 % Use as
-%   JAI_easyPlot(cfg, data)
+%   RPS_easyPlot(cfg, data)
 %
-% where the input data can be the results of JAI_IMPORTDATASET or
-% JAI_PREPROCESSING
+% where the input data can be the results of RPS_IMPORTDATASET or
+% RPS_PREPROCESSING
 %
 % The configuration options are
 %   cfg.part      = number of participant (default: 1)
-%   cfg.condition = condition (default: 111 or 'SameObject', see JAI data structure)
+%   cfg.condition = condition (default: 111 or 'SameObject', see RPS data structure)
 %   cfg.electrode = number of electrode (default: 'Cz')
 %   cfg.trial     = number of trial (default: 1)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_DATASTRUCTURE, PLOT
+% See also RPS_DATASTRUCTURE, PLOT
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
@@ -38,7 +38,7 @@ elseif part == 2
   trialinfo = data.part2.trialinfo;
 end
 
-cond    = JAI_checkCondition( cond );                                       % check cfg.condition definition    
+cond    = RPS_checkCondition( cond );                                       % check cfg.condition definition    
 trials  = find(trialinfo == cond);
 if isempty(trials)
   error('The selected dataset contains no condition %d.', cond);

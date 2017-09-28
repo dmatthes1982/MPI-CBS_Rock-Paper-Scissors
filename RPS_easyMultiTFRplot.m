@@ -1,23 +1,23 @@
-function JAI_easyMultiTFRplot(cfg, data)
-% JAI_EASYTFRPLOT is a function, which makes it easier to create a multi
+function RPS_easyMultiTFRplot(cfg, data)
+% RPS_EASYTFRPLOT is a function, which makes it easier to create a multi
 % time frequency response plot of all electrodes of specific condition and 
 % trial on a head model.
 %
 % Use as
-%   JAI_easyTFRPlot(cfg, data)
+%   RPS_easyTFRPlot(cfg, data)
 %
-% where the input data is a results from JAI_TIMEFREQANALYSIS.
+% where the input data is a results from RPS_TIMEFREQANALYSIS.
 %
 % The configuration options are 
 %   cfg.part        = number of participant (1 or 2) (default: 1)
-%   cfg.condition   = condition (default: 101 or 'SameObject', see JAI data structure)
+%   cfg.condition   = condition (default: 101 or 'SameObject', see RPS data structure)
 %   cfg.trial       = number of trial (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 30])
 %   cfg.timelimits  = [begin end] (default: [4 116])
 %
 % This function requires the fieldtrip toolbox
 %
-% See also FT_MULTIPLOTTFR, JAI_TIMEFREQANALYSIS
+% See also FT_MULTIPLOTTFR, RPS_TIMEFREQANALYSIS
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
@@ -40,7 +40,7 @@ elseif part == 2
   trialinfo = data.part2.trialinfo;
 end
 
-cond    = JAI_checkCondition( cond );                                       % check cfg.condition definition    
+cond    = RPS_checkCondition( cond );                                       % check cfg.condition definition    
 trials  = find(trialinfo == cond);
 if isempty(trials)
   error('The selected dataset contains no condition %d.', cond);

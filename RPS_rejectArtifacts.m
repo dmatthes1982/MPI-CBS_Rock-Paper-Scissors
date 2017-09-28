@@ -1,21 +1,21 @@
-function [ data ] = JAI_rejectArtifacts( cfg, data )
-% JAI_REJECTARTIFACTS is a function which removes trials containing 
+function [ data ] = RPS_rejectArtifacts( cfg, data )
+% RPS_REJECTARTIFACTS is a function which removes trials containing 
 % artifacts. It returns clean data.
 %
 % Use as
-%   [ data ] = JAI_rejectartifacts( cfg, data )
+%   [ data ] = RPS_rejectartifacts( cfg, data )
 %
-% where data can be a result of JAI_SEGMENTATION, JAI_BPFILTERING or
-% JAI_HILBERTPHASE
+% where data can be a result of RPS_SEGMENTATION, RPS_BPFILTERING or
+% RPS_HILBERTPHASE
 %
 % The configuration options are
-%   cfg.artifact  = output of JAI_manArtifact or JAI_manArtifact 
-%                   (see file JAI_pxx_05_autoArt_yyy.mat, JAI_pxx_06_allArt_yyy.mat)
+%   cfg.artifact  = output of RPS_manArtifact or RPS_manArtifact 
+%                   (see file RPS_pxx_05_autoArt_yyy.mat, RPS_pxx_06_allArt_yyy.mat)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_SEGMENTATION, JAI_BPFILTERING, JAI_HILBERTPHASE, 
-% JAI_MANARTIFACT and JAI_AUTOARTIFACT 
+% See also RPS_SEGMENTATION, RPS_BPFILTERING, RPS_HILBERTPHASE, 
+% RPS_MANARTIFACT and RPS_AUTOARTIFACT 
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

@@ -1,19 +1,19 @@
-function JAI_easyPLVplot( cfg, data )
-% JAI_EASYPLVPLOT is a function, which makes it easier to plot the PLV 
-% values of a specific condition from the JAI-data-structure.
+function RPS_easyPLVplot( cfg, data )
+% RPS_EASYPLVPLOT is a function, which makes it easier to plot the PLV 
+% values of a specific condition from the RPS-data-structure.
 %
 % Use as
-%   JAI_easyPLVplot( cfg, data )
+%   RPS_easyPLVplot( cfg, data )
 %
-% where the input data has to be the result of JAI_PHASELOCKVAL
+% where the input data has to be the result of RPS_PHASELOCKVAL
 %
 % The configuration options are
-%   cfg.condition = condition (default: 111 or 'SameObject', see JAI data structure)
+%   cfg.condition = condition (default: 111 or 'SameObject', see RPS data structure)
 %   cfg.electrode = number of electrode (default: 'Cz')
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_DATASTRUCTURE, PLOT, JAI_PHASELOCKVAL
+% See also RPS_DATASTRUCTURE, PLOT, RPS_PHASELOCKVAL
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
@@ -25,7 +25,7 @@ elec = ft_getopt(cfg, 'electrode', 'Cz');
 
 trialinfo = data.dyad.trialinfo;                                            % get trialinfo
 
-cond = JAI_checkCondition( cond );                                          % check cfg.condition definition and translate it into trl number    
+cond = RPS_checkCondition( cond );                                          % check cfg.condition definition and translate it into trl number    
 trl  = find(trialinfo == cond);
 if isempty(trl)
   error('The selected dataset contains no condition %d.', cond);

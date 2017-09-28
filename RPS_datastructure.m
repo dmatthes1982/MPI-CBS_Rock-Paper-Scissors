@@ -1,4 +1,4 @@
-% JAI_DATASTRUCTURE
+% RPS_DATASTRUCTURE
 %
 % The data in the --- Joint Attention Imitation Projekt --- ist structured 
 % as follows:

@@ -1,10 +1,10 @@
-function [ data ] = JAI_preprocessing( cfg, data )
-% JAI_PREPROCESSING does the preprocessing of the raw data. 
+function [ data ] = RPS_preprocessing( cfg, data )
+% RPS_PREPROCESSING does the preprocessing of the raw data. 
 %
 % Use as
-%   [ data ] = JAI_preprocessing(cfg, data)
+%   [ data ] = RPS_preprocessing(cfg, data)
 %
-% where the input data have to be the result from JAI_IMPORTATASET
+% where the input data have to be the result from RPS_IMPORTATASET
 %
 % The configuration options are
 %   cfg.bpfreq            = passband range [begin end] (default: [0.1 48])
@@ -18,7 +18,7 @@ function [ data ] = JAI_preprocessing( cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_IMPORTDATASET, FT_PREPROCESSING, JAI_DATASTRUCTURE
+% See also RPS_IMPORTDATASET, FT_PREPROCESSING, RPS_DATASTRUCTURE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

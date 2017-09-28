@@ -1,17 +1,17 @@
-function [ data ] = JAI_segmentation( data )
-% JAI_SEGMENTATION segments the data of each condition into segments with a
+function [ data ] = RPS_segmentation( data )
+% RPS_SEGMENTATION segments the data of each condition into segments with a
 % duration of 5 seconds
 %
 % Use as
-%   [ data ] = JAI_segmentation( data )
+%   [ data ] = RPS_segmentation( data )
 %
-% where the input data can be the result from JAI_IMPORTDATASET or
-% JAI_PREPROCESSING
+% where the input data can be the result from RPS_IMPORTDATASET or
+% RPS_PREPROCESSING
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_IMPORTDATASET, JAI_PREPROCESSING, FT_REDEFINETRIAL,
-% JAI_DATASTRUCTURE
+% See also RPS_IMPORTDATASET, RPS_PREPROCESSING, FT_REDEFINETRIAL,
+% RPS_DATASTRUCTURE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

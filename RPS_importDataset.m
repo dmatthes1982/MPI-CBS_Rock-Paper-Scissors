@@ -1,12 +1,12 @@
-function [ data ] = JAI_importDataset(cfg)
-% JAI_IMPORTDATASET imports one specific dataset recorded with a device 
+function [ data ] = RPS_importDataset(cfg)
+% RPS_IMPORTDATASET imports one specific dataset recorded with a device 
 % from brain vision.
 %
 % Use as
-%   [ data ] = JAI_importDataset(cfg)
+%   [ data ] = RPS_importDataset(cfg)
 %
 % The configuration options are
-%   cfg.path = source path' (i.e. '/data/pt_01826/eegData/DualEEG_JAI_rawData/')
+%   cfg.path = source path' (i.e. '/data/pt_01826/eegData/DualEEG_RPS_rawData/')
 %   cfg.part = number of participant
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
@@ -16,7 +16,7 @@ function [ data ] = JAI_importDataset(cfg)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also FT_PREPROCESSING, JAI_DATASTRUCTURE
+% See also FT_PREPROCESSING, RPS_DATASTRUCTURE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
@@ -34,7 +34,7 @@ if isempty(part)
   error('No specific participant is defined!');
 end
 
-headerfile = sprintf('%sDualEEG_JAI_%02d.vhdr', path, part);
+headerfile = sprintf('%sDualEEG_RPS_%02d.vhdr', path, part);
 
 % -------------------------------------------------------------------------
 % General definitions

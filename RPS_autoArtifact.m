@@ -1,11 +1,11 @@
-function [ cfgAutoArt ] = JAI_autoArtifact( cfg, data )
-% JAI_AUTOARTIFACT marks timeslots as an artifact in which the level of 
+function [ cfgAutoArt ] = RPS_autoArtifact( cfg, data )
+% RPS_AUTOARTIFACT marks timeslots as an artifact in which the level of 
 % 'Cz', 'O2' and 'O4' exceeds or fall below +/- 75 mV.
 %
 % Use as
-%   [ cfgAutoArt ] = JAI_autoArtifact(cfg, data)
+%   [ cfgAutoArt ] = RPS_autoArtifact(cfg, data)
 %
-% where data has to be a result of JAI_SEGMENTATION
+% where data has to be a result of RPS_SEGMENTATION
 %
 % The configuration options are
 %   cfg.channel = cell-array with channel labels (default: {'Cz', 'O1', 'O2'}))
@@ -14,7 +14,7 @@ function [ cfgAutoArt ] = JAI_autoArtifact( cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also JAI_SEGMENTATION, FT_ARTIFACT_THRESHOLD
+% See also RPS_SEGMENTATION, FT_ARTIFACT_THRESHOLD
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

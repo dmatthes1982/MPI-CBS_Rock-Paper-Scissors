@@ -1,11 +1,11 @@
-function [ data ] = JAI_hilbertPhase( data )
-% JAI_HILBERTPHASE estimates the Hilbert phase of every channel in every 
-% trial in the JAI_DATASTRUCTURE
+function [ data ] = RPS_hilbertPhase( data )
+% RPS_HILBERTPHASE estimates the Hilbert phase of every channel in every 
+% trial in the RPS_DATASTRUCTURE
 %
 % Use as
-%   [ data ] = JAI_hilbertPhase( data )
+%   [ data ] = RPS_hilbertPhase( data )
 %
-% where the input data have to be the result from JAI_BPFILTERING
+% where the input data have to be the result from RPS_BPFILTERING
 %
 % This functions calculates also the Hilbert average ratio as described in
 % the Paper of M. Chavez (2005). This value could be used to check the
@@ -17,7 +17,7 @@ function [ data ] = JAI_hilbertPhase( data )
 %   [Chavez2005]    "Towards a proper extimation of phase synchronization
 %                   from time series"
 %
-% See also JAI_DATASTRUCTURE, JAI_BPFILTERING, FT_PREPROCESSING
+% See also RPS_DATASTRUCTURE, RPS_BPFILTERING, FT_PREPROCESSING
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

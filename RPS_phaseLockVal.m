@@ -1,12 +1,12 @@
-function [ data ] = JAI_phaseLockVal( cfg, data )
-% JAI_PHASELOCKVAL estimates the phase locking value between the
+function [ data ] = RPS_phaseLockVal( cfg, data )
+% RPS_PHASELOCKVAL estimates the phase locking value between the
 % the participants of the dyads over all conditions and trials in the 
-% JAI_DATASTRUCTURE
+% RPS_DATASTRUCTURE
 %
 % Use as
-%   [ data ] = JAI_phaseLockVal( cfg, data )
+%   [ data ] = RPS_phaseLockVal( cfg, data )
 %
-% where the input data have to be the result from JAI_HILBERTPHASE
+% where the input data have to be the result from RPS_HILBERTPHASE
 %
 % The configuration options are
 %   cfg.winlen    = length of window over which the PLV will be calculated. (default: 5 sec)
@@ -28,7 +28,7 @@ function [ data ] = JAI_phaseLockVal( cfg, data )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also JAI_DATASTRUCTURE, JAI_HILBERTPHASE
+% See also RPS_DATASTRUCTURE, RPS_HILBERTPHASE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS 
 

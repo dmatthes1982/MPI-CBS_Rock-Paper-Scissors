@@ -7,8 +7,8 @@ fprintf('------------------------------------------------\n');
 % -------------------------------------------------------------------------
 % General definitions
 % -------------------------------------------------------------------------
-srcPath = '/data/pt_01826/eegData/DualEEG_JAI_rawData/';
-desPath = '/data/pt_01826/eegData/DualEEG_JAI_processedData/';
+srcPath = '/data/pt_01826/eegData/DualEEG_RPS_rawData/';
+desPath = '/data/pt_01826/eegData/DualEEG_RPS_processedData/';
 
 clear sessionStr numOfPart part
 
@@ -19,7 +19,7 @@ selection = false;
 
 tmpPath = strcat(desPath, '02_preproc/');
 
-sessionList    = dir([tmpPath, 'JAI_p01_02_preproc_*.mat']);
+sessionList    = dir([tmpPath, 'RPS_p01_02_preproc_*.mat']);
 sessionList    = struct2cell(sessionList);
 sessionList    = sessionList(1,:);
 numOfSessions  = length(sessionList);
@@ -27,7 +27,7 @@ numOfSessions  = length(sessionList);
 sessionNum     = zeros(1, numOfSessions);
 
 for i=1:1:numOfSessions
-  sessionNum(i) = sscanf(sessionList{i}, 'JAI_p01_02_preproc_%d.mat');
+  sessionNum(i) = sscanf(sessionList{i}, 'RPS_p01_02_preproc_%d.mat');
 end
 
 y = sprintf('%d ', sessionNum);
@@ -153,36 +153,36 @@ numOfSources  = length(sourceList);
 fileNum       = zeros(1, numOfSources);
 
 for i=1:1:numOfSources
-  fileNum(i)     = sscanf(sourceList{i}, 'DualEEG_JAI_%d.vhdr');
+  fileNum(i)     = sscanf(sourceList{i}, 'DualEEG_RPS_%d.vhdr');
 end
 
 switch part
   case 1
     fileNamePre = [];
     tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePost = strcat(tmpPath, 'JAI_p*_02_preproc_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
   case 2
     error('This option is currently unsupported!');
   case 3
     tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePre = strcat(tmpPath, 'JAI_p*_02_preproc_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '04_seg1/');
-    fileNamePost = strcat(tmpPath, 'JAI_p*_04_seg1_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_p*_04_seg1_', sessionStr, '.mat');
   case 4
     tmpPath = strcat(desPath, '04_seg1/');
-    fileNamePre = strcat(tmpPath, 'JAI_p*_04_seg1_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'RPS_p*_04_seg1_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '06_allArt/');
-    fileNamePost = strcat(tmpPath, 'JAI_p*_06_allArt_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_p*_06_allArt_', sessionStr, '.mat');
   case 5
     tmpPath = strcat(desPath, '04_seg1/');
-    fileNamePre = strcat(tmpPath, 'JAI_p*_04_seg1_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'RPS_p*_04_seg1_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '08_hilbert/');
-    fileNamePost = strcat(tmpPath, 'JAI_p*_08d_hilbert40Hz_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_p*_08d_hilbert40Hz_', sessionStr, '.mat');
   case 6
     tmpPath = strcat(desPath, '08_hilbert/');
-    fileNamePre = strcat(tmpPath, 'JAI_p*_08a_hilbert2Hz_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'RPS_p*_08a_hilbert2Hz_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '10_mplv/');
-    fileNamePost = strcat(tmpPath, 'JAI_p*_10c_mplv20Hz_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_p*_10c_mplv20Hz_', sessionStr, '.mat');
   otherwise
     error('Something unexpected happend. part = %d is not defined' ...
           , part);
@@ -201,7 +201,7 @@ else
     numOfFiles  = length(fileListPre);
     numOfPrePart = zeros(1, numOfFiles);
     for i=1:1:numOfFiles
-      numOfPrePart(i) = sscanf(fileListPre{i}, strcat('JAI_p%d*', sessionStr, '.mat'));
+      numOfPrePart(i) = sscanf(fileListPre{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
     end
   end
 end
@@ -239,7 +239,7 @@ elseif strcmp(dyadsSpec, 'new')                                             % pr
       numOfFiles  = length(fileListPost);
       numOfPostPart = zeros(1, numOfFiles);
       for i=1:1:numOfFiles
-        numOfPostPart(i) = sscanf(fileListPost{i}, strcat('JAI_p%d*', sessionStr, '.mat'));
+        numOfPostPart(i) = sscanf(fileListPost{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
       end
     end
   
@@ -278,7 +278,7 @@ clear part;
 while sessionStatus == true
   switch sessionPart
     case 1
-      JAI_main_1;
+      RPS_main_1;
       selection = false;
       while selection == false
         fprintf('\nContinue data processing with:\n');
@@ -296,7 +296,7 @@ while sessionStatus == true
         end
       end
     case 3
-      JAI_main_3;
+      RPS_main_3;
       selection = false;
       while selection == false
         fprintf('\nContinue data processing with:\n');
@@ -314,7 +314,7 @@ while sessionStatus == true
         end
       end
     case 4
-      JAI_main_4;
+      RPS_main_4;
       selection = false;
       while selection == false
         fprintf('\nContinue data processing with:\n');
@@ -332,7 +332,7 @@ while sessionStatus == true
         end
       end
     case 5
-      JAI_main_5;
+      RPS_main_5;
       selection = false;
       while selection == false
         fprintf('Continue data processing with:\n');
@@ -350,7 +350,7 @@ while sessionStatus == true
         end
       end  
     case 6
-      JAI_main_6;
+      RPS_main_6;
       sessionStatus = false;
     otherwise
       sessionStatus = false;

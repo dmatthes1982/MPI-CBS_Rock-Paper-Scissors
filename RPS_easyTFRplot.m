@@ -1,16 +1,16 @@
-function JAI_easyTFRplot(cfg, data)
-% JAI_EASYTFRPLOT is a function, which makes it easier to plot a
+function RPS_easyTFRplot(cfg, data)
+% RPS_EASYTFRPLOT is a function, which makes it easier to plot a
 % time-frequency-spectrum of a specific condition and trial from the 
-% JAI-data-structure.
+% RPS-data-structure.
 %
 % Use as
-%   JAI_easyTFRPlot(cfg, data)
+%   RPS_easyTFRPlot(cfg, data)
 %
-% where the input data is a results from JAI_TIMEFREQANALYSIS.
+% where the input data is a results from RPS_TIMEFREQANALYSIS.
 %
 % The configuration options are 
 %   cfg.part        = number of participant (default: 1)
-%   cfg.condition   = condition (default: 111 or 'SameObject', see JAI data structure)
+%   cfg.condition   = condition (default: 111 or 'SameObject', see RPS data structure)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = number of trial (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 50])
@@ -18,7 +18,7 @@ function JAI_easyTFRplot(cfg, data)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also FT_SINGLEPLOTTFR, JAI_TIMEFREQANALYSIS
+% See also FT_SINGLEPLOTTFR, RPS_TIMEFREQANALYSIS
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
@@ -42,7 +42,7 @@ elseif part == 2
   trialinfo = data.part2.trialinfo;
 end
 
-cond    = JAI_checkCondition( cond );                                       % check cfg.condition definition    
+cond    = RPS_checkCondition( cond );                                       % check cfg.condition definition    
 trials  = find(trialinfo == cond);
 if isempty(trials)
   error('The selected dataset contains no condition %d.', cond);

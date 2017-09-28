@@ -1,15 +1,15 @@
-function [ data ] = JAI_calcMeanPLV( data )
-% JAI_CALCMEANPLV estimates the mean of the phase locking values for all
+function [ data ] = RPS_calcMeanPLV( data )
+% RPS_CALCMEANPLV estimates the mean of the phase locking values for all
 % dyads and electrodes over the different conditions.
 %
 % Use as
-%   [ data ] = JAI_calcMeanPLV( data )
+%   [ data ] = RPS_calcMeanPLV( data )
 %
-%  where the input data have to be the result from JAI_PHASELOCKVAL
+%  where the input data have to be the result from RPS_PHASELOCKVAL
 %
 % This function requires the fieldtrip toolbox
 % 
-% See also JAI_DATASTRUCTURE, JAI_PHASELOCKVAL
+% See also RPS_DATASTRUCTURE, RPS_PHASELOCKVAL
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS 
 

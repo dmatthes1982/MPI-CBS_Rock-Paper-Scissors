@@ -1,15 +1,15 @@
 %% check if basic variables are defined
 if ~exist('sessionStr', 'var')
   cfg         = [];                                                         
-  sessionStr  = sprintf('%03d', JAI_getSessionNum( cfg ) + 1);              % calculate next session number
+  sessionStr  = sprintf('%03d', RPS_getSessionNum( cfg ) + 1);              % calculate next session number
 end
 
 if ~exist('srcPath', 'var')
-  srcPath     = '/data/pt_01826/eegData/DualEEG_JAI_rawData/';              % source path to raw data
+  srcPath     = '/data/pt_01826/eegData/DualEEG_RPS_rawData/';              % source path to raw data
 end
 
 if ~exist('desPath', 'var')
-  desPath     = '/data/pt_01826/eegData/DualEEG_JAI_processedData/';        % destination path for processed data  
+  desPath     = '/data/pt_01826/eegData/DualEEG_RPS_processedData/';        % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in raw data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
   numOfPart     = zeros(1, numOfSources);
 
   for i=1:1:numOfSources
-    numOfPart(i)  = sscanf(sourceList{i}, 'DualEEG_JAI_%d.vhdr');
+    numOfPart(i)  = sscanf(sourceList{i}, 'DualEEG_RPS_%d.vhdr');
   end
 end
 
@@ -34,12 +34,12 @@ for i = numOfPart
 
   fprintf('Import data of dyad %d from: %s ...\n', i, cfg.path);
   ft_info off;
-  data_raw = JAI_importDataset( cfg );
+  data_raw = RPS_importDataset( cfg );
   ft_info on;
 
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01_raw/');
-  cfg.filename    = sprintf('JAI_p%02d_01_raw', i);
+  cfg.filename    = sprintf('RPS_p%02d_01_raw', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -47,7 +47,7 @@ for i = numOfPart
   
   fprintf('The RAW data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  JAI_saveData(cfg, 'data_raw', data_raw);
+  RPS_saveData(cfg, 'data_raw', data_raw);
   fprintf('Data stored!\n\n');
   clear data_raw
 end
@@ -82,12 +82,12 @@ selection = false;
 for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '01_raw/');
-  cfg.filename    = sprintf('JAI_p%02d_01_raw', i);
+  cfg.filename    = sprintf('RPS_p%02d_01_raw', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Dyad %d\n', i);
   fprintf('Load raw data...\n');
-  JAI_loadData( cfg );
+  RPS_loadData( cfg );
   
   cfg                   = [];
   cfg.bpfreq            = [1 48];                                           % passband from 1 to 48 Hz
@@ -96,12 +96,12 @@ for i = numOfPart
   cfg.samplingRate      = samplingRate;
   
   ft_info off;
-  data_preproc = JAI_preprocessing( cfg, data_raw);
+  data_preproc = RPS_preprocessing( cfg, data_raw);
   ft_info on;
   
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('JAI_p%02d_02_preproc', i);
+  cfg.filename    = sprintf('RPS_p%02d_02_preproc', i);
   cfg.sessionStr  = sessionStr;
   
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -109,7 +109,7 @@ for i = numOfPart
 
   fprintf('The preprocessed data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  JAI_saveData(cfg, 'data_preproc', data_preproc);
+  RPS_saveData(cfg, 'data_preproc', data_preproc);
   fprintf('Data stored!\n\n');
   clear data_preproc data_raw 
 end
@@ -120,22 +120,22 @@ end
 for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('JAI_p%02d_02_preproc', i);
+  cfg.filename    = sprintf('RPS_p%02d_02_preproc', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Dyad %d\n', i);
   fprintf('Load preproc data...\n');
-  JAI_loadData( cfg );
+  RPS_loadData( cfg );
 
   cfg         = [];
   cfg.foi     = 2:1:50;                                                     % frequency of interest
   cfg.toi     = 4:0.5:176;                                                  % time of interest
   
-  data_tfr1 = JAI_timeFreqanalysis( cfg, data_preproc );
+  data_tfr1 = RPS_timeFreqanalysis( cfg, data_preproc );
 
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '03_tfr1/');
-  cfg.filename    = sprintf('JAI_p%02d_03_tfr1', i);
+  cfg.filename    = sprintf('RPS_p%02d_03_tfr1', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -143,7 +143,7 @@ for i = numOfPart
 
   fprintf('Time-frequency response data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  JAI_saveData(cfg, 'data_tfr1', data_tfr1);
+  RPS_saveData(cfg, 'data_tfr1', data_tfr1);
   fprintf('Data stored!\n\n');
   clear data_tfr1 data_preproc
 end
