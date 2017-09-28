@@ -6,8 +6,9 @@ function [ data ] = RPS_importDataset(cfg)
 %   [ data ] = RPS_importDataset(cfg)
 %
 % The configuration options are
-%   cfg.path = source path' (i.e. '/data/pt_01826/eegData/DualEEG_RPS_rawData/')
-%   cfg.part = number of participant
+%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
+%   cfg.condition = condition string ('C', 'FP', 'PD', 'PS')
+%   cfg.part      = number of participant
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
 % absolute path specifications like in the example. Please be aware that 
@@ -23,18 +24,23 @@ function [ data ] = RPS_importDataset(cfg)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-path = ft_getopt(cfg, 'path', []);
-part = ft_getopt(cfg, 'part', []);
+path      = ft_getopt(cfg, 'path', []);
+condition = ft_getopt(cfg, 'condition', []);
+part      = ft_getopt(cfg, 'part', []);
 
 if isempty(path)
   error('No source path is specified!');
+end
+
+if isempty(condition)
+  error('No condition is specified!');
 end
 
 if isempty(part)
   error('No specific participant is defined!');
 end
 
-headerfile = sprintf('%sDualEEG_RPS_%02d.vhdr', path, part);
+headerfile = sprintf('%sDualEEG_RPS_%s_%02d.vhdr', path, condition, part);
 
 % -------------------------------------------------------------------------
 % General definitions

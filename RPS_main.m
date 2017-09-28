@@ -1,5 +1,5 @@
 fprintf('------------------------------------------------\n');
-fprintf('<strong>Joint attention imitation project - data processing</strong>\n');
+fprintf('<strong>Rock, paper, scissor project - data processing</strong>\n');
 fprintf('Version: 0.1\n');
 fprintf('Copyright (C) 2017, Daniel Matthes, MPI CBS\n');
 fprintf('------------------------------------------------\n');
@@ -7,8 +7,8 @@ fprintf('------------------------------------------------\n');
 % -------------------------------------------------------------------------
 % General definitions
 % -------------------------------------------------------------------------
-srcPath = '/data/pt_01826/eegData/DualEEG_RPS_rawData/';
-desPath = '/data/pt_01826/eegData/DualEEG_RPS_processedData/';
+srcPath = '/data/pt_01843/eegData/DualEEG_RPS_rawData/';
+desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';
 
 clear sessionStr numOfPart part
 
@@ -146,14 +146,14 @@ end
 % -------------------------------------------------------------------------
 % Specific selection of dyads
 % -------------------------------------------------------------------------
-sourceList    = dir([srcPath, '/*.vhdr']);
+sourceList    = dir([srcPath, '/*_C*.vhdr']);
 sourceList    = struct2cell(sourceList);
 sourceList    = sourceList(1,:);
 numOfSources  = length(sourceList);
 fileNum       = zeros(1, numOfSources);
 
 for i=1:1:numOfSources
-  fileNum(i)     = sscanf(sourceList{i}, 'DualEEG_RPS_%d.vhdr');
+  fileNum(i)     = sscanf(sourceList{i}, 'DualEEG_RPS_C_%d.vhdr');
 end
 
 switch part

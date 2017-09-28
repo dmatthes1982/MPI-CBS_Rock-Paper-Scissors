@@ -5,7 +5,7 @@ function RPS_loadData( cfg )
 %   RPS_loadData( cfg )
 %
 % The configuration options are
-%   cfg.srcFolder   = source folder (default: '/data/pt_01826/eegData/DualEEG_RPS_processedData/01_raw/')
+%   cfg.srcFolder   = source folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/01_raw/')
 %   cfg.filename    = filename (default: 'RPS_p01_01_raw')
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
@@ -18,7 +18,7 @@ function RPS_loadData( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-srcFolder   = ft_getopt(cfg, 'srcFolder', '/data/pt_01826/eegData/DualEEG_RPS_processedData/01_raw/');
+srcFolder   = ft_getopt(cfg, 'srcFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedData/01_raw/');
 filename    = ft_getopt(cfg, 'filename', 'RPS_p01_01_raw');
 sessionStr  = ft_getopt(cfg, 'sessionStr', '001');
 

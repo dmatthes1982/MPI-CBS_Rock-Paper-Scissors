@@ -5,22 +5,22 @@ if ~exist('sessionStr', 'var')
 end
 
 if ~exist('srcPath', 'var')
-  srcPath     = '/data/pt_01826/eegData/DualEEG_RPS_rawData/';              % source path to raw data
+  srcPath     = '/data/pt_01843/eegData/DualEEG_RPS_rawData/';              % source path to raw data
 end
 
 if ~exist('desPath', 'var')
-  desPath     = '/data/pt_01826/eegData/DualEEG_RPS_processedData/';        % destination path for processed data  
+  desPath     = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';        % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in raw data folder
-  sourceList    = dir([srcPath, '/*.vhdr']);
+  sourceList    = dir([srcPath, '/*_C*.vhdr']);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
   numOfSources  = length(sourceList);
   numOfPart     = zeros(1, numOfSources);
 
   for i=1:1:numOfSources
-    numOfPart(i)  = sscanf(sourceList{i}, 'DualEEG_RPS_%d.vhdr');
+    numOfPart(i)  = sscanf(sourceList{i}, 'DualEEG_RPS_C_%d.vhdr');
   end
 end
 
