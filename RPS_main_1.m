@@ -34,7 +34,7 @@ for i = numOfPart
 
   fprintf('Import data of dyad %d from: %s ...\n', i, cfg.path);
   ft_info off;
-  data_raw = RPS_importDataset( cfg );
+  data_raw = RPS_importAllConditions( cfg );
   ft_info on;
 
   cfg             = [];

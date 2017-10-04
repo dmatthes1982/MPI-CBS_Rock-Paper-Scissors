@@ -1,9 +1,9 @@
-function [ data ] = RPS_importDataset(cfg)
+function [ data ] = RPS_importDataset( cfg )
 % RPS_IMPORTDATASET imports one specific dataset recorded with a device 
 % from brain vision.
 %
 % Use as
-%   [ data ] = RPS_importDataset(cfg)
+%   [ data ] = RPS_importDataset( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
@@ -45,26 +45,21 @@ headerfile = sprintf('%sDualEEG_RPS_%s_%02d.vhdr', path, condition, part);
 % -------------------------------------------------------------------------
 % General definitions
 % -------------------------------------------------------------------------
-% definition of all possible stimuli, two for each condition, the first on 
-% is the original one and the second one handles the 'video trigger bug'
-eventvalues = { 'S111','S239', ...                                          % Same object (Duration: 120 sec)
-                'S2','S130', ...                                            % View motion (Duration: 120 sec)
-                'S3','S131', ...                                            % Same motion (Duration: 120 sec)
-                'S31','S159', ...                                           % Contingent Imitation 1 imitates 2 (Duration: 180 sec)
-                'S32','S160', ...                                           % Contingent Imitation 2 imitates 1 (Duration: 180 sec)
-                'S41','S169', ...                                           % Contingent Other Action 1 reacts on 2 (Duration: 180 sec)
-                'S42','S170', ...                                           % Contingent Other Action 2 reacts on 1 (Duration: 180 sec)
-                'S51','S179', ...                                           % Spontaneous Imitation I (Duration: 180 sec)
-                'S52','S180', ...                                           % Spontaneous Imitation II (Duration: 180 sec)
-                'S105','S233', ...                                          % Conversation (Duration: 300 sec)
+% definition of all stimuli, which seperate trials. Two values for each 
+% phase, the first on is the original one and the second one handles the 
+% 'video trigger bug'
+eventvalues = { 'S 10','S 138', ...                                         % Prompt 1,2,3
+                'S 11','S 139', ...                                         % Prediction/Desicion (Duration: 3 sec)
+                'S 12','S 140', ...                                         % ButtonPress (Duration: 2 sec)
+                'S 13','S 141', ...                                         % Action (Duration: 3 sec)
+                'S 14','S 142', ...                                         % PanelDown (Duration: 3 sec)
                 };
 
 samplingRate = 500;
-duration = zeros(239,1);                                                    % specify general trial length
-duration([111, 2, 3, 239, 130, 131])  = 120 * samplingRate;
-duration([31, 32, 41, 42, 51, 52, 159, 160, 169, 170, 179, 180]) = ...
-                                        180 * samplingRate;
-duration([105, 233])                  = 300 * samplingRate;
+duration = zeros(14,1);                                                    
+duration(10)            = 8 * samplingRate;
+duration([11, 13, 14])  = 3 * samplingRate;
+duration(12)            = 2 * samplingRate;
               
 % -------------------------------------------------------------------------
 % Data import
@@ -86,34 +81,16 @@ for i = 1:1:length(cfg.trl)                                                 % se
   cfg.trl(i, 2) = duration(cfg.trl(i, 4)) + cfg.trl(i, 1) - 1;
 end
 
-for i = size(cfg.trl):-1:2                                                  % reject duplicates
-  if cfg.trl(i,4) == cfg.trl(i-1,4)
-    cfg.trl(i-1,:) = [];
-  end
-end
-
 for i = 1:1:size(cfg.trl)                                                   % correct false stimulus numbers
   switch cfg.trl(i,4)
-    case 130
-      cfg.trl(i,4) = 2;
-    case 131
-      cfg.trl(i,4) = 3;
-    case 159
-      cfg.trl(i,4) = 31;
-    case 160
-      cfg.trl(i,4) = 32;
-    case 169
-      cfg.trl(i,4) = 41;
-    case 170
-      cfg.trl(i,4) = 42;
-    case 179
-      cfg.trl(i,4) = 51;
-    case 180
-      cfg.trl(i,4) = 52;
-    case 233
-      cfg.trl(i,4) = 105;
-    case 239
-      cfg.trl(i,4) = 111;
+    case 139
+      cfg.trl(i,4) = 11;
+    case 140
+      cfg.trl(i,4) = 12;
+    case 141
+      cfg.trl(i,4) = 13;
+    case 142
+      cfg.trl(i,4) = 14;
   end
 end
 
