@@ -41,7 +41,7 @@
 % - Control      - 4
 %
 % Phases:
-% - Prompt 1,2,3 - 10
+% - Prompt       - 10
 % - Prediction   - 11
 % - ButtonPress  - 12
 % - Action       - 13

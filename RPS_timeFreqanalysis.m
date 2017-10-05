@@ -22,7 +22,7 @@ function [ data ] = RPS_timeFreqanalysis( cfg, data )
 % Get and check config options
 % -------------------------------------------------------------------------
 foi       = ft_getopt(cfg, 'foi', 2:1:50);
-toi       = ft_getopt(cfg, 'toi', 4:0.5:176);
+toi       = ft_getopt(cfg, 'toi', 0.4:0.4:2.8);
 
 % -------------------------------------------------------------------------
 % TFR settings
@@ -47,11 +47,32 @@ cfg.showcallinfo    = 'no';                                                 % su
 % -------------------------------------------------------------------------
 fprintf('Calc TFRs of participant 1...\n');
 ft_warning off;
-data.part1 = ft_freqanalysis(cfg, data.part1);
+fprintf('Condition FreePlay...\n');
+data.FP.part1 = ft_freqanalysis(cfg, data.FP.part1);
+ft_warning off;
+fprintf('Condition PredDiff...\n');
+data.PD.part1 = ft_freqanalysis(cfg, data.PD.part1);
+ft_warning off;
+fprintf('Condition PredSame...\n');
+data.PS.part1 = ft_freqanalysis(cfg, data.PS.part1);
+ft_warning off;
+fprintf('Condition Control...\n');
+data.C.part1 = ft_freqanalysis(cfg, data.C.part1);
+
   
 fprintf('Calc TFRs of participant 2...\n');
 ft_warning off;
-data.part2 = ft_freqanalysis(cfg, data.part2); 
+fprintf('Condition FreePlay...\n');
+data.FP.part2 = ft_freqanalysis(cfg, data.FP.part2);
+ft_warning off;
+fprintf('Condition PredDiff...\n');
+data.PD.part2 = ft_freqanalysis(cfg, data.PD.part2);
+ft_warning off;
+fprintf('Condition PredSame...\n');
+data.PS.part2 = ft_freqanalysis(cfg, data.PS.part2);
+ft_warning off;
+fprintf('Condition Control...\n');
+data.C.part2 = ft_freqanalysis(cfg, data.C.part2); 
 
 ft_warning on;
 

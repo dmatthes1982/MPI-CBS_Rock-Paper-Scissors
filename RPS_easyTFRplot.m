@@ -10,11 +10,12 @@ function RPS_easyTFRplot(cfg, data)
 %
 % The configuration options are 
 %   cfg.part        = number of participant (default: 1)
-%   cfg.condition   = condition (default: 111 or 'SameObject', see RPS data structure)
+%   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS data structure)
+%   cfg.phase       = phase (default: 11 or 'Prediction', see RPS data structure)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = number of trial (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 50])
-%   cfg.timelimits  = [begin end] (default: [4 116])
+%   cfg.timelimits  = [begin end] (default: [0 3])
 %
 % This function requires the fieldtrip toolbox
 %
@@ -26,40 +27,55 @@ function RPS_easyTFRplot(cfg, data)
 % Get and check config options
 % -------------------------------------------------------------------------
 part    = ft_getopt(cfg, 'part', 1);
-cond    = ft_getopt(cfg, 'condition', 111);
+cond    = ft_getopt(cfg, 'condition', 2);
+phase = ft_getopt(cfg, 'phase', 11);
 elec    = ft_getopt(cfg, 'electrode', 'Cz');
 trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimits', [2 50]);
-timelim = ft_getopt(cfg, 'timelimits', [4 116]);
+timelim = ft_getopt(cfg, 'timelimits', [0 3]);
 
 if part < 1 || part > 2                                                     % check cfg.participant definition
   error('cfg.part has to be 1 or 2');
 end
 
-if part == 1                                                                % get trialinfo
-  trialinfo = data.part1.trialinfo;
-elseif part == 2
-  trialinfo = data.part2.trialinfo;
+cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
+switch cond
+  case 1
+    dataPlot = data.FP;
+  case 2
+    dataPlot = data.PD;
+  case 3
+    dataPlot = data.PS;
+  case 4
+    dataPlot = data.C;
+  otherwise
+    error('Condition %d is not valid', cond);
 end
 
-cond    = RPS_checkCondition( cond );                                       % check cfg.condition definition    
-trials  = find(trialinfo == cond);
+if part == 1                                                                % get trialinfo
+  trialinfo = dataPlot.part1.trialinfo;
+elseif part == 2
+  trialinfo = dataPlot.part2.trialinfo;
+end
+
+phase = RPS_checkPhase( phase );                                            % check cfg.phase
+trials  = find(trialinfo == phase);                                         % check if trials with defined phase exist
 if isempty(trials)
-  error('The selected dataset contains no condition %d.', cond);
+  error('The selected dataset contains no phase %d.', phase);
 else
   numTrials = length(trials);
   if numTrials < trl                                                        % check cfg.trial definition
     error('The selected dataset contains only %d trials.', numTrials);
   else
     trlInCond = trl;
-    trl = trl-1 + trials(1);
+    trl = trials(trl);
   end
 end
 
 if part == 1                                                                % get labels
-  label = data.part1.label;                                             
+  label = dataPlot.part1.label;                                             
 elseif part == 2
-  label = data.part2.label;
+  label = dataPlot.part2.label;
 end
 
 if isnumeric(elec)
@@ -93,15 +109,15 @@ colormap jet;                                                               % us
 
 switch part
   case 1
-    ft_singleplotTFR(cfg, data.part1);
-    title(sprintf('Part.: %d - Cond.: %d - Elec.: %s - Trial: %d', ...
-          part, cond, ...
-          strrep(data.part1.label{elec}, '_', '\_'), trlInCond));      
+    ft_singleplotTFR(cfg, dataPlot.part1);
+    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %d - Elec.: %s', ...
+          cond, part, phase, trlInCond, ...
+          strrep(dataPlot.part1.label{elec}, '_', '\_')));   
   case 2
-    ft_singleplotTFR(cfg, data.part2);
-    title(sprintf('Part.: %d - Cond.: %d - Elec.: %s - Trial: %d', ...
-          part, cond, ...
-          strrep(data.part2.label{elec}, '_', '\_'), trlInCond));
+    ft_singleplotTFR(cfg, dataPlot.part2);
+    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %d - Elec.: %s', ...
+          cond, part, phase, trlInCond, ...
+          strrep(dataPlot.part2.label{elec}, '_', '\_')));
 end
 
 xlabel('time in sec');                                                      % set xlabel

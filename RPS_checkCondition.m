@@ -5,13 +5,15 @@ function [ num ] = RPS_checkCondition( condition )
 % one of the default values and return this number in case of confirmity. 
 % If condition is a string, the function returns the associated number, if
 % the given string is valid. Otherwise the function throws an error.
+%
+% See also RPS_DATASTRUCTURE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Default values
 % -------------------------------------------------------------------------
-defaultVals = [2, 3, 31, 32, 41, 42, 51, 52, 105, 111];
+defaultVals = [1, 2, 3, 4];
 
 % -------------------------------------------------------------------------
 % Check Condition
@@ -24,26 +26,14 @@ if isnumeric(condition)                                                     % if
   end
 else                                                                        % if condition is specified as string
   switch condition
-    case 'ViewMotion'
+    case 'FreePlay'
+      num = 1;
+    case 'PredDiff'
       num = 2;
-    case 'SameMotion'
+    case 'PredSame'
       num = 3;
-    case 'ConImi12'
-      num = 31;
-    case 'ConImi21'
-      num = 32;
-    case 'ConOthAct12'
-      num = 41;
-    case 'ConOthAct21'
-      num = 42;
-    case 'SponImiI'
-      num = 51;
-    case 'SponImiII'
-      num = 52;
-    case 'Conversation'
-      num = 105;
-    case 'SameObject'
-      num = 111;
+    case 'Control'
+      num = 4;
     otherwise
       error('%s is not a valid condition', condition);
   end

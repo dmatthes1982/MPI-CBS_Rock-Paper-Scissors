@@ -57,7 +57,7 @@ cfgReref.reref         = reref;                                             % en
 cfgReref.refchannel    = {refchannel 'REF'};                                % select linked 'TP09' 'TP10' as new reference
 cfgReref.implicitref   = 'REF';                                             % add implicit channel 'REF' to the channels
 cfgReref.refmethod     = 'avg';                                             % average over selected electrodes (in our case insignificant)
-cfgReref.channel       = {'all', '-V1', '-V2', '-F9', '-F10'};              % use all channels except 'V1', 'V2', 'F9' and 'F10'
+cfgReref.channel       = {'all', '-Fp1', '-Fp2', '-PO9', '-PO10'};          % use all channels except 'V1', 'V2', 'F9' and 'F10'
 cfgReref.trials        = 'all';                                             % use all trials
 cfgReref.feedback      = 'no';                                              % feedback should not be presented
 cfgReref.showcallinfo  = 'no';                                              % prevent printing the time and memory after each function call
@@ -74,14 +74,46 @@ cfgDS.showcallinfo     = 'no';                                              % pr
 % -------------------------------------------------------------------------
 
 fprintf('Preproc participant 1...\n');
-data.part1   = bpfilter(cfgBP, data.part1);
-data.part1   = rereference(cfgReref, data.part1);
-data.part1   = downsampling(cfgDS, data.part1); 
-  
+fprintf('Condition FreePlay...\n');
+data.FP.part1   = bpfilter(cfgBP, data.FP.part1);
+data.FP.part1   = rereference(cfgReref, data.FP.part1);
+data.FP.part1   = downsampling(cfgDS, data.FP.part1);
+
+fprintf('Condition PredDiff...\n');
+data.PD.part1   = bpfilter(cfgBP, data.PD.part1);
+data.PD.part1   = rereference(cfgReref, data.PD.part1);
+data.PD.part1   = downsampling(cfgDS, data.PD.part1); 
+
+fprintf('Condition PredSame...\n');
+data.PS.part1   = bpfilter(cfgBP, data.PS.part1);
+data.PS.part1   = rereference(cfgReref, data.PS.part1);
+data.PS.part1   = downsampling(cfgDS, data.PS.part1); 
+
+fprintf('Condition Control...\n');
+data.C.part1   = bpfilter(cfgBP, data.C.part1);
+data.C.part1   = rereference(cfgReref, data.C.part1);
+data.C.part1   = downsampling(cfgDS, data.C.part1); 
+
 fprintf('Preproc participant 2...\n');
-data.part2   = bpfilter(cfgBP, data.part2);
-data.part2   = rereference(cfgReref, data.part2);
-data.part2   = downsampling(cfgDS, data.part2);
+fprintf('Condition FreePlay...\n');
+data.FP.part2   = bpfilter(cfgBP, data.FP.part2);
+data.FP.part2   = rereference(cfgReref, data.FP.part2);
+data.FP.part2   = downsampling(cfgDS, data.FP.part2);
+
+fprintf('Condition PredDiff...\n');
+data.PD.part2   = bpfilter(cfgBP, data.PD.part2);
+data.PD.part2   = rereference(cfgReref, data.PD.part2);
+data.PD.part2   = downsampling(cfgDS, data.PD.part2); 
+
+fprintf('Condition PredSame...\n');
+data.PS.part2   = bpfilter(cfgBP, data.PS.part2);
+data.PS.part2   = rereference(cfgReref, data.PS.part2);
+data.PS.part2   = downsampling(cfgDS, data.PS.part2); 
+
+fprintf('Condition Control...\n');
+data.C.part2   = bpfilter(cfgBP, data.C.part2);
+data.C.part2   = rereference(cfgReref, data.C.part2);
+data.C.part2   = downsampling(cfgDS, data.C.part2); 
 
 end
 
@@ -109,9 +141,9 @@ calcceogcomp = cfgR.calceogcomp;
 
 if strcmp(calcceogcomp, 'yes')
   cfgtmp              = [];
-  cfgtmp.channel      = {'F9', 'F10'};
+  cfgtmp.channel      = {'PO9', 'PO10'};
   cfgtmp.reref        = 'yes';
-  cfgtmp.refchannel   = 'F9';
+  cfgtmp.refchannel   = 'PO9';
   cfgtmp.showcallinfo = 'no';
   cfgtmp.feedback     = 'no';
   
@@ -125,9 +157,9 @@ if strcmp(calcceogcomp, 'yes')
   eogh                = ft_selectdata(cfgtmp, eogh); 
   
   cfgtmp              = [];
-  cfgtmp.channel      = {'V1', 'V2'};
+  cfgtmp.channel      = {'Fp1', 'Fp2'};
   cfgtmp.reref        = 'yes';
-  cfgtmp.refchannel   = 'V1';
+  cfgtmp.refchannel   = 'Fp1';
   cfgtmp.showcallinfo = 'no';
   cfgtmp.feedback     = 'no';
   
@@ -141,7 +173,7 @@ if strcmp(calcceogcomp, 'yes')
   eogv                = ft_selectdata(cfgtmp, eogv);
 else
   cfgtmp              = [];
-  cfgtmp.channel      = {'V1', 'V2', 'F9', 'F10'};
+  cfgtmp.channel      = {'Fp1', 'Fp2', 'PO9', 'PO10'};
   cfgtmp.showcallinfo = 'no';
   eogOrg              = ft_selectdata(cfgtmp, data_in);
 end
