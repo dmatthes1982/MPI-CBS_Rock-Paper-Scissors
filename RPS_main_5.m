@@ -71,10 +71,6 @@ for i = numOfPart
   cfg.srcFolder   = strcat(desPath, '08_hilbert/');
   cfg.sessionStr  = sessionStr;
   
-  cfg.filename    = sprintf('RPS_p%02d_08a_hilbert2Hz', i);
-  fprintf('Load hilbert phase data at 2 Hz...\n');
-  RPS_loadData( cfg );
-
   cfg.filename    = sprintf('RPS_p%02d_08b_hilbert10Hz', i);
   fprintf('Load hilbert phase data at 10 Hz...\n');
   RPS_loadData( cfg );
@@ -88,10 +84,6 @@ for i = numOfPart
       cfg           = [];
       cfg.artifact  = cfg_allArt;
   
-      fprintf('Artifact Rejection of Hilbert phase data at 2 Hz.\n');
-      data_hilbert_2Hz = RPS_rejectArtifacts(cfg, data_hilbert_2Hz);
-      fprintf('\n');
-      
       fprintf('Artifact Rejection of Hilbert phase data at 10 Hz.\n');
       data_hilbert_10Hz = RPS_rejectArtifacts(cfg, data_hilbert_10Hz);
       fprintf('\n');
@@ -104,44 +96,6 @@ for i = numOfPart
     end
   end
   
-  % calculate PLV and meanPLV at 2Hz %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  cfg           = [];
-  cfg.winlen    = 5;                                                        % window length for one PLV value in seconds
-  
-  data_plv_2Hz  = RPS_phaseLockVal(cfg, data_hilbert_2Hz);
-  data_mplv_2Hz = RPS_calcMeanPLV(data_plv_2Hz);
-  clear data_hilbert_2Hz
-  
-  % export the PLVs into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '09_plv/');
-  cfg.filename    = sprintf('RPS_p%02d_09a_plv2Hz', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving PLVs (2Hz) of dyad %d in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_plv_2Hz', data_plv_2Hz);
-  fprintf('Data stored!\n');
-  clear data_plv_2Hz
-  
-  % export the mean PLVs into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '10_mplv/');
-  cfg.filename    = sprintf('RPS_p%02d_10a_mplv2Hz', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving mean PLVs (2Hz) of dyad %d in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_mplv_2Hz', data_mplv_2Hz);
-  fprintf('Data stored!\n\n');
-  clear data_mplv_2Hz
-
   % calculate PLV and meanPLV at 10Hz %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
