@@ -1,15 +1,16 @@
 function cfgArtifacts = RPS_databrowser( cfg, data )
-% RPS_DATABROWSER displays a certain hyperscanning pilot project dataset 
+% RPS_DATABROWSER displays a certain rock, paper, scissor project dataset 
 % using a appropriate scaling.
 %
 % Use as
 %   RPS_databrowser( data )
 %
-% where the input can be the result of RPS_IMPORTDATASET,
-% RPS_PREPROCESSING or RPS_SEGMENTATION
+% where the input can be the result of RPS_IMPORTDATASET or
+% RPS_PREPROCESSING
 %
 % The configuration options are
 %   cfg.part      = number of participant (default: 1)
+%   cfg.condition = condition (default: 2 or 'PredDiff', see RPS data structure)
 %   cfg.artifact  = Nx2 matrix with artifact segments (default: [])
 %
 % This function requires the fieldtrip toolbox
@@ -23,10 +24,25 @@ function cfgArtifacts = RPS_databrowser( cfg, data )
 % Get and check config options
 % -------------------------------------------------------------------------
 part      = ft_getopt(cfg, 'part', 1);
+cond      = ft_getopt(cfg, 'condition', 2);
 artifact  = ft_getopt(cfg, 'artifact', []);
 
 if part < 1 || part > 2                                                     % check cfg.participant definition
   error('cfg.part has to be 1 or 2');
+end
+
+cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
+switch cond
+  case 1
+    dataPlot = data.FP;
+  case 2
+    dataPlot = data.PD;
+  case 3
+    dataPlot = data.PS;
+  case 4
+    dataPlot = data.C;
+  otherwise
+    error('Condition %d is not valid', cond);
 end
 
 % -------------------------------------------------------------------------
@@ -40,13 +56,13 @@ cfg.continuous                    = 'no';
 cfg.channel                       = 'all';
 cfg.showcallinfo                  = 'no';
 
-fprintf('Databrowser - Participant: %d\n', part);
+fprintf('Databrowser - Condition: %d - Participant: %d\n', cond, part);
 
 switch part
   case 1
-    cfgArtifacts = ft_databrowser(cfg, data.part1);
+    cfgArtifacts = ft_databrowser(cfg, dataPlot.part1);
   case 2
-    cfgArtifacts = ft_databrowser(cfg, data.part2);
+    cfgArtifacts = ft_databrowser(cfg, dataPlot.part2);
 end
 
 end

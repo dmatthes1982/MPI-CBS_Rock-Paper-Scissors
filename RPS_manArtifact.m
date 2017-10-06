@@ -6,14 +6,14 @@ function [ cfgAllArt ] = RPS_manArtifact( cfg, data )
 % Use as
 %   [ cfgAllArt ] = RPS_manArtifact(cfg, data)
 %
-% where data has to be a result of RPS_SEGMENTATION
+% where data has to be a result of RPS_PREPROCESSING
 %
 % The configuration options are
 %   cfg.artifact  = output of RPS_autoArtifact (see file RPS_pxx_05_autoArt_yyy.mat)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also RPS_SEGMENTATION, RPS_DATABROWSER
+% See also RPS_PREPROCESSING, RPS_DATABROWSER
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
@@ -26,8 +26,12 @@ artifact  = ft_getopt(cfg, 'artifact', []);
 % Initialize settings, build output structure
 % -------------------------------------------------------------------------
 cfg             = [];
-cfgAllArt.part1 = [];                                       
-cfgAllArt.part2 = [];
+cfgTmp.part1    = [];                                       
+cfgTmp.part2    = [];
+cfgAllArt.FP    = cfgTmp;
+cfgAllArt.PD    = cfgTmp;
+cfgAllArt.PS    = cfgTmp;
+cfgAllArt.C     = cfgTmp;
 
 % -------------------------------------------------------------------------
 % Check Data
@@ -35,17 +39,65 @@ cfgAllArt.part2 = [];
 
 fprintf('\nSearch for artifacts with part 1...\n');
 cfg.part = 1;
-cfg.artifact = artifact.part1.artfctdef.threshold.artifact;
+
+fprintf('Condition FreePlay...\n');
+cfg.artifact = artifact.FP.part1.artfctdef.threshold.artifact;
+cfg.condition = 1;
 ft_warning off;
-cfgAllArt.part1 = RPS_databrowser(cfg, data);
-cfgAllArt.part1 = keepfields(cfgAllArt.part1, {'artfctdef', 'showcallinfo'});
+cfgAllArt.FP.part1 = RPS_databrowser(cfg, data);
+cfgAllArt.FP.part1 = keepfields(cfgAllArt.FP.part1, {'artfctdef', 'showcallinfo'});
+  
+fprintf('Condition PredDiff...\n');
+cfg.artifact = artifact.PD.part1.artfctdef.threshold.artifact;
+cfg.condition = 2;
+ft_warning off;
+cfgAllArt.PD.part1 = RPS_databrowser(cfg, data);
+cfgAllArt.PD.part1 = keepfields(cfgAllArt.PD.part1, {'artfctdef', 'showcallinfo'});
+  
+fprintf('Condition PredSame...\n');
+cfg.artifact = artifact.PS.part1.artfctdef.threshold.artifact;
+cfg.condition = 3;
+ft_warning off;
+cfgAllArt.PS.part1 = RPS_databrowser(cfg, data);
+cfgAllArt.PS.part1 = keepfields(cfgAllArt.PS.part1, {'artfctdef', 'showcallinfo'});
+  
+fprintf('Condition Control...\n');
+cfg.artifact = artifact.C.part1.artfctdef.threshold.artifact;
+cfg.condition = 4;
+ft_warning off;
+cfgAllArt.C.part1 = RPS_databrowser(cfg, data);
+cfgAllArt.C.part1 = keepfields(cfgAllArt.C.part1, {'artfctdef', 'showcallinfo'});
   
 fprintf('\nSearch for artifacts with part 2...\n');
 cfg.part = 2;
-cfg.artifact = artifact.part2.artfctdef.threshold.artifact;
+
+fprintf('Condition FreePlay...\n');
+cfg.artifact = artifact.FP.part2.artfctdef.threshold.artifact;
+cfg.condition = 1;
 ft_warning off;
-cfgAllArt.part2 = RPS_databrowser(cfg, data);
-cfgAllArt.part2 = keepfields(cfgAllArt.part2, {'artfctdef', 'showcallinfo'});
+cfgAllArt.FP.part2 = RPS_databrowser(cfg, data);
+cfgAllArt.FP.part2 = keepfields(cfgAllArt.FP.part2, {'artfctdef', 'showcallinfo'});
+  
+fprintf('Condition PredDiff...\n');
+cfg.artifact = artifact.PD.part2.artfctdef.threshold.artifact;
+cfg.condition = 2;
+ft_warning off;
+cfgAllArt.PD.part2 = RPS_databrowser(cfg, data);
+cfgAllArt.PD.part2 = keepfields(cfgAllArt.PD.part2, {'artfctdef', 'showcallinfo'});
+  
+fprintf('Condition PredSame...\n');
+cfg.artifact = artifact.PS.part2.artfctdef.threshold.artifact;
+cfg.condition = 3;
+ft_warning off;
+cfgAllArt.PS.part2 = RPS_databrowser(cfg, data);
+cfgAllArt.PS.part2 = keepfields(cfgAllArt.PS.part2, {'artfctdef', 'showcallinfo'});
+  
+fprintf('Condition Control...\n');
+cfg.artifact = artifact.C.part2.artfctdef.threshold.artifact;
+cfg.condition = 4;
+ft_warning off;
+cfgAllArt.C.part2 = RPS_databrowser(cfg, data);
+cfgAllArt.C.part2 = keepfields(cfgAllArt.C.part2, {'artfctdef', 'showcallinfo'});
   
 ft_warning on;
 

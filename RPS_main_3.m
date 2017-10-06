@@ -1,8 +1,8 @@
 %% check if basic variables are defined and import segmented data
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = '04_seg1/';
-  cfg.filename  = 'RPS_p01_04_seg1';
+  cfg.subFolder = '02_preproc/';
+  cfg.filename  = 'RPS_p01_02_preproc';
   sessionStr    = sprintf('%03d', RPS_getSessionNum( cfg ));                % estimate current session number
 end
 
@@ -11,7 +11,7 @@ if ~exist('desPath', 'var')
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
-  sourceList    = dir([strcat(desPath, '04_seg1/'), ...
+  sourceList    = dir([strcat(desPath, '02_preproc/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('RPS_p%d_04_seg1_', sessionStr, '.mat'));
+                    strcat('RPS_p%d_02_preproc_', sessionStr, '.mat'));
   end
 end
 
@@ -31,12 +31,12 @@ end
 
 for i = numOfPart
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '04_seg1/');
-  cfg.filename    = sprintf('RPS_p%02d_04_seg1', i);
+  cfg.srcFolder   = strcat(desPath, '02_preproc/');
+  cfg.filename    = sprintf('RPS_p%02d_02_preproc', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Dyad %d\n', i);
-  fprintf('Load segmented data...\n');
+  fprintf('Load preprocessed data...\n');
   RPS_loadData( cfg );
   
   cfg           = [];
@@ -44,12 +44,12 @@ for i = numOfPart
   cfg.minVal    = -75;
   cfg.maxVal    = 75;
 
-  cfg_autoArt   = RPS_autoArtifact(cfg, data_seg1);                         % auto artifact detection
+  cfg_autoArt   = RPS_autoArtifact(cfg, data_preproc);                      % auto artifact detection
   
   cfg           = [];
   cfg.artifact  = cfg_autoArt;
   
-  cfg_allArt    = RPS_manArtifact(cfg, data_seg1);                          % manual artifact detection                           
+  cfg_allArt    = RPS_manArtifact(cfg, data_preproc);                       % manual artifact detection                           
   
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05_autoArt/');
@@ -63,7 +63,7 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'cfg_autoArt', cfg_autoArt);
   fprintf('Data stored!\n');
-  clear cfg_autoArt data_seg1
+  clear cfg_autoArt data_preproc
   
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '06_allArt/');
