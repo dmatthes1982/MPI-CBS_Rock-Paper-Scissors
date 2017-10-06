@@ -22,7 +22,7 @@ cfg                 = [];
 cfg.feedback        = 'no';
 cfg.showcallinfo    = 'no';
 cfg.trials          = 'all';                                                  
-cfg.length          = 5;                                                    % segmentation into 5 seconds long segments
+cfg.length          = 1;                                                    % segmentation into 1 seconds long segments
 cfg.overlap         = 0;                                                    % no overlap
 
 % -------------------------------------------------------------------------
