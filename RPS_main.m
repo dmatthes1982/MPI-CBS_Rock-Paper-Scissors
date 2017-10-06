@@ -104,11 +104,10 @@ else
     fprintf('\nPlease select what you want to do with the selected dyads:\n');
     fprintf('[1] - Import and basic preprocessing\n');
     cprintf([0.5,0.5,0.5], '[2] - Rejection of eye artifacts (not available yet)\n');
-    fprintf('[3] - Segmentation of the data\n');
-    cprintf('[4] - Automatic and manual detection of artifacts\n');
-    fprintf('[5] - Application of narrow band filtering and Hilbert transform\n'); 
-    fprintf('[6] - Calculation of PLV\n');
-    fprintf('[7] - Quit data processing\n\n');
+    fprintf('[3] - Automatic and manual detection of artifacts\n');
+    fprintf('[4] - Application of narrow band filtering and Hilbert transform\n'); 
+    fprintf('[5] - Calculation of PLV\n');
+    fprintf('[6] - Quit data processing\n\n');
     x = input('Option: ');
   
     switch x
@@ -129,9 +128,6 @@ else
         part = 5;
         selection = true;
       case 6
-        part = 6;
-        selection = true;
-      case 7
         fprintf('\nData processing aborted.\n');
         clear selection i x y srcPath desPath session sessionList ...
             sessionNum numOfSessions dyadsSpec sessionStr
@@ -166,19 +162,14 @@ switch part
   case 3
     tmpPath = strcat(desPath, '02_preproc/');
     fileNamePre = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '04_seg1/');
-    fileNamePost = strcat(tmpPath, 'RPS_p*_04_seg1_', sessionStr, '.mat');
-  case 4
-    tmpPath = strcat(desPath, '04_seg1/');
-    fileNamePre = strcat(tmpPath, 'RPS_p*_04_seg1_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '06_allArt/');
     fileNamePost = strcat(tmpPath, 'RPS_p*_06_allArt_', sessionStr, '.mat');
-  case 5
-    tmpPath = strcat(desPath, '04_seg1/');
-    fileNamePre = strcat(tmpPath, 'RPS_p*_04_seg1_', sessionStr, '.mat');
+  case 4
+    tmpPath = strcat(desPath, '02_preproc/');
+    fileNamePre = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '08_hilbert/');
     fileNamePost = strcat(tmpPath, 'RPS_p*_08d_hilbert40Hz_', sessionStr, '.mat');
-  case 6
+  case 5
     tmpPath = strcat(desPath, '08_hilbert/');
     fileNamePre = strcat(tmpPath, 'RPS_p*_08a_hilbert2Hz_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '10_mplv/');
@@ -282,7 +273,7 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('\nContinue data processing with:\n');
-        fprintf('[3] - Segmentation of the data?\n');
+        fprintf('[3] - Automatic and manual detection of artifacts?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -300,7 +291,7 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('\nContinue data processing with:\n');
-        fprintf('[4] - Automatic and manual detection of artifacts?\n');
+        fprintf('[4] - Application of narrow band filtering and Hilbert transform?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -317,8 +308,8 @@ while sessionStatus == true
       RPS_main_4;
       selection = false;
       while selection == false
-        fprintf('\nContinue data processing with:\n');
-        fprintf('[5] - Application of narrow band filtering and Hilbert transform?\n');
+        fprintf('Continue data processing with:\n');
+        fprintf('[5] - Calculation of PLV?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -330,27 +321,9 @@ while sessionStatus == true
         else
           selection = false;
         end
-      end
+      end  
     case 5
       RPS_main_5;
-      selection = false;
-      while selection == false
-        fprintf('Continue data processing with:\n');
-        fprintf('[6] - Calculation of PLV?\n');
-        x = input('\nSelect [y/n]: ','s');
-        if strcmp('y', x)
-          selection = true;
-          sessionStatus = true;
-          sessionPart = 6;
-        elseif strcmp('n', x)
-          selection = true;
-          sessionStatus = false;
-        else
-          selection = false;
-        end
-      end  
-    case 6
-      RPS_main_6;
       sessionStatus = false;
     otherwise
       sessionStatus = false;

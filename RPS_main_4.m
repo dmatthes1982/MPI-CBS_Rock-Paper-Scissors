@@ -24,10 +24,8 @@ if ~exist('numOfPart', 'var')                                               % es
   end
 end
 
-%% auto artifact detection (threshold +-75 uV)
-% verify automatic detected artifacts / manual artifact detection
-% export the automatic selected artifacts into a *.mat file
-% export the verified and the additional artifacts into a *.mat file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% bandpass filtering
 
 for i = numOfPart
   cfg             = [];
@@ -36,66 +34,155 @@ for i = numOfPart
   cfg.sessionStr  = sessionStr;
   
   fprintf('Dyad %d\n', i);
-  fprintf('Load segmented data...\n');
+  fprintf('Load segmented data...\n\n');
   RPS_loadData( cfg );
   
-  cfg           = [];
-  cfg.chan      = {'Cz', 'O1', 'O2'};
-  cfg.minVal    = -75;
-  cfg.maxVal    = 75;
+  filtCoeffDiv = 500 / data_seg1.part1.fsample;                             % estimate sample frequency dependent divisor of filter length
 
-  cfg_autoArt   = RPS_autoArtifact(cfg, data_seg1);                         % auto artifact detection
-  
+  % bandpass filter data at 2Hz
   cfg           = [];
-  cfg.artifact  = cfg_autoArt;
+  cfg.bpfreq    = [1.9 2.1];
+  cfg.filtorder = fix(500 / filtCoeffDiv);
+
+  data_bpfilt_2Hz = RPS_bpFiltering(cfg, data_seg1);
   
-  cfg_allArt    = RPS_manArtifact(cfg, data_seg1);                          % manual artifact detection                           
-  
+  % export the filtered data into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '05_autoArt/');
-  cfg.filename    = sprintf('RPS_p%02d_05_autoArt', i);
+  cfg.desFolder   = strcat(desPath, '07_bpfilt/');
+  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt2Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('\nThe automatic selected artifacts of dyad %d will be saved in:\n', i); 
+  fprintf('Saving bandpass filtered data (2Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'cfg_autoArt', cfg_autoArt);
-  fprintf('Data stored!\n');
-  clear cfg_autoArt data_seg1
-  
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '06_allArt/');
-  cfg.filename    = sprintf('RPS_p%02d_06_allArt', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('The visual verified artifacts of dyad %d will be saved in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'cfg_allArt', cfg_allArt);
+  RPS_saveData(cfg, 'data_bpfilt_2Hz', data_bpfilt_2Hz);
   fprintf('Data stored!\n\n');
-  clear cfg_allArt
+  clear data_bpfilt_2Hz
   
-  if(i < max(numOfPart))
-    selection = false;
-    while selection == false
-      fprintf('Proceed with the next dyad?\n');
-      x = input('\nSelect [y/n]: ','s');
-      if strcmp('y', x)
-        selection = true;
-      elseif strcmp('n', x)
-        clear file_path numOfSources sourceList cfg i x selection
-        return;
-      else
-        selection = false;
-      end
-    end
-    fprintf('\n');
-  end
+  % bandpass filter data at 10Hz
+  cfg           = [];
+  cfg.bpfreq    = [9 11];
+  cfg.filtorder = fix(250 / filtCoeffDiv);
+  
+  data_bpfilt_10Hz = RPS_bpFiltering(cfg, data_seg1);
+  
+  % export the filtered data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '07_bpfilt/');
+  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt10Hz', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving bandpass filtered data (10Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_bpfilt_10Hz', data_bpfilt_10Hz);
+  fprintf('Data stored!\n\n');
+  clear data_bpfilt_10Hz
+
+  % bandpass filter data at 20Hz
+  cfg           = [];
+  cfg.bpfreq    = [19 21];
+  cfg.filtorder = fix(250 / filtCoeffDiv);
+  
+  data_bpfilt_20Hz = RPS_bpFiltering(cfg, data_seg1);
+
+  % export the filtered data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '07_bpfilt/');
+  cfg.filename    = sprintf('RPS_p%02d_07c_bpfilt20Hz', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving bandpass filtered data (20Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_bpfilt_20Hz', data_bpfilt_20Hz);
+  fprintf('Data stored!\n\n');
+  clear data_bpfilt_20Hz data_seg_1
+  
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% hilbert phase calculation
+
+for i = numOfPart
+  cfg             = [];
+  cfg.srcFolder   = strcat(desPath, '07_bpfilt/');
+  cfg.sessionStr  = sessionStr;
+  
+  fprintf('Dyad %d\n', i);
+  
+  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt2Hz', i);
+  fprintf('Load the at 2Hz bandpass filtered data...\n');
+  RPS_loadData( cfg );
+
+  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt10Hz', i);
+  fprintf('Load the at 10 Hz bandpass filtered data ...\n');
+  RPS_loadData( cfg );
+  
+  cfg.filename    = sprintf('RPS_p%02d_07c_bpfilt20Hz', i);
+  fprintf('Load the at 20 Hz bandpass filtered data ...\n');
+  RPS_loadData( cfg );
+  
+  % calculate hilbert phase at 2Hz
+  data_hilbert_2Hz = RPS_hilbertPhase(data_bpfilt_2Hz);
+  
+  % export the hilbert phase data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '08_hilbert/');
+  cfg.filename    = sprintf('RPS_p%02d_08a_hilbert2Hz', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving Hilbert phase data (2Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_hilbert_2Hz', data_hilbert_2Hz);
+  fprintf('Data stored!\n\n');
+  clear data_hilbert_2Hz data_bpfilt_2Hz
+  
+  % calculate hilbert phase at 10Hz
+  data_hilbert_10Hz = RPS_hilbertPhase(data_bpfilt_10Hz);
+  
+  % export the hilbert phase data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '08_hilbert/');
+  cfg.filename    = sprintf('RPS_p%02d_08b_hilbert10Hz', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving Hilbert phase data (10Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_hilbert_10Hz', data_hilbert_10Hz);
+  fprintf('Data stored!\n\n');
+  clear data_hilbert_10Hz data_bpfilt_10Hz
+  
+  % calculate hilbert phase at 20Hz
+  data_hilbert_20Hz = RPS_hilbertPhase(data_bpfilt_20Hz);
+  
+  % export the hilbert phase data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '08_hilbert/');
+  cfg.filename    = sprintf('RPS_p%02d_08c_hilbert20Hz', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving Hilbert phase data (20Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_hilbert_20Hz', data_hilbert_20Hz);
+  fprintf('Data stored!\n\n');
+  clear data_hilbert_20Hz data_bpfilt_20Hz
 end
 
 %% clear workspace
-clear file_path numOfSources sourceList cfg i x selection
+clear cfg file_path numOfSources sourceList i filtCoeffDiv 
