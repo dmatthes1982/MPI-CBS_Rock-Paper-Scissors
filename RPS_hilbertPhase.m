@@ -34,11 +34,25 @@ cfg.showcallinfo    = 'no';
 % -------------------------------------------------------------------------
 fprintf('Calc Hilbert phase of participant 1 at %d Hz...\n', ...           
          data.centerFreq);
-data.part1   = hilbertTransform(cfg, data.part1);        
+fprintf('Condition FreePlay...\n');
+data.FP.part1   = hilbertTransform(cfg, data.FP.part1);        
+fprintf('Condition PredDiff...\n');
+data.PD.part1   = hilbertTransform(cfg, data.PD.part1);        
+fprintf('Condition PredSame...\n');
+data.PS.part1   = hilbertTransform(cfg, data.PS.part1);        
+fprintf('Condition Control...\n');       
+data.C.part1   = hilbertTransform(cfg, data.C.part1);        
           
 fprintf('Calc Hilbert phase of participant 2 at %d Hz...\n', ...           
          data.centerFreq);
-data.part2   = hilbertTransform(cfg, data.part2);
+fprintf('Condition FreePlay...\n');
+data.FP.part2   = hilbertTransform(cfg, data.FP.part2);
+fprintf('Condition PredDiff...\n');
+data.PD.part2   = hilbertTransform(cfg, data.PD.part2);
+fprintf('Condition PredSame...\n');
+data.PS.part2   = hilbertTransform(cfg, data.PS.part2);
+fprintf('Condition Control...\n');      
+data.C.part2   = hilbertTransform(cfg, data.C.part2);
 
 end
 
@@ -51,7 +65,6 @@ function [ data ] = hilbertTransform( cfg, data )
 % Get data properties
 % -------------------------------------------------------------------------
 trialNum = length(data.trial);                                              % get number of trials 
-trialLength = length (data.time{1});                                        % get length of one trial
 trialComp = length (data.label);                                            % get number of components
 
 % -------------------------------------------------------------------------
@@ -79,6 +92,7 @@ for trial=1:1:trialNum
     
     amp_diff = diff(data_amplitude.trial{trial} ,1 ,2);
     amp = data_amplitude.trial{trial};
+    trialLength = size(amp, 2);                                             % get length of one trial
     amp(:, trialLength) =  [];
     amp_ratio_abs = abs(amp_diff ./ amp);
     ratio = (phase_diff_abs ./ amp_ratio_abs);

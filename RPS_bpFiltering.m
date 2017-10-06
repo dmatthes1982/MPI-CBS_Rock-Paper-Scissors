@@ -50,11 +50,25 @@ data.centerFreq = [];
 
 fprintf('Apply bandpass to participant 1 with a center frequency of %d Hz...\n', ...           
           centerFreq);
-data.part1   = ft_preprocessing(cfg, data.part1);        
+fprintf('Condition FreePlay...\n');
+data.FP.part1   = ft_preprocessing(cfg, data.FP.part1); 
+fprintf('Condition PredDiff...\n');
+data.PD.part1   = ft_preprocessing(cfg, data.PD.part1); 
+fprintf('Condition PredSame...\n');
+data.PS.part1   = ft_preprocessing(cfg, data.PS.part1); 
+fprintf('Condition Control...\n');        
+data.C.part1   = ft_preprocessing(cfg, data.C.part1);        
           
 fprintf('Apply bandpass to participant 2 with a center frequency of %d Hz...\n', ...           
           centerFreq);
-data.part2   = ft_preprocessing(cfg, data.part2);
+fprintf('Condition FreePlay...\n');
+data.FP.part2   = ft_preprocessing(cfg, data.FP.part2); 
+fprintf('Condition PredDiff...\n');
+data.PD.part2   = ft_preprocessing(cfg, data.PD.part2); 
+fprintf('Condition PredSame...\n');
+data.PS.part2   = ft_preprocessing(cfg, data.PS.part2); 
+fprintf('Condition Control...\n');        
+data.C.part2   = ft_preprocessing(cfg, data.C.part2);
   
 data.centerFreq = centerFreq;
 

@@ -37,36 +37,14 @@ for i = numOfPart
   fprintf('Load segmented data...\n\n');
   RPS_loadData( cfg );
   
-  filtCoeffDiv = 500 / data_seg1.part1.fsample;                             % estimate sample frequency dependent divisor of filter length
+  filtCoeffDiv = 500 / data_preproc.FP.part1.fsample;                       % estimate sample frequency dependent divisor of filter length
 
-  % bandpass filter data at 2Hz
-  cfg           = [];
-  cfg.bpfreq    = [1.9 2.1];
-  cfg.filtorder = fix(500 / filtCoeffDiv);
-
-  data_bpfilt_2Hz = RPS_bpFiltering(cfg, data_seg1);
-  
-  % export the filtered data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07_bpfilt/');
-  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt2Hz', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving bandpass filtered data (2Hz) of dyad %d in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_bpfilt_2Hz', data_bpfilt_2Hz);
-  fprintf('Data stored!\n\n');
-  clear data_bpfilt_2Hz
-  
   % bandpass filter data at 10Hz
   cfg           = [];
   cfg.bpfreq    = [9 11];
   cfg.filtorder = fix(250 / filtCoeffDiv);
   
-  data_bpfilt_10Hz = RPS_bpFiltering(cfg, data_seg1);
+  data_bpfilt_10Hz = RPS_bpFiltering(cfg, data_preproc);
   
   % export the filtered data into a *.mat file
   cfg             = [];
@@ -88,7 +66,7 @@ for i = numOfPart
   cfg.bpfreq    = [19 21];
   cfg.filtorder = fix(250 / filtCoeffDiv);
   
-  data_bpfilt_20Hz = RPS_bpFiltering(cfg, data_seg1);
+  data_bpfilt_20Hz = RPS_bpFiltering(cfg, data_preproc);
 
   % export the filtered data into a *.mat file
   cfg             = [];
@@ -117,10 +95,6 @@ for i = numOfPart
   
   fprintf('Dyad %d\n', i);
   
-  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt2Hz', i);
-  fprintf('Load the at 2Hz bandpass filtered data...\n');
-  RPS_loadData( cfg );
-
   cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt10Hz', i);
   fprintf('Load the at 10 Hz bandpass filtered data ...\n');
   RPS_loadData( cfg );
@@ -128,24 +102,6 @@ for i = numOfPart
   cfg.filename    = sprintf('RPS_p%02d_07c_bpfilt20Hz', i);
   fprintf('Load the at 20 Hz bandpass filtered data ...\n');
   RPS_loadData( cfg );
-  
-  % calculate hilbert phase at 2Hz
-  data_hilbert_2Hz = RPS_hilbertPhase(data_bpfilt_2Hz);
-  
-  % export the hilbert phase data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '08_hilbert/');
-  cfg.filename    = sprintf('RPS_p%02d_08a_hilbert2Hz', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving Hilbert phase data (2Hz) of dyad %d in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hilbert_2Hz', data_hilbert_2Hz);
-  fprintf('Data stored!\n\n');
-  clear data_hilbert_2Hz data_bpfilt_2Hz
   
   % calculate hilbert phase at 10Hz
   data_hilbert_10Hz = RPS_hilbertPhase(data_bpfilt_10Hz);
