@@ -81,7 +81,7 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_bpfilt_20Hz', data_bpfilt_20Hz);
   fprintf('Data stored!\n\n');
-  clear data_bpfilt_20Hz data_seg_1
+  clear data_bpfilt_20Hz data_preproc
   
 end
 
