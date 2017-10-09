@@ -49,7 +49,7 @@ for i = numOfPart
   % export the filtered data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07_bpfilt/');
-  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt10Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt10Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -71,7 +71,7 @@ for i = numOfPart
   % export the filtered data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07_bpfilt/');
-  cfg.filename    = sprintf('RPS_p%02d_07c_bpfilt20Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt20Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -95,11 +95,11 @@ for i = numOfPart
   
   fprintf('Dyad %d\n', i);
   
-  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt10Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt10Hz', i);
   fprintf('Load the at 10 Hz bandpass filtered data ...\n');
   RPS_loadData( cfg );
   
-  cfg.filename    = sprintf('RPS_p%02d_07c_bpfilt20Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt20Hz', i);
   fprintf('Load the at 20 Hz bandpass filtered data ...\n');
   RPS_loadData( cfg );
   
@@ -109,7 +109,7 @@ for i = numOfPart
   % export the hilbert phase data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '08_hilbert/');
-  cfg.filename    = sprintf('RPS_p%02d_08b_hilbert10Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_08a_hilbert10Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -127,7 +127,7 @@ for i = numOfPart
   % export the hilbert phase data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '08_hilbert/');
-  cfg.filename    = sprintf('RPS_p%02d_08c_hilbert20Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_08b_hilbert20Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

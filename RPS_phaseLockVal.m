@@ -9,7 +9,7 @@ function [ data ] = RPS_phaseLockVal( cfg, data )
 % where the input data have to be the result from RPS_HILBERTPHASE
 %
 % The configuration options are
-%   cfg.winlen    = length of window over which the PLV will be calculated. (default: 5 sec)
+%   cfg.winlen    = length of window over which the PLV will be calculated. (default: 1 sec)
 %                   minimum = 1 sec
 % 
 % Theoretical Background:                                    T
@@ -36,20 +36,46 @@ function [ data ] = RPS_phaseLockVal( cfg, data )
 % Get config options
 % Get number of participants
 % -------------------------------------------------------------------------
-cfg.winlen = ft_getopt(cfg, 'winlen', 5);
+cfg.winlen = ft_getopt(cfg, 'winlen', 1);
 
 % -------------------------------------------------------------------------
 % Estimate Phase Locking Value (PLV)
 % -------------------------------------------------------------------------
-dataTmp = struct;
-dataTmp.dyad = [];
+dataPLV = struct;
+dataPLV.dyad = [];
 
-fprintf('Calc PLVs with a center frequency of %d Hz...\n', ...           
+for condition = 1:1:4
+  switch condition
+    case 1
+      fprintf('Calc PLVs with a center frequency of %d Hz...\n', ...           
          data.centerFreq);
-dataTmp.dyad  = phaseLockingValue(cfg, data.part1, data.part2);
-dataTmp.centerFreq = data.centerFreq; 
+      fprintf('Condition FreePlay...\n');
+      dataTmp = data.FP;
+    case 2
+      fprintf('Condition PredDiff...\n');
+      dataTmp = data.PD;
+    case 3
+      fprintf('Condition PredSame...\n');
+      dataTmp = data.PS;
+    case 4
+      fprintf('Condition Control...\n');
+      dataTmp = data.C;
+  end
 
-data = dataTmp;
+
+  dataPLV.dyad  = phaseLockingValue(cfg, dataTmp.part1, dataTmp.part2);
+
+	switch condition
+    case 1
+      data.FP = dataPLV;
+    case 2
+      data.PD = dataPLV;
+    case 3
+      data.PS = dataPLV;
+    case 4
+      data.C = dataPLV;
+  end
+end
 
 end
 
@@ -95,22 +121,20 @@ for i = 1:1:numOfTrials
   end  
 end
 
-numOfDiffTrials = length(unique(dataPart1.trialinfo));                      % merge all PLV values of one condition in one trial
+uniqueTrials = unique(dataPart1.trialinfo);                                 % merge all PLV values of one condition in one trial
+numOfDiffTrials = length(uniqueTrials);
 trialinfo = zeros(numOfDiffTrials, 1);
 condPLV{shifts+1, numOfDiffTrials} = [];
 condTime{shifts+1, numOfDiffTrials} = [];
 
-begsample = 1;
-
 for i=1:1:numOfDiffTrials
-  stim = dataPart1.trialinfo(begsample);
-  endsample = find(dataPart1.trialinfo == stim, 1, 'last');
+  stim = uniqueTrials(i);
+  trials = find(dataPart1.trialinfo == stim);
   trialinfo(i) = stim;
   for j=0:1:shifts
-    condPLV{j+1, i} = cell2mat(PLV(j+1, begsample:endsample));
-    condTime{j+1, i} = cell2mat(time(j+1, begsample:endsample));
+    condPLV{j+1, i} = cell2mat(PLV(j+1, trials));
+    condTime{j+1, i} = cell2mat(time(j+1, trials));
   end
-  begsample = endsample + 1;
 end
 
 data_out                  = keepfields(dataPart1, {'hdr', 'fsample'});

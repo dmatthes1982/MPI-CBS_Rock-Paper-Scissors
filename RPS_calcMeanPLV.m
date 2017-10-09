@@ -16,19 +16,46 @@ function [ data ] = RPS_calcMeanPLV( data )
 % -------------------------------------------------------------------------
 % Estimate mean Phase Locking Value (mPLV)
 % -------------------------------------------------------------------------
-
-fprintf('Calc mean PLVs with a center frequency of %d Hz...\n', ...           
+for condition=1:1:4
+  switch condition
+    case 1
+      fprintf('Calc mean PLVs with a center frequency of %d Hz...\n', ...           
           data.centerFreq);
-numOfTrials = size(data.dyad.PLV, 2);
-shifts = size(data.dyad.PLV, 1);
+      fprintf('Condition FreePlay...\n');
+      dataTmp = data.FP;
+    case 2
+      fprintf('Condition PredDiff...\n');
+      dataTmp = data.PD;
+    case 3
+      fprintf('Condition PredSame...\n');
+      dataTmp = data.PS;
+    case 4
+      fprintf('Condition Control...\n');
+      dataTmp = data.C;
+  end
+        
+  numOfTrials = size(dataTmp.dyad.PLV, 2);
+  shifts = size(dataTmp.dyad.PLV, 1);
 
-data.dyad.mPLV{shifts, numOfTrials} = [];
-for i=1:1:numOfTrials
-  for j=1:1:shifts
-    data.dyad.mPLV{j,i} = mean(data.dyad.PLV{j,i}, 2);
+  dataTmp.dyad.mPLV{shifts, numOfTrials} = [];
+  for i=1:1:numOfTrials
+    for j=1:1:shifts
+      dataTmp.dyad.mPLV{j,i} = mean(dataTmp.dyad.PLV{j,i}, 2);
+    end
+  end
+  dataTmp.dyad = rmfield(dataTmp.dyad, {'time', 'PLV'});
+  
+  switch condition
+    case 1
+      data.FP = dataTmp;
+    case 2
+      data.PD = dataTmp;
+    case 3
+      data.PS = dataTmp;
+    case 4
+      data.C = dataTmp;
   end
 end
-data.dyad = rmfield(data.dyad, {'time', 'PLV'});
 
 end
 

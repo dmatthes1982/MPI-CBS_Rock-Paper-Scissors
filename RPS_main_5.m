@@ -2,7 +2,7 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '08_hilbert/';
-  cfg.filename  = 'RPS_p01_08c_hilbert20Hz';
+  cfg.filename  = 'RPS_p01_08b_hilbert20Hz';
   sessionStr    = sprintf('%03d', RPS_getSessionNum( cfg ));                % estimate current session number
 end
 
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('RPS_p%d_08c_hilbert20Hz_', sessionStr, '.mat'));
+                    strcat('RPS_p%d_08b_hilbert20Hz_', sessionStr, '.mat'));
   end
 end
 
@@ -71,11 +71,11 @@ for i = numOfPart
   cfg.srcFolder   = strcat(desPath, '08_hilbert/');
   cfg.sessionStr  = sessionStr;
   
-  cfg.filename    = sprintf('RPS_p%02d_08b_hilbert10Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_08a_hilbert10Hz', i);
   fprintf('Load hilbert phase data at 10 Hz...\n');
   RPS_loadData( cfg );
   
-  cfg.filename    = sprintf('RPS_p%02d_08c_hilbert20Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_08b_hilbert20Hz', i);
   fprintf('Load hilbert phase data at 20 Hz...\n');
   RPS_loadData( cfg );
   
@@ -107,7 +107,7 @@ for i = numOfPart
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09_plv/');
-  cfg.filename    = sprintf('RPS_p%02d_09b_plv10Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_09a_plv10Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -122,7 +122,7 @@ for i = numOfPart
   % export the mean PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '10_mplv/');
-  cfg.filename    = sprintf('RPS_p%02d_10b_mplv10Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_10a_mplv10Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -145,7 +145,7 @@ for i = numOfPart
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09_plv/');
-  cfg.filename    = sprintf('RPS_p%02d_09c_plv20Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_09b_plv20Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -160,7 +160,7 @@ for i = numOfPart
   % export the mean PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '10_mplv/');
-  cfg.filename    = sprintf('RPS_p%02d_10c_mplv20Hz', i);
+  cfg.filename    = sprintf('RPS_p%02d_10b_mplv20Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
