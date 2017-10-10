@@ -129,7 +129,7 @@ for i = numOfPart
 
   cfg         = [];
   cfg.foi     = 2:1:50;                                                     % frequency of interest
-  cfg.toi     = 0.4:0.4:2.8;                                                % time of interest
+  cfg.toi     = 0:0.5:3;                                                    % time of interest
   
   data_tfr1 = RPS_timeFreqanalysis( cfg, data_preproc );
 

@@ -9,7 +9,7 @@ function [ data ] = RPS_timeFreqanalysis( cfg, data )
 %
 % The configuration options are
 %   config.foi = frequency of interest - begin:resolution:end (default: 2:1:50)
-%   config.toi = time of interest - begin:resolution:end (default: 4:0.5:176)
+%   config.toi = time of interest - begin:resolution:end (default: 4:0.4:2.8)
 %   
 % This function requires the fieldtrip toolbox.
 %

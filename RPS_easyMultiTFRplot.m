@@ -86,7 +86,7 @@ cfg.ylim          = freqlim;
 cfg.zlim          = 'maxmin';
 cfg.trials        = trl;
 cfg.channel       = 1:1:28;
-cfg.layout        = 'mpi_customized_acticap32.mat';
+cfg.layout        = 'mpi_002_customized_acticap32.mat';
 
 cfg.showlabels    = 'no';
 cfg.showoutline   = 'yes';
