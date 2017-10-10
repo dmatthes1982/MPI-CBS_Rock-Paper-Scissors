@@ -36,11 +36,16 @@ for condition=1:1:4
         
   numOfTrials = size(dataTmp.dyad.PLV, 2);
   shifts = size(dataTmp.dyad.PLV, 1);
-
+  numOfElecA = size(dataTmp.dyad.PLV{1}, 1);
+  numOfElecB = size(dataTmp.dyad.PLV{1}, 2);
+  
   dataTmp.dyad.mPLV{shifts, numOfTrials} = [];
   for i=1:1:numOfTrials
-    for j=1:1:shifts
-      dataTmp.dyad.mPLV{j,i} = mean(dataTmp.dyad.PLV{j,i}, 2);
+    dataTmp.dyad.mPLV{i} = zeros(numOfElecA, numOfElecB);
+    for j=1:1:numOfElecA
+      for k=1:1:numOfElecB
+      dataTmp.dyad.mPLV{i}(j,k) = mean(cell2mat(dataTmp.dyad.PLV{i}(j,k)));
+      end
     end
   end
   dataTmp.dyad = rmfield(dataTmp.dyad, {'time', 'PLV'});
