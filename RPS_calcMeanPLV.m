@@ -35,11 +35,10 @@ for condition=1:1:4
   end
         
   numOfTrials = size(dataTmp.dyad.PLV, 2);
-  shifts = size(dataTmp.dyad.PLV, 1);
   numOfElecA = size(dataTmp.dyad.PLV{1}, 1);
   numOfElecB = size(dataTmp.dyad.PLV{1}, 2);
   
-  dataTmp.dyad.mPLV{shifts, numOfTrials} = [];
+  dataTmp.dyad.mPLV{1, numOfTrials} = [];
   for i=1:1:numOfTrials
     dataTmp.dyad.mPLV{i} = zeros(numOfElecA, numOfElecB);
     for j=1:1:numOfElecA
