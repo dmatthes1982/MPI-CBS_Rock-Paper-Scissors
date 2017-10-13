@@ -53,6 +53,7 @@ eventvalues = { 'S 10','S 138', ...                                         % Pr
                 'S 12','S 140', ...                                         % ButtonPress (Duration: 2 sec)
                 'S 13','S 141', ...                                         % Action (Duration: 3 sec)
                 'S 14','S 142', ...                                         % PanelDown (Duration: 3 sec)
+                'S 15','S 143', ...                                         % PanelUp (Duration: 4 sec)
                 };
 
 samplingRate = 500;
@@ -60,6 +61,7 @@ duration = zeros(14,1);
 duration(10)            = 8 * samplingRate;
 duration([11, 13, 14])  = 3 * samplingRate;
 duration(12)            = 2 * samplingRate;
+duration(15)            = 4 * samplingRate;
               
 % -------------------------------------------------------------------------
 % Data import
@@ -91,6 +93,8 @@ for i = 1:1:size(cfg.trl)                                                   % co
       cfg.trl(i,4) = 13;
     case 142
       cfg.trl(i,4) = 14;
+    case 143
+      cfg.trl(i,4) = 15;
   end
 end
 

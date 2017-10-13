@@ -46,6 +46,7 @@
 % - ButtonPress  - 12
 % - Action       - 13
 % - PanelDown    - 14
+% - PanelUp      - 15
 %
 % The defintion of the condition/ the phase is done by setting the
 % cfg.condition / cfg.phase option with the string or the number of the 
