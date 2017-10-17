@@ -39,7 +39,6 @@ end
 % -------------------------------------------------------------------------
 % Preprocessing settings
 % -------------------------------------------------------------------------
-
 % general filtering
 cfgBP                   = [];
 cfgBP.bpfilter          = 'yes';                                            % use bandpass filter
@@ -72,48 +71,87 @@ cfgDS.showcallinfo     = 'no';                                              % pr
 % -------------------------------------------------------------------------
 % Preprocessing
 % -------------------------------------------------------------------------
-
 fprintf('Preproc participant 1...\n');
 fprintf('Condition FreePlay...\n');
+orgFs = data.FP.part1.fsample;
 data.FP.part1   = bpfilter(cfgBP, data.FP.part1);
 data.FP.part1   = rereference(cfgReref, data.FP.part1);
-data.FP.part1   = downsampling(cfgDS, data.FP.part1);
+if orgFs ~= samplingRate
+  data.FP.part1   = downsampling(cfgDS, data.FP.part1);
+else
+  data.FP.part1.fsample = orgFs;
+end
 
 fprintf('Condition PredDiff...\n');
+orgFs = data.PD.part1.fsample;
 data.PD.part1   = bpfilter(cfgBP, data.PD.part1);
 data.PD.part1   = rereference(cfgReref, data.PD.part1);
-data.PD.part1   = downsampling(cfgDS, data.PD.part1); 
+if orgFs ~= samplingRate
+  data.PD.part1   = downsampling(cfgDS, data.PD.part1);
+else
+  data.PD.part1.fsample = orgFs;
+end
 
 fprintf('Condition PredSame...\n');
+orgFs = data.PS.part1.fsample;
 data.PS.part1   = bpfilter(cfgBP, data.PS.part1);
 data.PS.part1   = rereference(cfgReref, data.PS.part1);
-data.PS.part1   = downsampling(cfgDS, data.PS.part1); 
+if orgFs ~= samplingRate
+  data.PS.part1   = downsampling(cfgDS, data.PS.part1);
+else
+  data.PS.part1.fsample = orgFs;
+end
 
 fprintf('Condition Control...\n');
+orgFs = data.C.part1.fsample;
 data.C.part1   = bpfilter(cfgBP, data.C.part1);
 data.C.part1   = rereference(cfgReref, data.C.part1);
-data.C.part1   = downsampling(cfgDS, data.C.part1); 
+if orgFs ~= samplingRate
+  data.C.part1   = downsampling(cfgDS, data.C.part1);
+else
+  data.C.part1.fsample = orgFs;
+end
 
 fprintf('Preproc participant 2...\n');
 fprintf('Condition FreePlay...\n');
+orgFs = data.FP.part2.fsample;
 data.FP.part2   = bpfilter(cfgBP, data.FP.part2);
 data.FP.part2   = rereference(cfgReref, data.FP.part2);
-data.FP.part2   = downsampling(cfgDS, data.FP.part2);
+if orgFs ~= samplingRate
+  data.FP.part2   = downsampling(cfgDS, data.FP.part2);
+else
+  data.FP.part2.fsample = orgFs;
+end
 
 fprintf('Condition PredDiff...\n');
+orgFs = data.PD.part2.fsample;
 data.PD.part2   = bpfilter(cfgBP, data.PD.part2);
 data.PD.part2   = rereference(cfgReref, data.PD.part2);
-data.PD.part2   = downsampling(cfgDS, data.PD.part2); 
+if orgFs ~= samplingRate
+  data.PD.part2   = downsampling(cfgDS, data.PD.part2);
+else
+  data.PD.part2.fsample = orgFs; 
+end
 
 fprintf('Condition PredSame...\n');
+orgFs = data.PS.part2.fsample;
 data.PS.part2   = bpfilter(cfgBP, data.PS.part2);
 data.PS.part2   = rereference(cfgReref, data.PS.part2);
-data.PS.part2   = downsampling(cfgDS, data.PS.part2); 
+if orgFs ~= samplingRate
+  data.PS.part2   = downsampling(cfgDS, data.PS.part2);
+else
+  data.PS.part2.fsample = orgFs; 
+end
 
 fprintf('Condition Control...\n');
+orgFs = data.C.part2.fsample;
 data.C.part2   = bpfilter(cfgBP, data.C.part2);
 data.C.part2   = rereference(cfgReref, data.C.part2);
-data.C.part2   = downsampling(cfgDS, data.C.part2); 
+if orgFs ~= samplingRate
+  data.C.part2   = downsampling(cfgDS, data.C.part2);
+else
+  data.C.part2.fsample = orgFs; 
+end
 
 end
 

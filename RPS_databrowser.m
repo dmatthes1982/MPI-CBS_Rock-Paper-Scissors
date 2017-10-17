@@ -9,6 +9,7 @@ function cfgArtifacts = RPS_databrowser( cfg, data )
 % RPS_PREPROCESSING
 %
 % The configuration options are
+%   cfg.dyad      = number of dyad (no default value)
 %   cfg.part      = number of participant (default: 1)
 %   cfg.condition = condition (default: 2 or 'PredDiff', see RPS data structure)
 %   cfg.artifact  = Nx2 matrix with artifact segments (default: [])
@@ -23,9 +24,20 @@ function cfgArtifacts = RPS_databrowser( cfg, data )
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
+dyad      = ft_getopt(cfg, 'dyad', []);
 part      = ft_getopt(cfg, 'part', 1);
 cond      = ft_getopt(cfg, 'condition', 2);
 artifact  = ft_getopt(cfg, 'artifact', []);
+
+if isempty(dyad)                                                            % if dyad number is not specified
+  event = [];                                                               % the associated markers cannot be loaded and displayed
+else                                                                        % else, load the stimulus markers 
+  source = '/data/pt_01843/eegData/DualEEG_RPS_rawData/';
+  condLetters = {'FP', 'PD', 'PS', 'C'};
+  filename = sprintf('DualEEG_RPS_%s_%02d.vhdr', condLetters{cond}, dyad);
+  path = strcat(source, filename);
+  event = ft_read_event(path);
+end
 
 if part < 1 || part > 2                                                     % check cfg.participant definition
   error('cfg.part has to be 1 or 2');
@@ -54,6 +66,7 @@ cfg.viewmode                      = 'vertical';
 cfg.artfctdef.threshold.artifact  = artifact;
 cfg.continuous                    = 'no';
 cfg.channel                       = 'all';
+cfg.event                         = event;
 cfg.showcallinfo                  = 'no';
 
 fprintf('Databrowser - Condition: %d - Participant: %d\n', cond, part);

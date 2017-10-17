@@ -13,7 +13,7 @@ function [ num ] = RPS_checkPhase( phase )
 % -------------------------------------------------------------------------
 % Default values
 % -------------------------------------------------------------------------
-defaultVals = [10, 11, 12, 13, 14];
+defaultVals = [10, 11, 12, 13, 14, 15];
 
 % -------------------------------------------------------------------------
 % Check Condition
@@ -36,6 +36,8 @@ else                                                                        % if
       num = 13;
     case 'PanelDown'
       num = 14;
+    case 'PanelUp'
+      num = 15;
     otherwise
       error('%s is not a valid phase', phase);
   end
