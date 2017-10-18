@@ -12,7 +12,7 @@ function RPS_easyMultiTFRplot(cfg, data)
 %   cfg.part        = number of participant (1 or 2) (default: 1)
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS data structure)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS data structure)
-%   cfg.trial       = number of trial (default: 1)
+%   cfg.trial       = numbers of trials (i.e.: 1, 'all', [1:60], [1,12,25,53] (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 30])
 %   cfg.timelimits  = [begin end] (default: [0 3])
 %
@@ -61,21 +61,36 @@ trials  = find(trialinfo == phase);                                         % ch
 if isempty(trials)
   error('The selected dataset contains no phase %d.', phase);
 else
-  numTrials = length(trials);
-  if numTrials < trl                                                        % check cfg.trial definition
-    error('The selected dataset contains only %d trials.', numTrials);
+  if ~isnumeric(trl)                                                        % check cfg.trl
+    if strcmp(trl, 'all')
+      trlInCond = 'all';
+      trl = trials;
+    else
+      error('The cfg.trl variable holds an unknown string: %s', trl);
+    end
   else
-    trlInCond = trl;
-    trl = trials(trl);
+    numTrials = length(trials);
+    trl = unique(trl);
+    if numTrials < max(trl)
+      error('The selected dataset contains only %d trials.', numTrials);
+    else
+      trlInCond = sprintf('[%d', trl(1));
+      if length(trl) > 1
+        for i=2:1:length(trl)
+          trlInCond = strcat(trlInCond, sprintf(',%d',trl(i)));
+        end
+      end
+      trlInCond = strcat(trlInCond, ']');
+      trl = trials(trl);
+    end
   end
 end
-
-ft_warning off;
 
 % -------------------------------------------------------------------------
 % Plot time frequency spectrum
 % -------------------------------------------------------------------------
 
+ft_warning off;
 colormap 'jet';
 
 cfg               = [];
@@ -97,11 +112,11 @@ cfg.showcallinfo  = 'no';                                                   % su
 switch part
   case 1
     ft_multiplotTFR(cfg, dataPlot.part1);
-    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %d', ...
+    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s', ...
           cond, part, phase, trlInCond));      
   case 2
     ft_multiplotTFR(cfg, dataPlot.part2);
-    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %d', ...
+    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s', ...
           cond, part, phase, trlInCond));
 end
 
