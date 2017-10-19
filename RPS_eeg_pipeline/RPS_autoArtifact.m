@@ -1,6 +1,6 @@
 function [ cfgAutoArt ] = RPS_autoArtifact( cfg, data )
 % RPS_AUTOARTIFACT marks timeslots as an artifact in which the level of 
-% 'Cz', 'O2' and 'O4' exceeds or fall below +/- 75 mV.
+% 'Cz', 'O1' and 'O2' exceeds or fall below +/- 75 mV.
 %
 % Use as
 %   [ cfgAutoArt ] = RPS_autoArtifact(cfg, data)
