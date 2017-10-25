@@ -1,6 +1,6 @@
 function RPS_easyPLVplot( cfg, data )
 % RPS_EASYPLVPLOT is a function, which makes it easier to plot the PLV 
-% values of a specific condition from the RPS-data-structure.
+% values of a specific condition from the RPS_DATASTRUCTURE.
 %
 % Use as
 %   RPS_easyPLVplot( cfg, data )
@@ -8,8 +8,8 @@ function RPS_easyPLVplot( cfg, data )
 % where the input data has to be the result of RPS_PHASELOCKVAL
 %
 % The configuration options are
-%   cfg.condition = condition (default: 2 or 'PredDiff', see RPS data structure)
-%   cfg.phase     = phase (default: 11 or 'Prediction', see RPS data structure)
+%   cfg.condition = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
+%   cfg.phase     = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
 %   cfg.elecPart1 = number of electrode of participant 1 (default: 'Cz')
 %   cfg.elecPart2 = number of electrode of participant 2 (default: 'Cz')
 %

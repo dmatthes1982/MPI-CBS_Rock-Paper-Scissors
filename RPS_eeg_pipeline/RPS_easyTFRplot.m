@@ -1,7 +1,7 @@
 function RPS_easyTFRplot(cfg, data)
 % RPS_EASYTFRPLOT is a function, which makes it easier to plot a
 % time-frequency-spectrum of a specific condition and trial from the 
-% RPS-data-structure.
+% RPS_DATASTRUCTURE.
 %
 % Use as
 %   RPS_easyTFRPlot(cfg, data)
@@ -10,8 +10,8 @@ function RPS_easyTFRplot(cfg, data)
 %
 % The configuration options are 
 %   cfg.part        = number of participant (default: 1)
-%   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS data structure)
-%   cfg.phase       = phase (default: 11 or 'Prediction', see RPS data structure)
+%   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
+%   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = numbers of trials (i.e.: 1, 'all', [1:60], [1,12,25,53] (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 50])
