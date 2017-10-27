@@ -48,6 +48,7 @@ for i = numOfPart
   
   cfg           = [];
   cfg.artifact  = cfg_autoArt;
+  cfg.dyad      = i;
   
   cfg_allArt    = RPS_manArtifact(cfg, data_preproc);                       % manual artifact detection                           
   

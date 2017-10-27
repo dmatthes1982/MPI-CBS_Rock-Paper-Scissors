@@ -10,6 +10,7 @@ function [ cfgAllArt ] = RPS_manArtifact( cfg, data )
 %
 % The configuration options are
 %   cfg.artifact  = output of RPS_autoArtifact (see file RPS_pxx_05_autoArt_yyy.mat)
+%   cfg.dyad      = number of dyad (only necessary for adding markers to databrowser view) (default: []) 
 %
 % This function requires the fieldtrip toolbox.
 %
@@ -21,11 +22,13 @@ function [ cfgAllArt ] = RPS_manArtifact( cfg, data )
 % Get and check config options
 % -------------------------------------------------------------------------
 artifact  = ft_getopt(cfg, 'artifact', []);
+dyad      = ft_getopt(cfg, 'dyad', []);
 
 % -------------------------------------------------------------------------
 % Initialize settings, build output structure
 % -------------------------------------------------------------------------
 cfg             = [];
+cfg.dyad        = dyad;
 cfgTmp.part1    = [];                                       
 cfgTmp.part2    = [];
 cfgAllArt.FP    = cfgTmp;
