@@ -14,8 +14,8 @@ function RPS_easyTFRplot(cfg, data)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = numbers of trials (i.e.: 1, 'all', [1:60], [1,12,25,53] (default: 1)
-%   cfg.freqlimits  = [begin end] (default: [2 50])
-%   cfg.timelimits  = [begin end] (default: [0 3])
+%   cfg.freqlimit   = [begin end] (default: [2 50])
+%   cfg.timelimit   = [begin end] (default: [0 3])
 %
 % This function requires the fieldtrip toolbox
 %
@@ -31,8 +31,8 @@ cond    = ft_getopt(cfg, 'condition', 2);
 phase = ft_getopt(cfg, 'phase', 11);
 elec    = ft_getopt(cfg, 'electrode', 'Cz');
 trl     = ft_getopt(cfg, 'trial', 1);
-freqlim = ft_getopt(cfg, 'freqlimits', [2 50]);
-timelim = ft_getopt(cfg, 'timelimits', [0 3]);
+freqlim = ft_getopt(cfg, 'freqlimit', [2 50]);
+timelim = ft_getopt(cfg, 'timelimit', [0 3]);
 
 if part < 1 || part > 2                                                     % check cfg.participant definition
   error('cfg.part has to be 1 or 2');

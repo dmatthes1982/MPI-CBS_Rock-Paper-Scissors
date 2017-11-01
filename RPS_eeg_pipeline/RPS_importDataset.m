@@ -48,20 +48,23 @@ headerfile = sprintf('%sDualEEG_RPS_%s_%02d.vhdr', path, condition, part);
 % definition of all stimuli, which seperate trials. Two values for each 
 % phase, the first on is the original one and the second one handles the 
 % 'video trigger bug'
-eventvalues = { 'S 10','S 138', ...                                         % Prompt 1,2,3
-                'S 11','S 139', ...                                         % Prediction/Desicion (Duration: 3 sec)
+eventvalues = { 'S 20','S 148', ...                                         % EyesClose
+                'S 10','S 138', ...                                         % Prompt 1,2,3
+                'S 11','S 139', ...                                         % Prediction/Desicion (Duration: 1 sec)
                 'S 12','S 140', ...                                         % ButtonPress (Duration: 2 sec)
                 'S 13','S 141', ...                                         % Action (Duration: 3 sec)
-                'S 14','S 142', ...                                         % PanelDown (Duration: 3 sec)
+                'S  7','S 135', ...                                         % PanelDownArd (Duration: 2 sec)
                 'S 15','S 143', ...                                         % PanelUp (Duration: 4 sec)
                 };
 
 samplingRate = 500;
-duration = zeros(14,1);                                                    
+duration = zeros(21,1);                                                    
+duration([7, 12])       = 2 * samplingRate;
 duration(10)            = 8 * samplingRate;
-duration([11, 13, 14])  = 3 * samplingRate;
-duration(12)            = 2 * samplingRate;
+duration(11)            = 1 * samplingRate;
+duration(13)            = 3 * samplingRate;
 duration(15)            = 4 * samplingRate;
+duration(20)            = 60 * samplingRate;
               
 % -------------------------------------------------------------------------
 % Data import
@@ -79,23 +82,38 @@ cfg.trialdef.eventvalue = eventvalues;
 cfg = ft_definetrial(cfg);                                                  % generate config for segmentation
 cfg = rmfield(cfg, {'notification'});                                       % workarround for mergeconfig bug                       
 
-for i = 1:1:length(cfg.trl)                                                 % set specific trial lengths
-  cfg.trl(i, 2) = duration(cfg.trl(i, 4)) + cfg.trl(i, 1) - 1;
-end
-
 for i = 1:1:size(cfg.trl)                                                   % correct false stimulus numbers
   switch cfg.trl(i,4)
+    case 135
+      cfg.trl(i,4) = 7;
+    case 138
+      cfg.trl(i,4) = 10;
     case 139
       cfg.trl(i,4) = 11;
     case 140
       cfg.trl(i,4) = 12;
     case 141
       cfg.trl(i,4) = 13;
-    case 142
-      cfg.trl(i,4) = 14;
     case 143
       cfg.trl(i,4) = 15;
+    case 148
+      cfg.trl(i,4) = 20;
   end
+end
+
+for i = 1:1:length(cfg.trl)                                                 % set specific trial lengths
+  cfg.trl(i, 2) = duration(cfg.trl(i, 4)) + cfg.trl(i, 1) - 1;
+end
+
+elements = find(ismember(cfg.trl(:,4), 7));                                 % remove duplicates of marker 'S  7', if arduino button is pressed multiple times within one trial
+if ~isempty(elements)
+  duplicates = [];
+  for i=2:1:length(elements)
+    if elements(i) == elements(i-1) + 1
+      duplicates = [duplicates elements(i)];                                %#ok<AGROW>
+    end
+  end
+  cfg.trl(duplicates, :) = []; 
 end
 
 dataTmp = ft_preprocessing(cfg);                                            % import data
