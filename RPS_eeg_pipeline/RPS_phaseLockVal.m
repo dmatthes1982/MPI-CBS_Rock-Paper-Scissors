@@ -128,7 +128,7 @@ end
 %--------------------------------------------------------------------------
 % concatenate all trials with equal condition numbers
 %--------------------------------------------------------------------------
-uniqueTrials = unique(dataPart1.trialinfo, 'sorted');                       % estimate unique phases                                
+uniqueTrials = unique(dataPart1.trialinfo, 'stable');                       % estimate unique phases                                
 diffPhases = length(uniqueTrials);                                          % estimate number of different phases 
 trialinfo = zeros(diffPhases, 1);                                           % build new trialinfo
 catPLV{connections, diffPhases} = [];                                       % concatenated PLV matrix                                 

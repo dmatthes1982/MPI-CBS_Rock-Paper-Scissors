@@ -1,11 +1,11 @@
 function [ data ] = RPS_calcMeanPLV( data )
-% RPS_CALCMEANPLV estimates the mean of the phase locking values for all
-% dyads and electrodes over the different conditions.
+% RPS_CALCMEANPLV estimates the mean of the phase locking values within the 
+% different phases and conditions for all dyads and connections.
 %
 % Use as
 %   [ data ] = RPS_calcMeanPLV( data )
 %
-%  where the input data have to be the result from RPS_PHASELOCKVAL
+% where the input data have to be the result from RPS_PHASELOCKVAL
 %
 % This function requires the fieldtrip toolbox
 % 
