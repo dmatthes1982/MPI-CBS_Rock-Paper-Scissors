@@ -142,7 +142,7 @@ emptyMatrix = NaN * ones(28,28);                                            % em
 
 for k = 1:1:4
   for l = 1:1:size(dataTmp, 2)
-    if ~isequal(trInf{k,l}, trInfOrg{l})
+    if ~isequal(trInf{k,l}, trInfOrg{k})
       cprintf([1,0.5,0], ...
               sprintf('Dyad %d - Condition %s: False trial order detected and fixed.\n', ...
               dyadNum(l), condition{k}));
