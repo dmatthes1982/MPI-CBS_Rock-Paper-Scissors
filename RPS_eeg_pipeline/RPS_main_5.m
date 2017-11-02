@@ -123,7 +123,6 @@ for i = numOfPart
     if artifactAvailable == true
       cfg           = [];
       cfg.artifact  = cfg_allArt;
-      cfg.type      = 'dual';
   
       fprintf('Artifact Rejection of Hilbert phase data at 10 Hz.\n');
       data_hseg_10Hz = RPS_rejectArtifacts(cfg, data_hseg_10Hz);
