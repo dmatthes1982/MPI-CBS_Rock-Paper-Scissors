@@ -172,8 +172,8 @@ switch part
   case 5
     tmpPath = strcat(desPath, '08_hilbert/');
     fileNamePre = strcat(tmpPath, 'RPS_p*_08a_hilbert10Hz_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '10_mplv/');
-    fileNamePost = strcat(tmpPath, 'RPS_p*_10b_mplv20Hz_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '11_mplv/');
+    fileNamePost = strcat(tmpPath, 'RPS_p*_11b_mplv20Hz_', sessionStr, '.mat');
   otherwise
     error('Something unexpected happend. part = %d is not defined' ...
           , part);
