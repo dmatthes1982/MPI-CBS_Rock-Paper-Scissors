@@ -66,11 +66,11 @@ for i = numOfPart
   % split ONLY the resting state trials of every condition into subtrials 
   % with a length of 5 seconds
   fprintf('Segmentation of Hilbert phase data at 10 Hz.\n');
-  data_hseg_10Hz  = RPS_specialSeg( cfg, data_hilbert_10Hz );
+  data_hseg_10Hz  = RPS_specialSeg( data_hilbert_10Hz );
   fprintf('\n');
   
   fprintf('Segmentation of Hilbert phase data at 20 Hz.\n');
-  data_hseg_20Hz  = RPS_specialSeg( cfg, data_hilbert_20Hz );
+  data_hseg_20Hz  = RPS_specialSeg( data_hilbert_20Hz );
   fprintf('\n');
   
   % export the segmented hilbert (10 Hz, 20 Hz) data into a *.mat file
