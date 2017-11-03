@@ -215,6 +215,50 @@ for i = numOfPart
   clear data_mplv_20Hz
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Averaging mPLVs over dyads
+
+cfg = [];
+cfg.path = strcat(desPath, '11_mplv/');
+cfg.session = sessionStr;
+cfg.passband = '10Hz';
+
+data_mplvod_10Hz = RPS_mPLVoverDyads( cfg );
+
+cfg.passband = '20Hz';
+
+data_mplvod_20Hz = RPS_mPLVoverDyads( cfg );
+
+% export the mean PLVs into a *.mat file
+cfg             = [];
+cfg.desFolder   = strcat(desPath, '12_mplvod/');
+cfg.filename    = 'RPS_11a_mplvod10Hz';
+cfg.sessionStr  = sessionStr;
+
+file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                   '.mat');
+                   
+fprintf('Saving mean PLVs over dyads at 10Hz in:\n'); 
+fprintf('%s ...\n', file_path);
+RPS_saveData(cfg, 'data_mplvod_10Hz', data_mplvod_10Hz);
+fprintf('Data stored!\n');
+clear data_mplvod_10Hz
+
+cfg             = [];
+cfg.desFolder   = strcat(desPath, '12_mplvod/');
+cfg.filename    = 'RPS_11b_mplvod20Hz';
+cfg.sessionStr  = sessionStr;
+
+file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                   '.mat');
+                   
+fprintf('Saving mean PLVs over dyads at 20Hz in:\n'); 
+fprintf('%s ...\n', file_path);
+RPS_saveData(cfg, 'data_mplvod_20Hz', data_mplvod_20Hz);
+fprintf('Data stored!\n\n');
+clear data_mplvod_20Hz
+
 %% clear workspace
 clear cfg file_path sourceList numOfSources i artifactRejection ...
       artifactAvailable x choise
+

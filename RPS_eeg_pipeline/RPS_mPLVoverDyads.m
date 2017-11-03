@@ -24,7 +24,7 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01843/eegData/DualEEG_RPS_processedData/10_mplv/');
+              '/data/pt_01843/eegData/DualEEG_RPS_processedData/11_mplv/');
             
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', '10Hz');
@@ -44,14 +44,14 @@ trialinfoOrg{4} = [20; 11; 12; 13];                                         % tr
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-dyadsList   = dir([path, sprintf('RPS_p*_10a_mplv%s_%03d.mat', ...
+dyadsList   = dir([path, sprintf('RPS_p*_11a_mplv%s_%03d.mat', ...
                   passband, session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['RPS_p%d_10a_mplv' ...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['RPS_p%d_11a_mplv' ...
                                    sprintf('%s_', passband) ...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
@@ -83,7 +83,7 @@ data{4, length(listOfDyads)} = [];
 trialinfo{4, length(listOfDyads)} = []; 
 
 for i=1:1:length(listOfDyads)
-  filename = sprintf('RPS_p%02d_10a_mplv%s_%03d.mat', listOfDyads(i), ...
+  filename = sprintf('RPS_p%02d_11a_mplv%s_%03d.mat', listOfDyads(i), ...
                     passband, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
@@ -143,8 +143,8 @@ emptyMatrix = NaN * ones(28,28);                                            % em
 for k = 1:1:4
   for l = 1:1:size(dataTmp, 2)
     if ~isequal(trInf{k,l}, trInfOrg{k})
-      cprintf([1,0.5,0], ...
-              sprintf('Dyad %d - Condition %s: False trial order detected and fixed.\n', ...
+      cprintf([0,0.6,0], ...
+              sprintf('Dyad %d - Condition %s: False trial order or missing phase detected and fixed.\n', ...
               dyadNum(l), condition{k}));
       [~, loc] = ismember(trInfOrg{k}, trInf{k,l});
       tmpBuffer = [];

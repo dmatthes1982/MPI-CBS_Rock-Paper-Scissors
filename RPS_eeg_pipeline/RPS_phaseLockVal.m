@@ -82,6 +82,7 @@ function [data_out] = phaseLockingValue(cfgPLV, dataPart1, dataPart2)
 %--------------------------------------------------------------------------
 % Initialze variables
 %--------------------------------------------------------------------------
+markerTemplate          = [20, 10, 11, 12, 13, 7, 15];                      % template including all available markers in correct order
 numOfTrials             = length(dataPart1.trial);                          % number of trials
 numOfElec               = length(dataPart1.label);                          % number of electrodes
 connections             = numOfElec;                                        % number of connections
@@ -128,7 +129,12 @@ end
 %--------------------------------------------------------------------------
 % concatenate all trials with equal condition numbers
 %--------------------------------------------------------------------------
-uniqueTrials = unique(dataPart1.trialinfo, 'stable');                       % estimate unique phases                                
+uniqueTrials = unique(dataPart1.trialinfo, 'stable');                       % estimate unique phases
+tf = ismember(markerTemplate, uniqueTrials);                                % bring unique phase into a correct order
+idx = 1:length(markerTemplate);
+idx = idx(tf);
+uniqueTrials = markerTemplate(idx);
+
 diffPhases = length(uniqueTrials);                                          % estimate number of different phases 
 trialinfo = zeros(diffPhases, 1);                                           % build new trialinfo
 catPLV{connections, diffPhases} = [];                                       % concatenated PLV matrix                                 
