@@ -59,7 +59,7 @@ trialinfo = dataPlot.trialinfo;                                             % ge
 phase = RPS_checkPhase( phase );                                            % check cfg.phase definition and translate it into trl number    
 trl  = find(trialinfo == phase);
 if isempty(trl)
-  error('The selected dataset contains no condition %d.', phase);
+  error('The selected dataset contains no phase %d.', phase);
 end
 
 % -------------------------------------------------------------------------

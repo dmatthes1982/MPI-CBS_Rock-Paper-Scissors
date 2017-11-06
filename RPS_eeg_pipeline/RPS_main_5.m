@@ -26,18 +26,18 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% general adjustment
-selection = false;
-while selection == false
+choise = false;
+while choise == false
   cprintf([0,0.6,0], 'Should rejection of detected artifacts be applied before PLV estimation?\n');
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
-    selection = true;
+    choise = true;
     artifactRejection = true;
   elseif strcmp('n', x)
-    selection = true;
+    choise = true;
     artifactRejection = false;
   else
-    selection = false;
+    choise = false;
   end
 end
 fprintf('\n');
@@ -55,7 +55,7 @@ for i = numOfPart
   cfg.sessionStr  = sessionStr;
   
   cfg.filename    = sprintf('RPS_p%02d_08a_hilbert10Hz', i);
-  fprintf('Load hilbert phase data at 10 Hz...\n');
+  fprintf('\nLoad hilbert phase data at 10 Hz...\n');
   RPS_loadData( cfg );
   
   cfg.filename    = sprintf('RPS_p%02d_08b_hilbert20Hz', i);
@@ -214,49 +214,6 @@ for i = numOfPart
   fprintf('Data stored!\n\n');
   clear data_mplv_20Hz
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Averaging mPLVs over dyads
-
-cfg = [];
-cfg.path = strcat(desPath, '11_mplv/');
-cfg.session = sessionStr;
-cfg.passband = '10Hz';
-
-data_mplvod_10Hz = RPS_mPLVoverDyads( cfg );
-
-cfg.passband = '20Hz';
-
-data_mplvod_20Hz = RPS_mPLVoverDyads( cfg );
-
-% export the mean PLVs into a *.mat file
-cfg             = [];
-cfg.desFolder   = strcat(desPath, '12_mplvod/');
-cfg.filename    = 'RPS_11a_mplvod10Hz';
-cfg.sessionStr  = sessionStr;
-
-file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                   '.mat');
-                   
-fprintf('Saving mean PLVs over dyads at 10Hz in:\n'); 
-fprintf('%s ...\n', file_path);
-RPS_saveData(cfg, 'data_mplvod_10Hz', data_mplvod_10Hz);
-fprintf('Data stored!\n');
-clear data_mplvod_10Hz
-
-cfg             = [];
-cfg.desFolder   = strcat(desPath, '12_mplvod/');
-cfg.filename    = 'RPS_11b_mplvod20Hz';
-cfg.sessionStr  = sessionStr;
-
-file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                   '.mat');
-                   
-fprintf('Saving mean PLVs over dyads at 20Hz in:\n'); 
-fprintf('%s ...\n', file_path);
-RPS_saveData(cfg, 'data_mplvod_20Hz', data_mplvod_20Hz);
-fprintf('Data stored!\n\n');
-clear data_mplvod_20Hz
 
 %% clear workspace
 clear cfg file_path sourceList numOfSources i artifactRejection ...

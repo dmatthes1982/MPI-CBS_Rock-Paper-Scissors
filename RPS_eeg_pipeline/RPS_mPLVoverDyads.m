@@ -33,6 +33,13 @@ if ~strcmp(passband, '10Hz') && ~strcmp(passband, '20Hz')
   error('Define cfg.passband could only be ''10Hz'' por ''20Hz''.');
 end
 
+switch passband
+  case '10Hz'
+    letter = 'a';
+  case '20Hz'
+    letter = 'b';
+end
+
 % -------------------------------------------------------------------------
 % Specify default trial order
 % -------------------------------------------------------------------------
@@ -44,14 +51,15 @@ trialinfoOrg{4} = [20; 11; 12; 13];                                         % tr
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-dyadsList   = dir([path, sprintf('RPS_p*_11a_mplv%s_%03d.mat', ...
-                  passband, session)]);
+dyadsList   = dir([path, sprintf('RPS_p*_11%s_mplv%s_%03d.mat', ...
+                  letter, passband, session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['RPS_p%d_11a_mplv' ...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['RPS_p%d_11'...
+                                   sprintf('%s_mplv', letter) ...
                                    sprintf('%s_', passband) ...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
@@ -60,7 +68,7 @@ y = sprintf('%d ', listOfDyads);
 selection = false;
 
 while selection == false
-  fprintf('\nThe following dyads are available: %s\n', y);
+  fprintf('The following dyads are available: %s\n', y);
   x = input('Which dyads should be included into the averaging? (i.e. [1,2,3]):\n');
   if ~all(ismember(x, listOfDyads))
     cprintf([1,0.5,0], 'Wrong input!\n');
@@ -83,27 +91,29 @@ data{4, length(listOfDyads)} = [];
 trialinfo{4, length(listOfDyads)} = []; 
 
 for i=1:1:length(listOfDyads)
-  filename = sprintf('RPS_p%02d_11a_mplv%s_%03d.mat', listOfDyads(i), ...
-                    passband, session);
+  filename = sprintf('RPS_p%02d_11%s_mplv%s_%03d.mat', listOfDyads(i), ...
+                    letter, passband, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
-  load(file, 'data_mplv_10Hz');
-  data{1, i} = data_mplv_10Hz.FP.dyad.mPLV;
-  trialinfo{1, i} = data_mplv_10Hz.FP.dyad.trialinfo;
-  data{2, i} = data_mplv_10Hz.PD.dyad.mPLV;
-  trialinfo{2, i} = data_mplv_10Hz.PD.dyad.trialinfo;
-  data{3, i} = data_mplv_10Hz.PS.dyad.mPLV;
-  trialinfo{3, i} = data_mplv_10Hz.PS.dyad.trialinfo;
-  data{4, i} = data_mplv_10Hz.C.dyad.mPLV;
-  trialinfo{4, i} = data_mplv_10Hz.C.dyad.trialinfo;
+  load(file, sprintf('data_mplv_%s', passband));
+  eval(['data_mplv_in=' sprintf('data_mplv_%s', passband) ';']);
+  eval(['clear ' sprintf('data_mplv_%s', passband)]);
+  data{1, i} = data_mplv_in.FP.dyad.mPLV;
+  trialinfo{1, i} = data_mplv_in.FP.dyad.trialinfo;
+  data{2, i} = data_mplv_in.PD.dyad.mPLV;
+  trialinfo{2, i} = data_mplv_in.PD.dyad.trialinfo;
+  data{3, i} = data_mplv_in.PS.dyad.mPLV;
+  trialinfo{3, i} = data_mplv_in.PS.dyad.trialinfo;
+  data{4, i} = data_mplv_in.C.dyad.mPLV;
+  trialinfo{4, i} = data_mplv_in.C.dyad.trialinfo;
   if i == 1
-    data_mplv.centerFreq = data_mplv_10Hz.centerFreq;
-    data_mplv.FP.label = data_mplv_10Hz.FP.dyad.label;
-    data_mplv.PD.label = data_mplv_10Hz.PD.dyad.label;
-    data_mplv.PS.label = data_mplv_10Hz.PS.dyad.label;
-    data_mplv.C.label = data_mplv_10Hz.C.dyad.label;
+    data_mplv.centerFreq = data_mplv_in.centerFreq;
+    data_mplv.FP.label = data_mplv_in.FP.dyad.label;
+    data_mplv.PD.label = data_mplv_in.PD.dyad.label;
+    data_mplv.PS.label = data_mplv_in.PS.dyad.label;
+    data_mplv.C.label = data_mplv_in.C.dyad.label;
   end
-  clear data_mplv_10Hz
+  clear data_mplv_in
 end
 fprintf('\n');
 
@@ -135,6 +145,10 @@ data_mplv.dyads = listOfDyads;
 
 end
 
+%--------------------------------------------------------------------------
+% SUBFUNCTION which fixes trial Order an creates empty matrices for missing
+% phases.
+%--------------------------------------------------------------------------
 function dataTmp = fixTrialOrder( dataTmp, trInf, trInfOrg, dyadNum )
 
 condition = {'FP', 'PD', 'PS', 'C'};                                        % condition acronyms
@@ -143,9 +157,12 @@ emptyMatrix = NaN * ones(28,28);                                            % em
 for k = 1:1:4
   for l = 1:1:size(dataTmp, 2)
     if ~isequal(trInf{k,l}, trInfOrg{k})
+      missingPhases = ~ismember(trInfOrg{k}, trInf{k,l});
+      missingPhases = trInfOrg{k}(missingPhases);
+      missingPhases = join_str(', ', num2cell(missingPhases)');
       cprintf([0,0.6,0], ...
-              sprintf('Dyad %d - Condition %s: False trial order or missing phase detected and fixed.\n', ...
-              dyadNum(l), condition{k}));
+              sprintf('Dyad %d - Condition %s: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
+              dyadNum(l), condition{k}, missingPhases));
       [~, loc] = ismember(trInfOrg{k}, trInf{k,l});
       tmpBuffer = [];
       tmpBuffer{length(trInfOrg{k})} = [];                                  %#ok<AGROW>
@@ -160,5 +177,29 @@ for k = 1:1:4
     end
   end
 end
-  
+
+%--------------------------------------------------------------------------
+% SUBFUNCTION which transform a cell array of labels into a string
+%--------------------------------------------------------------------------
+function t = join_str(separator,cells)
+
+if isempty(cells)
+  t = '';
+  return;
+end
+
+if ischar(cells)
+  t = cells;
+  return;
+end
+
+t = char(num2str(cells{1}));
+
+for i=2:length(cells)
+  t = [t separator char(num2str(cells{i}))];                                %#ok<AGROW>
+end
+
+end
+
+
 end

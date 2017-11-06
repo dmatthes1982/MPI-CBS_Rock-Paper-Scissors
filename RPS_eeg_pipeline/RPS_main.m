@@ -107,7 +107,8 @@ else
     fprintf('[3] - Automatic and manual detection of artifacts\n');
     fprintf('[4] - Application of narrow band filtering and Hilbert transform\n'); 
     fprintf('[5] - Calculation of PLV\n');
-    fprintf('[6] - Quit data processing\n\n');
+    fprintf('[6] - Averaging over dyads\n');
+    fprintf('[7] - Quit data processing\n\n');
     x = input('Option: ');
   
     switch x
@@ -128,6 +129,9 @@ else
         part = 5;
         selection = true;
       case 6
+        part = 6;
+        selection = true;
+      case 7
         fprintf('\nData processing aborted.\n');
         clear selection i x y srcPath desPath session sessionList ...
             sessionNum numOfSessions dyadsSpec sessionStr
@@ -174,89 +178,99 @@ switch part
     fileNamePre = strcat(tmpPath, 'RPS_p*_08a_hilbert10Hz_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '11_mplv/');
     fileNamePost = strcat(tmpPath, 'RPS_p*_11b_mplv20Hz_', sessionStr, '.mat');
+  case 6
+    fileNamePre = 0;
   otherwise
     error('Something unexpected happend. part = %d is not defined' ...
           , part);
 end
 
-if isempty(fileNamePre)
-  numOfPrePart = fileNum;
-else
-  fileListPre = dir(fileNamePre);
-  if isempty(fileListPre)
-    error(['Selected part [%d] can not be executed, no input data '...
+if fileNamePre ~= 0
+  if isempty(fileNamePre)
+    numOfPrePart = fileNum;
+  else
+    fileListPre = dir(fileNamePre);
+    if isempty(fileListPre)
+      error(['Selected part [%d] can not be executed, no input data '...
            'available\n Please choose a previous part.']);
-  else
-    fileListPre = struct2cell(fileListPre);
-    fileListPre = fileListPre(1,:);
-    numOfFiles  = length(fileListPre);
-    numOfPrePart = zeros(1, numOfFiles);
-    for i=1:1:numOfFiles
-      numOfPrePart(i) = sscanf(fileListPre{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
-    end
-  end
-end
-
-if strcmp(dyadsSpec, 'all')                                                 % process all participants
-  numOfPart = numOfPrePart;
-elseif strcmp(dyadsSpec, 'specific')                                        % process specific participants
-  y = sprintf('%d ', numOfPrePart);
-    
-  selection = false;
-    
-  while selection == false
-    fprintf('\nThe following participants are available: %s\n', y);
-    fprintf(['Comma-seperate your selection and put it in squared ' ...
-               'brackets!\n']);
-    x = input('\nPlease make your choice! (i.e. [1,2,3]): ');
-      
-    if ~all(ismember(x, numOfPrePart))
-      cprintf([1,0.5,0], 'Wrong input!\n');
     else
-      selection = true;
-      numOfPart = x;
-    end
-  end
-elseif strcmp(dyadsSpec, 'new')                                             % process only new participants
-  if session == 0
-    numOfPart = numOfPrePart;
-  else
-    fileListPost = dir(fileNamePost);
-    if isempty(fileListPost)
-      numOfPostPart = [];
-    else
-      fileListPost = struct2cell(fileListPost);
-      fileListPost = fileListPost(1,:);
-      numOfFiles  = length(fileListPost);
-      numOfPostPart = zeros(1, numOfFiles);
+      fileListPre = struct2cell(fileListPre);
+      fileListPre = fileListPre(1,:);
+      numOfFiles  = length(fileListPre);
+      numOfPrePart = zeros(1, numOfFiles);
       for i=1:1:numOfFiles
-        numOfPostPart(i) = sscanf(fileListPost{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
+        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
       end
     end
+  end
+
+  if strcmp(dyadsSpec, 'all')                                                 % process all participants
+    numOfPart = numOfPrePart;
+  elseif strcmp(dyadsSpec, 'specific')                                        % process specific participants
+    y = sprintf('%d ', numOfPrePart);
+    
+    selection = false;
+    
+    while selection == false
+      fprintf('\nThe following participants are available: %s\n', y);
+      fprintf(['Comma-seperate your selection and put it in squared ' ...
+               'brackets!\n']);
+      x = input('\nPlease make your choice! (i.e. [1,2,3]): ');
+      
+      if ~all(ismember(x, numOfPrePart))
+        cprintf([1,0.5,0], 'Wrong input!\n');
+      else
+        selection = true;
+        numOfPart = x;
+      end
+    end
+  elseif strcmp(dyadsSpec, 'new')                                             % process only new participants
+    if session == 0
+      numOfPart = numOfPrePart;
+    else
+      fileListPost = dir(fileNamePost);
+      if isempty(fileListPost)
+        numOfPostPart = [];
+      else
+        fileListPost = struct2cell(fileListPost);
+        fileListPost = fileListPost(1,:);
+        numOfFiles  = length(fileListPost);
+        numOfPostPart = zeros(1, numOfFiles);
+        for i=1:1:numOfFiles
+          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
+        end
+      end
   
-    numOfPart = numOfPrePart(~ismember(numOfPrePart, numOfPostPart));
-    if isempty(numOfPart)
-      cprintf([1,0.5,0], 'No new dyads available!\n');
-      fprintf('Data processing aborted.\n');
-      clear desPath fileNamePost fileNamePre fileNum i numOfPrePart ...
-          numOfSources selection sourceList srcPath x y dyadsSpec ...
-          fileListPost fileListPre numOfPostPart sessionList numOfFiles ...
-          sessionNum numOfSessions session numOfPart part sessionStr ...
-          dyads tmpPath
-      return;
+      numOfPart = numOfPrePart(~ismember(numOfPrePart, numOfPostPart));
+      if isempty(numOfPart)
+        cprintf([1,0.5,0], 'No new dyads available!\n');
+        fprintf('Data processing aborted.\n');
+        clear desPath fileNamePost fileNamePre fileNum i numOfPrePart ...
+              numOfSources selection sourceList srcPath x y dyadsSpec ...
+              fileListPost fileListPre numOfPostPart sessionList ...
+              numOfFiles sessionNum numOfSessions session numOfPart ...
+              part sessionStr dyads tmpPath
+        return;
+      end
     end
   end
-end
 
-y = sprintf('%d ', numOfPart);
-fprintf(['\nThe following participants will be processed ' ... 
+
+  y = sprintf('%d ', numOfPart);
+  fprintf(['\nThe following participants will be processed ' ... 
          'in the selected part [%d]:\n'],  part);
-fprintf('%s\n\n', y);
+  fprintf('%s\n\n', y);
 
-clear fileNamePost fileNamePre fileNum i numOfPrePart ...
-      numOfSources selection sourceList x y dyads fileListPost ...
-      fileListPre numOfPostPart sessionList sessionNum numOfSessions ...
-      session dyadsSpec numOfFiles tmpPath
+  clear fileNamePost fileNamePre fileNum i numOfPrePart ...
+        numOfSources selection sourceList x y dyads fileListPost ...
+        fileListPre numOfPostPart sessionList sessionNum numOfSessions ...
+        session dyadsSpec numOfFiles tmpPath
+else
+  fprintf('\n');
+  clear fileNamePost fileNamePre fileNum i  numOfSources selection ...
+        sourceList x y dyads sessionList sessionNum numOfSessions ...
+        session dyadsSpec numOfFiles tmpPath
+end
 
 % -------------------------------------------------------------------------
 % Data processing main loop
@@ -324,6 +338,24 @@ while sessionStatus == true
       end  
     case 5
       RPS_main_5;
+      selection = false;
+      while selection == false
+        fprintf('Continue data processing with:\n');
+        fprintf('[6] - Averaging over dyads\n');
+        x = input('\nSelect [y/n]: ','s');
+        if strcmp('y', x)
+          selection = true;
+          sessionStatus = true;
+          sessionPart = 6;
+        elseif strcmp('n', x)
+          selection = true;
+          sessionStatus = false;
+        else
+          selection = false;
+        end
+      end
+    case 6
+      RPS_main_6;
       sessionStatus = false;
     otherwise
       sessionStatus = false;

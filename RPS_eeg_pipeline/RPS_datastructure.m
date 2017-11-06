@@ -41,11 +41,12 @@
 % - Control      - 4
 %
 % Phases:
+% - EyesClosed   - 20
 % - Prompt       - 10
 % - Prediction   - 11
 % - ButtonPress  - 12
 % - Action       - 13
-% - PanelDown    - 14
+% - PanelDownArd - 7
 % - PanelUp      - 15
 %
 % The defintion of the condition/ the phase is done by setting the

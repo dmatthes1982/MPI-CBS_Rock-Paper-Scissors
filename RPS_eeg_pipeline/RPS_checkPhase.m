@@ -13,7 +13,7 @@ function [ num ] = RPS_checkPhase( phase )
 % -------------------------------------------------------------------------
 % Default values
 % -------------------------------------------------------------------------
-defaultVals = [10, 11, 12, 13, 14, 15];
+defaultVals = [20, 10, 11, 12, 13, 7, 15];
 
 % -------------------------------------------------------------------------
 % Check Condition
@@ -26,6 +26,8 @@ if isnumeric(phase)                                                         % if
   end
 else                                                                        % if condition is specified as string
   switch phase
+    case 'EyesClosed'
+      num = 20;
     case 'Prompt'
       num = 10;
     case 'Prediction'
@@ -34,8 +36,8 @@ else                                                                        % if
       num = 12;
     case 'Action'
       num = 13;
-    case 'PanelDown'
-      num = 14;
+    case 'PanelDownArd'
+      num = 7;
     case 'PanelUp'
       num = 15;
     otherwise
