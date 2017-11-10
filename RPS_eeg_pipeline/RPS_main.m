@@ -185,7 +185,7 @@ switch part
           , part);
 end
 
-if fileNamePre ~= 0
+if ~isequal(fileNamePre, 0)
   if isempty(fileNamePre)
     numOfPrePart = fileNum;
   else

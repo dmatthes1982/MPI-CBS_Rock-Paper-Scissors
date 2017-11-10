@@ -17,7 +17,7 @@ function [ num ] = RPS_getSessionNum( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'srcFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedData/');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedData/');
 subFolder   = ft_getopt(cfg, 'subFolder', '01_raw/');
 filename    = ft_getopt(cfg, 'filename', 'RPS_p01_01_raw');
 
