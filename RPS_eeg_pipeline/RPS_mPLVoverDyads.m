@@ -12,11 +12,9 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 %   cfg.passband  = select passband of interest (default: 10Hz)
 %                   (accepted values: 10Hz, 20 Hz)
 %
-% where the input data have to be the result from RPS_CALCMEANPLV
-%
 % This function requires the fieldtrip toolbox
 % 
-% See also RPS_DATASTRUCTURE, RPS_CALCMEANPLV
+% See also RPS_CALCMEANPLV
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS 
 

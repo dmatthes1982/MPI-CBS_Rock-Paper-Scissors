@@ -40,7 +40,7 @@ if avgOverDyads == true
 
   data_mplvod_20Hz = RPS_mPLVoverDyads( cfg );
 
-  % export the mean PLVs into a *.mat file
+  % export the averaged PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '12_mplvod/');
   cfg.filename    = 'RPS_12a_mplvod10Hz';

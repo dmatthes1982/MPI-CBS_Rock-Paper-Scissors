@@ -5,12 +5,76 @@ fprintf('Copyright (C) 2017, Daniel Matthes, MPI CBS\n');
 fprintf('------------------------------------------------\n');
 
 % -------------------------------------------------------------------------
-% General definitions
+% Path settings
 % -------------------------------------------------------------------------
 srcPath = '/data/pt_01843/eegData/DualEEG_RPS_rawData/';
 desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';
 
-clear sessionStr numOfPart part
+fprintf('\nThe default paths are:\n');
+fprintf('Source: %s\n',srcPath);
+fprintf('Destination: %s\n',desPath);
+
+selection = false;
+while selection == false
+  fprintf('\nDo you want to select the default paths?\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    selection = true;
+    newPaths = false;
+  elseif strcmp('n', x)
+    selection = true;
+    newPaths = true;
+  else
+    selection = false;
+  end
+end
+
+if newPaths == true
+  srcPath = uigetdir(pwd, 'Select Source Folder...');
+  desPath = uigetdir(strcat(srcPath,'/..'), ...
+                      'Select Destination Folder...');
+  srcPath = strcat(srcPath, '/');
+  desPath = strcat(desPath, '/');
+end
+
+if ~exist(strcat(desPath, '01_raw'), 'dir')
+  mkdir(strcat(desPath, '01_raw'));
+end
+if ~exist(strcat(desPath, '02_preproc'), 'dir')
+  mkdir(strcat(desPath, '02_preproc'));
+end
+if ~exist(strcat(desPath, '03_tfr1'), 'dir')
+  mkdir(strcat(desPath, '03_tfr1'));
+end
+if ~exist(strcat(desPath, '04_seg1'), 'dir')
+  mkdir(strcat(desPath, '04_seg1'));
+end
+if ~exist(strcat(desPath, '05_autoArt'), 'dir')
+  mkdir(strcat(desPath, '05_autoArt'));
+end
+if ~exist(strcat(desPath, '06_allArt'), 'dir')
+  mkdir(strcat(desPath, '06_allArt'));
+end
+if ~exist(strcat(desPath, '07_bpfilt'), 'dir')
+  mkdir(strcat(desPath, '07_bpfilt'));
+end
+if ~exist(strcat(desPath, '08_hilbert'), 'dir')
+  mkdir(strcat(desPath, '08_hilbert'));
+end
+if ~exist(strcat(desPath, '09_hseg'), 'dir')
+  mkdir(strcat(desPath, '09_hseg'));
+end
+if ~exist(strcat(desPath, '10_plv'), 'dir')
+  mkdir(strcat(desPath, '10_plv'));
+end
+if ~exist(strcat(desPath, '11_mplv'), 'dir')
+  mkdir(strcat(desPath, '11_mplv'));
+end
+if ~exist(strcat(desPath, '12mplvod'), 'dir')
+  mkdir(strcat(desPath, '12mplvod'));
+end
+
+clear sessionStr numOfPart part newPaths
 
 % -------------------------------------------------------------------------
 % Session selection
@@ -62,7 +126,8 @@ while selection == false
     end
   end
 end
-  
+
+clear tmpPath
 
 % -------------------------------------------------------------------------
 % General selection of dyads
@@ -90,7 +155,7 @@ while selection == false
     case 4
       fprintf('\nData processing aborted.\n');
       clear selection i x y srcPath desPath session sessionList ...
-            sessionNum numOfSessions sessionStr tmpPath
+            sessionNum numOfSessions sessionStr
       return;
     otherwise
       cprintf([1,0.5,0], 'Wrong input!\n');
@@ -198,8 +263,14 @@ if ~isequal(fileNamePre, 0)
   else
     fileListPre = dir(fileNamePre);
     if isempty(fileListPre)
-      error(['Selected part [%d] can not be executed, no input data '...
-           'available\n Please choose a previous part.']);
+      cprintf([1,0.5,0], ['\nSelected part [%d] can not be executed, no' ...
+            ' input data available. \nPlease choose a previous part.\n'],...
+            part);
+      clear desPath fileNamePost fileNamePre fileNum i numOfSources ...
+            selection sourceList srcPath x y dyadsSpec fileListPre ... 
+            sessionList sessionNum numOfSessions session part sessionStr ...
+            tmpPath
+      return;
     else
       fileListPre = struct2cell(fileListPre);
       fileListPre = fileListPre(1,:);
@@ -274,7 +345,7 @@ if ~isequal(fileNamePre, 0)
         session dyadsSpec numOfFiles tmpPath
 else
   fprintf('\n');
-  clear fileNamePost fileNamePre fileNum i  numOfSources selection ...
+  clear fileNamePost fileNamePre fileNum i numOfSources selection ...
         sourceList x y dyads sessionList sessionNum numOfSessions ...
         session dyadsSpec numOfFiles tmpPath
 end
