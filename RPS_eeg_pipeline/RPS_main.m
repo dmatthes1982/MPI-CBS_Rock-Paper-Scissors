@@ -70,8 +70,8 @@ end
 if ~exist(strcat(desPath, '11_mplv'), 'dir')
   mkdir(strcat(desPath, '11_mplv'));
 end
-if ~exist(strcat(desPath, '12mplvod'), 'dir')
-  mkdir(strcat(desPath, '12mplvod'));
+if ~exist(strcat(desPath, '12_mplvod'), 'dir')
+  mkdir(strcat(desPath, '12_mplvod'));
 end
 
 clear sessionStr numOfPart part newPaths
