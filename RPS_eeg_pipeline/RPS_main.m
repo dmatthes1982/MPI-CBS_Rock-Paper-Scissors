@@ -83,24 +83,40 @@ selection = false;
 
 tmpPath = strcat(desPath, '02_preproc/');
 
-sessionList    = dir([tmpPath, 'RPS_p*_02_preproc_*.mat']);
-sessionList    = struct2cell(sessionList);
-sessionList    = sessionList(1,:);
-numOfSessions  = length(sessionList);
+sessionList     = dir([tmpPath, 'RPS_p*_02_preproc_*.mat']);
+sessionList     = struct2cell(sessionList);
+sessionList     = sessionList(1,:);
+numOfSessions   = length(sessionList);
 
-sessionNum     = zeros(1, numOfSessions);
+sessionNum      = zeros(1, numOfSessions);
+sessionListCopy = sessionList;
 
 for i=1:1:numOfSessions
-  sessionList{i} = strsplit(sessionList{i}, '02_preproc_');
-  sessionList{i} = sessionList{i}{end};
-  sessionNum(i) = sscanf(sessionList{i}, '%d.mat');
+  sessionListCopy{i} = strsplit(sessionList{i}, '02_preproc_');
+  sessionListCopy{i} = sessionListCopy{i}{end};
+  sessionNum(i) = sscanf(sessionListCopy{i}, '%d.mat');
 end
 
 sessionNum = unique(sessionNum);
 y = sprintf('%d ', sessionNum);
 
+userList = cell(1, length(sessionNum));
+
+for i = sessionNum
+  match = find(strcmp(sessionListCopy, sprintf('%03d.mat', i)), 1, 'first');
+  filePath = [tmpPath, sessionList{match}];
+  [~, cmdout] = system(['ls -l ' filePath '']);
+  attrib = strsplit(cmdout);
+  userList{i} = attrib{3};
+end
+
 while selection == false
   fprintf('\nThe following sessions are available: %s\n', y);
+  fprintf('The session owners are:\n');
+  for i=1:1:length(userList)
+    fprintf('%d - %s\n', i, userList{i});
+  end
+  fprintf('\n');
   fprintf('Please select one session or create a new one:\n');
   fprintf('[0] - Create new session\n');
   fprintf('[num] - Select session\n\n');
@@ -127,7 +143,7 @@ while selection == false
   end
 end
 
-clear tmpPath
+clear tmpPath sessionListCopy userList match filePath cmdout attrib
 
 % -------------------------------------------------------------------------
 % General selection of dyads
