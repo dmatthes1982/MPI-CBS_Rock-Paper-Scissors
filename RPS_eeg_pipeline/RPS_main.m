@@ -432,7 +432,7 @@ while sessionStatus == true
         if strcmp('y', x)
           selection = true;
           sessionStatus = true;
-          sessionPart = 3;
+          sessionPart = 2;
         elseif strcmp('n', x)
           selection = true;
           sessionStatus = false;

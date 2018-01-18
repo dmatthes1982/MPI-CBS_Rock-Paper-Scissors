@@ -53,10 +53,14 @@ cfgBP.showcallinfo      = 'no';                                             % pr
 % re-referencing
 cfgReref               = [];
 cfgReref.reref         = reref;                                             % enable re-referencing
-cfgReref.refchannel    = {refchannel 'REF'};                                % select linked 'TP09' 'TP10' as new reference
+if ~iscell(refchannel)
+  cfgReref.refchannel    = {refchannel, 'REF'};                             % specify new reference
+else
+  cfgReref.refchannel    = [refchannel, {'REF'}];
+end
 cfgReref.implicitref   = 'REF';                                             % add implicit channel 'REF' to the channels
 cfgReref.refmethod     = 'avg';                                             % average over selected electrodes (in our case insignificant)
-cfgReref.channel       = {'all', '-Fp1', '-Fp2', '-PO9', '-PO10'};          % use all channels except 'V1', 'V2', 'F9' and 'F10'
+cfgReref.channel       = 'all';                                             % use all channels
 cfgReref.trials        = 'all';                                             % use all trials
 cfgReref.feedback      = 'no';                                              % feedback should not be presented
 cfgReref.showcallinfo  = 'no';                                              % prevent printing the time and memory after each function call
@@ -179,14 +183,14 @@ calcceogcomp = cfgR.calceogcomp;
 
 if strcmp(calcceogcomp, 'yes')
   cfgtmp              = [];
-  cfgtmp.channel      = {'PO9', 'PO10'};
+  cfgtmp.channel      = {'PO9', 'PO10'};                                    % EOGH
   cfgtmp.reref        = 'yes';
-  cfgtmp.refchannel   = 'PO9';
+  cfgtmp.refchannel   = 'PO10';
   cfgtmp.showcallinfo = 'no';
   cfgtmp.feedback     = 'no';
   
   eogh                = ft_preprocessing(cfgtmp, data_in);
-  eogh.label{2}       = 'EOGH';
+  eogh.label{1}       = 'EOGH';
   
   cfgtmp              = [];
   cfgtmp.channel      = 'EOGH';
@@ -195,25 +199,20 @@ if strcmp(calcceogcomp, 'yes')
   eogh                = ft_selectdata(cfgtmp, eogh); 
   
   cfgtmp              = [];
-  cfgtmp.channel      = {'Fp1', 'Fp2'};
+  cfgtmp.channel      = {'Fp1', 'Fp2'};                                     % EOGV
   cfgtmp.reref        = 'yes';
-  cfgtmp.refchannel   = 'Fp1';
+  cfgtmp.refchannel   = 'Fp2';
   cfgtmp.showcallinfo = 'no';
   cfgtmp.feedback     = 'no';
   
   eogv                = ft_preprocessing(cfgtmp, data_in);
-  eogv.label{2}       = 'EOGV';
+  eogv.label{1}       = 'EOGV';
   
   cfgtmp              = [];
   cfgtmp.channel      = 'EOGV';
   cfgtmp.showcallinfo = 'no';
   
   eogv                = ft_selectdata(cfgtmp, eogv);
-else
-  cfgtmp              = [];
-  cfgtmp.channel      = {'Fp1', 'Fp2', 'PO9', 'PO10'};
-  cfgtmp.showcallinfo = 'no';
-  eogOrg              = ft_selectdata(cfgtmp, data_in);
 end
 
 cfgR = removefields(cfgR, {'calcceogcomp'});
@@ -225,12 +224,7 @@ if strcmp(calcceogcomp, 'yes')
   ft_info off;
   data_out            = ft_appenddata(cfgtmp, data_out, eogv, eogh);
   ft_info on;
-else
-  cfgtmp              = [];
-  cfgtmp.showcallinfo = 'no';
-  ft_info off;
-  data_out            = ft_appenddata(cfgtmp, data_out, eogOrg);
-  ft_info on;
+
 end
 
 end
