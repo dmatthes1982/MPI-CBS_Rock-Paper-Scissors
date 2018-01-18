@@ -7,7 +7,7 @@ function [ data ] = RPS_importAllConditions( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
-%   cfg.part      = number of participant
+%   cfg.dyad      = number of dyad
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
 % absolute path specifications like in the example. Please be aware that 
@@ -24,13 +24,13 @@ function [ data ] = RPS_importAllConditions( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', []);
-part      = ft_getopt(cfg, 'part', []);
+dyad      = ft_getopt(cfg, 'dyad', []);
 
 if isempty(path)
   error('No source path is specified!');
 end
 
-if isempty(part)
+if isempty(dyad)
   error('No specific participant is defined!');
 end
 
@@ -39,7 +39,7 @@ end
 % -------------------------------------------------------------------------
 cfg = [];
 cfg.path = path;
-cfg.part = part;
+cfg.dyad = dyad;
 
 % Condition 'FreePlay'
 cfg.condition = 'FP';
@@ -60,3 +60,5 @@ data.PS = RPS_importDataset( cfg );
 cfg.condition = 'C';
 fprintf('Condition Control...\n');
 data.C = RPS_importDataset( cfg );
+
+end

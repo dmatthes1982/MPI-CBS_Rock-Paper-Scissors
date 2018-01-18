@@ -8,7 +8,7 @@ function [ num ] = RPS_getSessionNum( cfg )
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/')
 %   cfg.subFolder   = name of subfolder (default: '01_raw/')
-%   cfg.filename    = filename (default: 'RPS_p01_01_raw')
+%   cfg.filename    = filename (default: 'RPS_d01_01_raw')
 %
 % This function requires the fieldtrip toolbox.
 
@@ -19,7 +19,7 @@ function [ num ] = RPS_getSessionNum( cfg )
 % -------------------------------------------------------------------------
 desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedData/');
 subFolder   = ft_getopt(cfg, 'subFolder', '01_raw/');
-filename    = ft_getopt(cfg, 'filename', 'RPS_p01_01_raw');
+filename    = ft_getopt(cfg, 'filename', 'RPS_d01_01_raw');
 
 % -------------------------------------------------------------------------
 % Estimate highest session number

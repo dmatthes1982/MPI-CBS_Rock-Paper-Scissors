@@ -1,14 +1,19 @@
 fprintf('------------------------------------------------\n');
 fprintf('<strong>Rock, paper, scissor project - data processing</strong>\n');
-fprintf('Version: 0.1\n');
+fprintf('Version: 0.2\n');
 fprintf('Copyright (C) 2017, Daniel Matthes, MPI CBS\n');
 fprintf('------------------------------------------------\n');
+
+% -------------------------------------------------------------------------
+% Add directory and subfolders to path
+% -------------------------------------------------------------------------
+addpath('./:./easyplot:./functions:./general:./headmodels:./utilities');
 
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
 srcPath = '/data/pt_01843/eegData/DualEEG_RPS_rawData/';
-desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';
+desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData_branch_ica/';
 
 fprintf('\nThe default paths are:\n');
 fprintf('Source: %s\n',srcPath);
@@ -37,41 +42,53 @@ if newPaths == true
   desPath = strcat(desPath, '/');
 end
 
+if ~exist(strcat(desPath, '00_settings'), 'dir')
+  mkdir(strcat(desPath, '00_settings'));
+end
 if ~exist(strcat(desPath, '01_raw'), 'dir')
   mkdir(strcat(desPath, '01_raw'));
 end
 if ~exist(strcat(desPath, '02_preproc'), 'dir')
   mkdir(strcat(desPath, '02_preproc'));
 end
-if ~exist(strcat(desPath, '03_tfr1'), 'dir')
-  mkdir(strcat(desPath, '03_tfr1'));
+if ~exist(strcat(desPath, '03a_icacomp'), 'dir')
+  mkdir(strcat(desPath, '03a_icacomp'));
 end
-if ~exist(strcat(desPath, '04_seg1'), 'dir')
-  mkdir(strcat(desPath, '04_seg1'));
+if ~exist(strcat(desPath, '03b_eogchan'), 'dir')
+  mkdir(strcat(desPath, '03b_eogchan'));
 end
-if ~exist(strcat(desPath, '05_autoArt'), 'dir')
-  mkdir(strcat(desPath, '05_autoArt'));
+if ~exist(strcat(desPath, '04a_eogcomp'), 'dir')
+  mkdir(strcat(desPath, '04a_eogcomp'));
 end
-if ~exist(strcat(desPath, '06_allArt'), 'dir')
-  mkdir(strcat(desPath, '06_allArt'));
+if ~exist(strcat(desPath, '04b_eyecor'), 'dir')
+  mkdir(strcat(desPath, '04b_eyecor'));
 end
-if ~exist(strcat(desPath, '07_bpfilt'), 'dir')
-  mkdir(strcat(desPath, '07_bpfilt'));
+if ~exist(strcat(desPath, '05a_autoart'), 'dir')
+  mkdir(strcat(desPath, '05a_autoart'));
 end
-if ~exist(strcat(desPath, '08_hilbert'), 'dir')
-  mkdir(strcat(desPath, '08_hilbert'));
+if ~exist(strcat(desPath, '05b_allart'), 'dir')
+  mkdir(strcat(desPath, '05b_allart'));
 end
-if ~exist(strcat(desPath, '09_hseg'), 'dir')
-  mkdir(strcat(desPath, '09_hseg'));
+if ~exist(strcat(desPath, '06a_bpfilt'), 'dir')
+  mkdir(strcat(desPath, '06a_bpfilt'));
 end
-if ~exist(strcat(desPath, '10_plv'), 'dir')
-  mkdir(strcat(desPath, '10_plv'));
+if ~exist(strcat(desPath, '06b_hilbert'), 'dir')
+  mkdir(strcat(desPath, '06b_hilbert'));
 end
-if ~exist(strcat(desPath, '11_mplv'), 'dir')
-  mkdir(strcat(desPath, '11_mplv'));
+if ~exist(strcat(desPath, '07a_hseg'), 'dir')
+  mkdir(strcat(desPath, '07a_hseg'));
 end
-if ~exist(strcat(desPath, '12_mplvod'), 'dir')
-  mkdir(strcat(desPath, '12_mplvod'));
+if ~exist(strcat(desPath, '07b_plv'), 'dir')
+  mkdir(strcat(desPath, '07b_plv'));
+end
+if ~exist(strcat(desPath, '07c_mplv'), 'dir')
+  mkdir(strcat(desPath, '07c_mplv'));
+end
+if ~exist(strcat(desPath, '08a_tfr'), 'dir')
+  mkdir(strcat(desPath, '08a_tfr'));
+end
+if ~exist(strcat(desPath, '09a_mplvod'), 'dir')
+  mkdir(strcat(desPath, '09a_mplvod'));
 end
 
 clear sessionStr numOfPart part newPaths
@@ -81,9 +98,9 @@ clear sessionStr numOfPart part newPaths
 % -------------------------------------------------------------------------
 selection = false;
 
-tmpPath = strcat(desPath, '02_preproc/');
+tmpPath = strcat(desPath, '01_raw/');
 
-sessionList     = dir([tmpPath, 'RPS_p*_02_preproc_*.mat']);
+sessionList     = dir([tmpPath, 'RPS_d*_01_raw_*.mat']);
 sessionList     = struct2cell(sessionList);
 sessionList     = sessionList(1,:);
 numOfSessions   = length(sessionList);
@@ -92,7 +109,7 @@ sessionNum      = zeros(1, numOfSessions);
 sessionListCopy = sessionList;
 
 for i=1:1:numOfSessions
-  sessionListCopy{i} = strsplit(sessionList{i}, '02_preproc_');
+  sessionListCopy{i} = strsplit(sessionList{i}, '01_raw_');
   sessionListCopy{i} = sessionListCopy{i}{end};
   sessionNum(i) = sscanf(sessionListCopy{i}, '%d.mat');
 end
@@ -185,18 +202,21 @@ selection = false;
 
 if session == 0
   fprintf('\nA new session always will start with part:\n');
-  fprintf('[1] - Import and basic preprocessing\n');
+  fprintf('[1] - Import raw data\n');
   part = 1;
 else
   while selection == false
     fprintf('\nPlease select what you want to do with the selected dyads:\n');
-    fprintf('[1] - Import and basic preprocessing\n');
-    cprintf([0.5,0.5,0.5], '[2] - Rejection of eye artifacts (not available yet)\n');
-    fprintf('[3] - Automatic and manual detection of artifacts\n');
-    fprintf('[4] - Application of narrow band filtering and Hilbert transform\n'); 
-    fprintf('[5] - Calculation of PLV\n');
-    fprintf('[6] - Averaging over dyads\n');
-    fprintf('[7] - Quit data processing\n\n');
+    fprintf('[1]  - Import and basic preprocessing\n');
+    fprintf('[2]  - Preprocessing, filtering, re-referencing\n');
+    fprintf('[3]  - ICA decomposition\n');
+    fprintf('[4]  - Estimation and correction of eye artifacts \n');
+    fprintf('[5]  - Automatic and manual artifact detection\n');
+    fprintf('[6]  - Narrow band filtering and Hilbert transform\n'); 
+    fprintf('[7]  - Estimation of Phase Locking Values (PLV)\n');
+    fprintf('[8]  - Power analysis (TFR)\n');
+    fprintf('[9]  - Averaging over dyads\n');
+    fprintf('[10] - Quit data processing\n\n');
     x = input('Option: ');
   
     switch x
@@ -205,8 +225,7 @@ else
         selection = true;
       case 2
         part = 2;
-        selection = false;
-        cprintf([1,0.5,0], 'This option is currently unsupported!\n');
+        selection = true;
       case 3
         part = 3;
         selection = true;
@@ -220,6 +239,15 @@ else
         part = 6;
         selection = true;
       case 7
+        part = 7;
+        selection = true;
+      case 8
+        part = 8;
+        selection = true;
+      case 9
+        part = 9;
+        selection = true;
+      case 10
         fprintf('\nData processing aborted.\n');
         clear selection i x y srcPath desPath session sessionList ...
             sessionNum numOfSessions dyadsSpec sessionStr
@@ -247,26 +275,44 @@ end
 switch part
   case 1
     fileNamePre = [];
-    tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePost = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '01_raw/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_01_raw_', sessionStr, '.mat');
   case 2
-    error('This option is currently unsupported!');
+    tmpPath = strcat(desPath, '01_raw/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_01_raw_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '02_preproc/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_02_preproc_', sessionStr, '.mat');
   case 3
     tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePre = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '06_allArt/');
-    fileNamePost = strcat(tmpPath, 'RPS_p*_06_allArt_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_02_preproc_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '03b_eogchan/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_03b_eogchan_', sessionStr, '.mat');
   case 4
-    tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePre = strcat(tmpPath, 'RPS_p*_02_preproc_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '08_hilbert/');
-    fileNamePost = strcat(tmpPath, 'RPS_p*_08b_hilbert20Hz_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '03b_eogchan/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_03b_eogchan_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '04b_eyecor/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
   case 5
-    tmpPath = strcat(desPath, '08_hilbert/');
-    fileNamePre = strcat(tmpPath, 'RPS_p*_08a_hilbert10Hz_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '11_mplv/');
-    fileNamePost = strcat(tmpPath, 'RPS_p*_11b_mplv20Hz_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '04b_eyecor/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '05b_allart/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_05b_allart_', sessionStr, '.mat');
   case 6
+    tmpPath = strcat(desPath, '04b_eyecor/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '06b_hilbert/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_06b_hilbert20Hz_', sessionStr, '.mat');
+  case 7
+    tmpPath = strcat(desPath, '06b_hilbert/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_06b_hilbert20Hz_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '07c_mplv/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_07c_mplv20Hz_', sessionStr, '.mat');
+  case 8
+    tmpPath = strcat(desPath, '04b_eyecor/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '09a_tfr/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_09a_tfr_', sessionStr, '.mat');
+  case 9
     fileNamePre = 0;
   otherwise
     error('Something unexpected happend. part = %d is not defined' ...
@@ -293,7 +339,7 @@ if ~isequal(fileNamePre, 0)
       numOfFiles  = length(fileListPre);
       numOfPrePart = zeros(1, numOfFiles);
       for i=1:1:numOfFiles
-        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
+        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('RPS_d%d*', sessionStr, '.mat'));
       end
     end
   end
@@ -331,7 +377,7 @@ if ~isequal(fileNamePre, 0)
         numOfFiles  = length(fileListPost);
         numOfPostPart = zeros(1, numOfFiles);
         for i=1:1:numOfFiles
-          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('RPS_p%d*', sessionStr, '.mat'));
+          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('RPS_d%d*', sessionStr, '.mat'));
         end
       end
   
@@ -380,8 +426,26 @@ while sessionStatus == true
       RPS_main_1;
       selection = false;
       while selection == false
-        fprintf('\nContinue data processing with:\n');
-        fprintf('[3] - Automatic and manual detection of artifacts?\n');
+        fprintf('Continue data processing with:\n');
+        fprintf('[2] - Preprocessing, filtering, re-referencing?\n');
+        x = input('\nSelect [y/n]: ','s');
+        if strcmp('y', x)
+          selection = true;
+          sessionStatus = true;
+          sessionPart = 3;
+        elseif strcmp('n', x)
+          selection = true;
+          sessionStatus = false;
+        else
+          selection = false;
+        end
+      end
+    case 2
+      RPS_main_2;
+      selection = false;
+      while selection == false
+        fprintf('Continue data processing with:\n');
+        fprintf('[3] - ICA decomposition?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -398,8 +462,8 @@ while sessionStatus == true
       RPS_main_3;
       selection = false;
       while selection == false
-        fprintf('\nContinue data processing with:\n');
-        fprintf('[4] - Application of narrow band filtering and Hilbert transform?\n');
+        fprintf('Continue data processing with:\n');
+        fprintf('[4] - Estimation and correction of eye artifacts?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -417,7 +481,7 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('Continue data processing with:\n');
-        fprintf('[5] - Calculation of PLV?\n');
+        fprintf('[5] - Automatic and manual detection of artifacts?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -435,12 +499,56 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('Continue data processing with:\n');
-        fprintf('[6] - Averaging over dyads\n');
+        fprintf('[6]  - Narrow band filtering and Hilbert transform?\n');
+        fprintf('[8]  - Power analysis (TFR)?\n');
+        fprintf('[10] - Quit data processing?\n');
+        x = input('\nSelect one of these options: ');
+        switch x
+          case 6
+            selection = true;
+            sessionStatus = true;
+            sessionPart = 6;
+          case 8
+            selection = true;
+            sessionStatus = true;
+            sessionPart = 8;
+          case 10
+            selection = true;
+            sessionStatus = false;
+          otherwise
+            selection = false;
+            cprintf([1,0.5,0], 'Wrong input!\n');
+        end
+      end
+    case 6
+      RPS_main_6;
+      selection = false;
+      while selection == false
+        fprintf('Continue data processing with:\n');
+        fprintf('[7] - Estimation of Phase Locking Values (PLV)?\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
           sessionStatus = true;
-          sessionPart = 6;
+          sessionPart = 7;
+        elseif strcmp('n', x)
+          selection = true;
+          sessionStatus = false;
+        else
+          selection = false;
+        end
+      end 
+    case 7
+      RPS_main_7;
+      selection = false;
+      while selection == false
+        fprintf('Continue data processing with:\n');
+        fprintf('[8] - Power analysis (TFR)?\n');
+        x = input('\nSelect [y/n]: ','s');
+        if strcmp('y', x)
+          selection = true;
+          sessionStatus = true;
+          sessionPart = 8;
         elseif strcmp('n', x)
           selection = true;
           sessionStatus = false;
@@ -448,8 +556,26 @@ while sessionStatus == true
           selection = false;
         end
       end
-    case 6
-      RPS_main_6;
+    case 8
+      RPS_main_8;
+      selection = false;
+      while selection == false
+        fprintf('Continue data processing with:\n');
+        fprintf('[9] - Averaging over dyads?\n');
+        x = input('\nSelect [y/n]: ','s');
+        if strcmp('y', x)
+          selection = true;
+          sessionStatus = true;
+          sessionPart = 9;
+        elseif strcmp('n', x)
+          selection = true;
+          sessionStatus = false;
+        else
+          selection = false;
+        end
+      end
+    case 9
+      RPS_main_9;
       sessionStatus = false;
     otherwise
       sessionStatus = false;

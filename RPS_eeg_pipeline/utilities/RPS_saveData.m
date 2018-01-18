@@ -7,7 +7,7 @@ function RPS_saveData( cfg, varargin )
 %
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/01_raw/')
-%   cfg.filename    = filename (default: 'RPS_p01_01_raw')
+%   cfg.filename    = filename (default: 'RPS_d01_01_raw')
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
 % This function requires the fieldtrip toolbox.
@@ -20,7 +20,7 @@ function RPS_saveData( cfg, varargin )
 % Get config options
 % -------------------------------------------------------------------------
 desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedData/01_raw/');
-filename    = ft_getopt(cfg, 'filename', 'RPS_p01_01_raw');
+filename    = ft_getopt(cfg, 'filename', 'RPS_d01_01_raw');
 sessionStr  = ft_getopt(cfg, 'sessionStr', '001');
 
 % -------------------------------------------------------------------------
