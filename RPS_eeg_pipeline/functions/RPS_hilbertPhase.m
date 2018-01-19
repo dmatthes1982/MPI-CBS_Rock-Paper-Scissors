@@ -32,7 +32,7 @@ cfg.showcallinfo    = 'no';
 % -------------------------------------------------------------------------
 % Calculate Hilbert phase
 % -------------------------------------------------------------------------
-fprintf('Calc Hilbert phase of participant 1 at %d Hz...\n', ...           
+fprintf('Calc Hilbert phase of participant 1 at %g Hz...\n', ...           
          data.centerFreq);
 fprintf('Condition FreePlay...\n');
 data.FP.part1   = hilbertTransform(cfg, data.FP.part1);        
@@ -43,7 +43,7 @@ data.PS.part1   = hilbertTransform(cfg, data.PS.part1);
 fprintf('Condition Control...\n');       
 data.C.part1   = hilbertTransform(cfg, data.C.part1);        
           
-fprintf('Calc Hilbert phase of participant 2 at %d Hz...\n', ...           
+fprintf('Calc Hilbert phase of participant 2 at %g Hz...\n', ...           
          data.centerFreq);
 fprintf('Condition FreePlay...\n');
 data.FP.part2   = hilbertTransform(cfg, data.FP.part2);

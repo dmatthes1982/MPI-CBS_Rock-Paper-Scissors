@@ -33,7 +33,8 @@ order     = ft_getopt(cfg, 'filtorder', 250);
 % -------------------------------------------------------------------------
 cfg                 = [];
 cfg.trials          = 'all';                                                % apply bandpass to all trials
-cfg.channel         = {'all', '-REF', '-EOGV', '-EOGH'};                    % apply bandpass to every channel except REF, EOGV und EOGH
+cfg.channel         = {'all', '-REF', '-EOGV', '-EOGH', '-Fp1', '-Fp2', ... % apply bandpass to every channel except REF, EOGV, EOGH, Fp1, Fp2, PO9 and PO10
+                       '-PO9', '-PO10' };
 cfg.bpfilter        = 'yes';
 cfg.bpfilttype      = 'fir';                                                % use a simple fir
 cfg.bpfreq          = bpfreq;                                               % define bandwith
@@ -48,7 +49,7 @@ centerFreq = (bpfreq(2) + bpfreq(1))/2;
 % -------------------------------------------------------------------------
 data.centerFreq = [];
 
-fprintf('Apply bandpass to participant 1 with a center frequency of %d Hz...\n', ...           
+fprintf('Apply bandpass to participant 1 with a center frequency of %g Hz...\n', ...           
           centerFreq);
 fprintf('Condition FreePlay...\n');
 data.FP.part1   = ft_preprocessing(cfg, data.FP.part1); 
@@ -59,7 +60,7 @@ data.PS.part1   = ft_preprocessing(cfg, data.PS.part1);
 fprintf('Condition Control...\n');        
 data.C.part1   = ft_preprocessing(cfg, data.C.part1);        
           
-fprintf('Apply bandpass to participant 2 with a center frequency of %d Hz...\n', ...           
+fprintf('Apply bandpass to participant 2 with a center frequency of %g Hz...\n', ...           
           centerFreq);
 fprintf('Condition FreePlay...\n');
 data.FP.part2   = ft_preprocessing(cfg, data.FP.part2); 
@@ -71,5 +72,6 @@ fprintf('Condition Control...\n');
 data.C.part2   = ft_preprocessing(cfg, data.C.part2);
   
 data.centerFreq = centerFreq;
+data.bpFreq = bpfreq;
 
 end
