@@ -1,17 +1,17 @@
-%% check if basic variables are defined and import segmented data
+%% check if basic variables are defined
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = '02_preproc/';
-  cfg.filename  = 'RPS_p01_02_preproc';
+  cfg.subFolder = '03b_eogchan/';
+  cfg.filename  = 'RPS_d01_03b_eogchan';
   sessionStr    = sprintf('%03d', RPS_getSessionNum( cfg ));                % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath       = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';      % destination path for processed data  
+  desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';            % destination path for processed data  
 end
 
-if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
-  sourceList    = dir([strcat(desPath, '02_preproc/'), ...
+if ~exist('numOfPart', 'var')                                               % estimate number of participants in eogcomp data folder
+  sourceList    = dir([strcat(desPath, '03b_eogchan/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,125 +20,149 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('RPS_p%d_02_preproc_', sessionStr, '.mat'));
+                    strcat('RPS_d%d_03b_eogchan_', sessionStr, '.mat'));
   end
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% bandpass filtering
+%% part 4
+% Estimation and correction of eye artifacts
+% Processing steps:
+% 1. Find EOG-like ICA Components (Correlation with EOGV and EOGH, 80 %
+%    confirmity)
+% 2. Verify the estimated components by using the ft_databrowser function
+% 3. Remove eye artifacts
 
-for i = numOfPart
-  cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('RPS_p%02d_02_preproc', i);
-  cfg.sessionStr  = sessionStr;
-  
-  fprintf('Dyad %d\n', i);
-  fprintf('Load segmented data...\n\n');
-  RPS_loadData( cfg );
-  
-  filtCoeffDiv = 500 / data_preproc.FP.part1.fsample;                       % estimate sample frequency dependent divisor of filter length
+selection = false;
+while selection == false
+  fprintf('Do you want to use the default threshold (0.8) for EOG-artifact estimation?\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    selection = true;
+    threshold = 0.8;
+  elseif strcmp('n', x)
+    selection = true;
+    threshold = [];
+  else
+    selection = false;
+  end
+end
+fprintf('\n');
 
-  % bandpass filter data at 10Hz
-  cfg           = [];
-  cfg.bpfreq    = [9 11];
-  cfg.filtorder = fix(250 / filtCoeffDiv);
-  
-  data_bpfilt_10Hz = RPS_bpFiltering(cfg, data_preproc);
-  
-  % export the filtered data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07_bpfilt/');
-  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt10Hz', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving bandpass filtered data (10Hz) of dyad %d in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_bpfilt_10Hz', data_bpfilt_10Hz);
-  fprintf('Data stored!\n\n');
-  clear data_bpfilt_10Hz
-
-  % bandpass filter data at 20Hz
-  cfg           = [];
-  cfg.bpfreq    = [19 21];
-  cfg.filtorder = fix(250 / filtCoeffDiv);
-  
-  data_bpfilt_20Hz = RPS_bpFiltering(cfg, data_preproc);
-
-  % export the filtered data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07_bpfilt/');
-  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt20Hz', i);
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving bandpass filtered data (20Hz) of dyad %d in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_bpfilt_20Hz', data_bpfilt_20Hz);
-  fprintf('Data stored!\n\n');
-  clear data_bpfilt_20Hz data_preproc
-  
+if isempty(threshold)
+  selection = false;
+  while selection == false
+    fprintf('\nSpecify a threshold value in a range between 0 and 1!\n');
+    x = input('Value: ');
+    if isnumeric(x)
+      if (x < 0 || x > 1)
+        cprintf([1,0.5,0], 'Wrong input!\n');
+        selection = false;
+      else
+        threshold = x;
+        selection = true;
+      end
+    else
+      cprintf([1,0.5,0], 'Wrong input!\n');
+      selection = false;
+    end
+  end
+fprintf('\n');  
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% hilbert phase calculation
+% Write selected settings to settings file
+file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
+  cfg = [];
+  cfg.desFolder   = [desPath '00_settings/'];
+  cfg.type        = 'settings';
+  cfg.sessionStr  = sessionStr;
+  
+  RPS_createTbl(cfg);                                                       % create settings file
+end
+
+T = readtable(file_path);                                                   % update settings table
+delete(file_path);
+warning off;
+T.ICAcorrVal(numOfPart) = threshold;
+warning on;
+writetable(T, file_path);
 
 for i = numOfPart
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '07_bpfilt/');
+  cfg.srcFolder   = strcat(desPath, '03a_icacomp/');
+  cfg.filename    = sprintf('RPS_d%02d_03a_icacomp', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Dyad %d\n', i);
-  
-  cfg.filename    = sprintf('RPS_p%02d_07a_bpfilt10Hz', i);
-  fprintf('Load the at 10 Hz bandpass filtered data ...\n');
+  fprintf('Load ICA result...\n');
   RPS_loadData( cfg );
   
-  cfg.filename    = sprintf('RPS_p%02d_07b_bpfilt20Hz', i);
-  fprintf('Load the at 20 Hz bandpass filtered data ...\n');
+  cfg.srcFolder   = strcat(desPath, '03b_eogchan/');
+  cfg.filename    = sprintf('RPS_d%02d_03b_eogchan', i);
+  
+  fprintf('Load EOG data...\n\n');
   RPS_loadData( cfg );
   
-  % calculate hilbert phase at 10Hz
-  data_hilbert_10Hz = RPS_hilbertPhase(data_bpfilt_10Hz);
+  % Find EOG-like ICA Components (Correlation with EOGV and EOGH, 80 %
+  % confirmity)
+  cfg         = [];
+  cfg.threshold = threshold;
   
-  % export the hilbert phase data into a *.mat file
+  data_eogcomp      = RPS_corrComp(cfg, data_icacomp, data_eogchan);
+  
+  clear data_eogchan
+  fprintf('\n');
+  
+  % Verify the estimated components
+  data_eogcomp      = RPS_verifyComp(data_eogcomp, data_icacomp);
+  
+  clear data_icacomp
+  fprintf('\n');
+
+  % export the determined eog components and the unmixing matrix into 
+  % a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '08_hilbert/');
-  cfg.filename    = sprintf('RPS_p%02d_08a_hilbert10Hz', i);
+  cfg.desFolder   = strcat(desPath, '04a_eogcomp/');
+  cfg.filename    = sprintf('RPS_d%02d_04a_eogcomp', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
-                   
-  fprintf('Saving Hilbert phase data (10Hz) of dyad %d in:\n', i); 
+
+  fprintf('The eye-artifact related components and the unmixing matrix of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hilbert_10Hz', data_hilbert_10Hz);
+  RPS_saveData(cfg, 'data_eogcomp', data_eogcomp);
   fprintf('Data stored!\n\n');
-  clear data_hilbert_10Hz data_bpfilt_10Hz
-  
-  % calculate hilbert phase at 20Hz
-  data_hilbert_20Hz = RPS_hilbertPhase(data_bpfilt_20Hz);
-  
-  % export the hilbert phase data into a *.mat file
+    
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '08_hilbert/');
-  cfg.filename    = sprintf('RPS_p%02d_08b_hilbert20Hz', i);
+  cfg.srcFolder   = strcat(desPath, '02_preproc/');
+  cfg.filename    = sprintf('RPS_d%02d_02_preproc', i);
+  cfg.sessionStr  = sessionStr;
+  
+  fprintf('Load preprocessed data...\n');
+  RPS_loadData( cfg );
+  
+  % Remove eye artifacts
+  data_eyecor = RPS_removeEOGArt(data_eogcomp, data_preproc);
+  
+  clear data_eogcomp data_preproc
+  fprintf('\n');
+  
+  % export the reviced data in a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '04b_eyecor/');
+  cfg.filename    = sprintf('RPS_d%02d_04b_eyecor', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
-                   
-  fprintf('Saving Hilbert phase data (20Hz) of dyad %d in:\n', i); 
+
+  fprintf('The reviced data (from eye artifacts) of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hilbert_20Hz', data_hilbert_20Hz);
+  RPS_saveData(cfg, 'data_eyecor', data_eyecor);
   fprintf('Data stored!\n\n');
-  clear data_hilbert_20Hz data_bpfilt_20Hz
+  clear data_eyecor
 end
 
 %% clear workspace
-clear cfg file_path numOfSources sourceList i filtCoeffDiv 
+clear file_path cfg sourceList numOfSources i threshold selection x T
