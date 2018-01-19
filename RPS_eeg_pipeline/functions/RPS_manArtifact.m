@@ -9,7 +9,7 @@ function [ cfgAllArt ] = RPS_manArtifact( cfg, data )
 % where data has to be a result of RPS_PREPROCESSING
 %
 % The configuration options are
-%   cfg.artifact  = output of RPS_autoArtifact (see file RPS_pxx_05_autoArt_yyy.mat)
+%   cfg.artifact  = output of RPS_autoArtifact (see file RPS_dxx_05a_autoart_yyy.mat)
 %   cfg.dyad      = number of dyad (only necessary for adding markers to databrowser view) (default: []) 
 %
 % This function requires the fieldtrip toolbox.
