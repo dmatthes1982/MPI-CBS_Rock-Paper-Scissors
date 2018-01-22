@@ -1,13 +1,12 @@
 function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % RPS_MPLVOVERDYADS estimates the mean of the phase locking values within 
-% the different phases and conditions for all connections and over all 
-% dyads.
+% the different phases and conditions over all dyads.
 %
 % Use as
 %   [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/10_mplv/')
+%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/07c_mplv/')
 %   cfg.session   = session number (default: 1)
 %   cfg.passband  = select passband of interest (default: 10Hz)
 %                   (accepted values: 10Hz, 20 Hz)
@@ -22,43 +21,41 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01843/eegData/DualEEG_RPS_processedData/11_mplv/');
+              '/data/pt_01843/eegData/DualEEG_RPS_processedData/07c_mplv/');
             
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', '10Hz');
 
-if ~strcmp(passband, '10Hz') && ~strcmp(passband, '20Hz')
-  error('Define cfg.passband could only be ''10Hz'' por ''20Hz''.');
-end
+bands     = {'10Hz', '20Hz'};
+suffix    = {'10Hz', '20Hz'};
 
-switch passband
-  case '10Hz'
-    letter = 'a';
-  case '20Hz'
-    letter = 'b';
+if ~any(strcmp(passband, bands))
+  error('Define cfg.passband could only be ''10Hz'', ''20Hz''.');
+else
+  fileSuffix = suffix{strcmp(passband, bands)};
 end
 
 % -------------------------------------------------------------------------
-% Specify default trial order
+% Load general definitions
 % -------------------------------------------------------------------------
-trialinfoOrg{1} = [20; 10];                                                 % trial order in condition FP                                                 
-trialinfoOrg{2} = [20; 11; 12; 13; 7; 15];                                  % trial order in condition PD
-trialinfoOrg{3} = [20; 11; 12; 13; 7; 15];                                  % trial order in condition PS
-trialinfoOrg{4} = [20; 11; 12; 13];                                         % trial order in condition C
+filepath = fileparts(mfilename('fullpath'));
+load(sprintf('%s/../general/JAI_generalDefinitions.mat', filepath), ...
+     'generalDefinitions');
 
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-dyadsList   = dir([path, sprintf('RPS_p*_11%s_mplv%s_%03d.mat', ...
-                  letter, passband, session)]);
+fprintf('Averaging of Phase Locking Values over dyads at %s...\n\n', passband);
+
+dyadsList   = dir([path, sprintf('RPS_d*_07c_mplv%s_%03d.mat', ...
+                  fileSuffix, session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['RPS_p%d_11'...
-                                   sprintf('%s_mplv', letter) ...
-                                   sprintf('%s_', passband) ...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['RPS_d%d_07c'...
+                                   sprintf('%s_', fileSuffix) ...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
 
@@ -80,17 +77,17 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load and organize data
 % -------------------------------------------------------------------------
-data_mplv.FP.trialinfo = trialinfoOrg{1};
-data_mplv.PD.trialinfo = trialinfoOrg{2};
-data_mplv.PS.trialinfo = trialinfoOrg{3};
-data_mplv.C.trialinfo = trialinfoOrg{4};
+data_mplv.FP.trialinfo = generalDefinitions.phaseNum{1};
+data_mplv.PD.trialinfo = generalDefinitions.phaseNum{2};
+data_mplv.PS.trialinfo = generalDefinitions.phaseNum{3};
+data_mplv.C.trialinfo = generalDefinitions.phaseNum{4};
 
 data{4, length(listOfDyads)} = [];
 trialinfo{4, length(listOfDyads)} = []; 
 
 for i=1:1:length(listOfDyads)
-  filename = sprintf('RPS_p%02d_11%s_mplv%s_%03d.mat', listOfDyads(i), ...
-                    letter, passband, session);
+  filename = sprintf('RPS_d%02d_07c_mplv%s_%03d.mat', listOfDyads(i), ...
+                    fileSuffix, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
   load(file, sprintf('data_mplv_%s', passband));
@@ -105,23 +102,27 @@ for i=1:1:length(listOfDyads)
   data{4, i} = data_mplv_in.C.dyad.mPLV;
   trialinfo{4, i} = data_mplv_in.C.dyad.trialinfo;
   if i == 1
-    data_mplv.centerFreq = data_mplv_in.centerFreq;
-    data_mplv.FP.label = data_mplv_in.FP.dyad.label;
-    data_mplv.PD.label = data_mplv_in.PD.dyad.label;
-    data_mplv.PS.label = data_mplv_in.PS.dyad.label;
-    data_mplv.C.label = data_mplv_in.C.dyad.label;
+    data_mplv.centerFreq  = data_mplv_in.centerFreq;
+    data_mplv.bpFreq      = data_mplv_in.bpFreq;
+    data_mplv.FP.label    = data_mplv_in.FP.dyad.label;
+    data_mplv.PD.label    = data_mplv_in.PD.dyad.label;
+    data_mplv.PS.label    = data_mplv_in.PS.dyad.label;
+    data_mplv.C.label     = data_mplv_in.C.dyad.label;
   end
   clear data_mplv_in
 end
 fprintf('\n');
 
-data = fixTrialOrder(data, trialinfo, trialinfoOrg, listOfDyads);
+data = fixTrialOrder(data, trialinfo, generalDefinitions.phaseNum', ...
+                     listOfDyads);
 
 for i=1:1:4
   for j=1:1:length(listOfDyads)
     data{i,j} = cat(3, data{i,j}{:});
   end
-  data{i} = cat(4, data{i,:});
+  if length(listOfDyads) > 1
+    data{i} = cat(4, data{i,:});
+  end
 end
 
 data(:,2:end) = [];
@@ -129,9 +130,12 @@ data(:,2:end) = [];
 % -------------------------------------------------------------------------
 % Estimate averaged Phase Locking Value (over dyads)
 % ------------------------------------------------------------------------- 
-fprintf('Averaging of Phase Locking Values over dyads at %s...\n\n', passband);
 for i=1:1:4
-  data{i} = nanmean(data{i}, 4);
+  if length(listOfDyads) > 1
+    data{i} = nanmean(data{i}, 4);
+  else
+    data{i} = data{i,1};
+  end
   data{i} = squeeze(num2cell(data{i}, [1 2]))';
 end
 
@@ -150,7 +154,7 @@ end
 function dataTmp = fixTrialOrder( dataTmp, trInf, trInfOrg, dyadNum )
 
 condition = {'FP', 'PD', 'PS', 'C'};                                        % condition acronyms
-emptyMatrix = NaN * ones(28,28);                                            % empty matrix with NaNs
+emptyMatrix = NaN * ones(size(dataTmp{1}{1}, 1), size(dataTmp{1}{1}, 2));   % empty matrix with NaNs
 
 for k = 1:1:4
   for l = 1:1:size(dataTmp, 2)
