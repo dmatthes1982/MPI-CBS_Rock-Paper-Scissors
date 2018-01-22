@@ -39,7 +39,7 @@ for i = numOfPart
   fprintf('Load eye-artifact corrected data...\n\n');
   RPS_loadData( cfg );
   
-  filtCoeffDiv = 500 / data_preproc.FP.part1.fsample;                       % estimate sample frequency dependent divisor of filter length
+  filtCoeffDiv = 500 / data_eyecor.FP.part1.fsample;                        % estimate sample frequency dependent divisor of filter length
 
   % bandpass filter data at 10Hz
   cfg           = [];
@@ -98,7 +98,7 @@ for i = numOfPart
   cfg.filename    = sprintf('RPS_d%02d_06a_bpfilt10Hz', i);
   cfg.sessionStr  = sessionStr;
   fprintf('Load the at 10Hz bandpass filtered data...\n');
-  JAI_loadData( cfg );
+  RPS_loadData( cfg );
   
   data_hilbert_10Hz = RPS_hilbertPhase(data_bpfilt_10Hz);
   
@@ -123,7 +123,7 @@ for i = numOfPart
   cfg.filename    = sprintf('RPS_d%02d_06a_bpfilt20Hz', i);
   cfg.sessionStr  = sessionStr;
   fprintf('Load the at 20Hz bandpass filtered data...\n');
-  JAI_loadData( cfg );
+  RPS_loadData( cfg );
   
   data_hilbert_20Hz = RPS_hilbertPhase(data_bpfilt_20Hz);
   
