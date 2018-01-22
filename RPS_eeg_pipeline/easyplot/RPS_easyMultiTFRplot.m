@@ -32,8 +32,8 @@ trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimits', [2 30]);
 timelim = ft_getopt(cfg, 'timelimits', [0 3]);
 
-if part < 1 || part > 2                                                     % check cfg.participant definition
-  error('cfg.part has to be 1 or 2');
+if ~ismember(part, [1,2])                                                   % check cfg.part definition
+  error('cfg.part has to either 1 or 2');
 end
 
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
@@ -56,6 +56,7 @@ elseif part == 2
   trialinfo = dataPlot.part2.trialinfo;
 end
 
+addpath('../utilities');
 phase = RPS_checkPhase( phase );                                            % check cfg.phase
 trials  = find(trialinfo == phase);                                         % check if trials with defined phase exist
 if isempty(trials)
@@ -100,7 +101,7 @@ cfg.xlim          = timelim;
 cfg.ylim          = freqlim;
 cfg.zlim          = 'maxmin';
 cfg.trials        = trl;
-cfg.channel       = 1:1:28;
+cfg.channel       = {'all', '-V1', '-V2', '-Ref', '-EOGH', '-EOGV'};
 cfg.layout        = 'mpi_002_customized_acticap32.mat';
 
 cfg.showlabels    = 'no';

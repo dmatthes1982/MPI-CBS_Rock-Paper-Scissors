@@ -30,10 +30,11 @@ phase = ft_getopt(cfg, 'phase', 11);
 elec = ft_getopt(cfg, 'electrode', 'Cz');
 trl  = ft_getopt(cfg, 'trial', 1);
 
-if part < 1 || part > 2                                                     % check cfg.participant definition
-  error('cfg.part has to be 1 or 2');
+if ~ismember(part, [1,2])                                                   % check cfg.part definition
+  error('cfg.part has to either 1 or 2');
 end
 
+addpath('../utilities');
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
 switch cond
   case 1
@@ -75,7 +76,7 @@ elseif part == 2
 end
 
 if isnumeric(elec)                                                          % check cfg.electrode definition
-  if elec < 1 || elec > 32
+  if ~ismember(elec,  1:1:32)
     error('cfg.elec hast to be a number between 1 and 32 or a existing label like ''Cz''.');
   end
 else

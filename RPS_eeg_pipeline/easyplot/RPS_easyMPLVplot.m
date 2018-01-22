@@ -56,6 +56,7 @@ end
 
 trialinfo = dataPlot.trialinfo;                                             % get trialinfo
 
+addpath('../utilities');
 phase = RPS_checkPhase( phase );                                            % check cfg.phase definition and translate it into trl number    
 trl  = find(trialinfo == phase);
 if isempty(trl)
