@@ -36,6 +36,7 @@ if ~ismember(part, [1,2])                                                   % ch
   error('cfg.part has to either 1 or 2');
 end
 
+addpath('../utilities');
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
 switch cond
   case 1
@@ -56,7 +57,6 @@ elseif part == 2
   trialinfo = dataPlot.part2.trialinfo;
 end
 
-addpath('../utilities');
 phase = RPS_checkPhase( phase );                                            % check cfg.phase
 trials  = find(trialinfo == phase);                                         % check if trials with defined phase exist
 if isempty(trials)

@@ -543,17 +543,25 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('Continue data processing with:\n');
-        fprintf('[8] - Power analysis (TFR)?\n');
-        x = input('\nSelect [y/n]: ','s');
-        if strcmp('y', x)
-          selection = true;
-          sessionStatus = true;
-          sessionPart = 8;
-        elseif strcmp('n', x)
-          selection = true;
-          sessionStatus = false;
-        else
-          selection = false;
+        fprintf('[8]  - Power analysis (TFR)?\n');
+        fprintf('[9]  - Averaging over dyads\n');
+        fprintf('[10] - Quit data processing?\n');
+        x = input('\nSelect one of these options: ');
+        switch x
+          case 8
+            selection = true;
+            sessionStatus = true;
+            sessionPart = 8;
+          case 9
+            selection = true;
+            sessionStatus = true;
+            sessionPart = 9;
+          case 10
+            selection = true;
+            sessionStatus = false;
+          otherwise
+            selection = false;
+            cprintf([1,0.5,0], 'Wrong input!\n');
         end
       end
     case 8

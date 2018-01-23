@@ -24,6 +24,7 @@ function RPS_easyMPLVplot( cfg, data )
 cond      = ft_getopt(cfg, 'condition', 2);
 phase     = ft_getopt(cfg, 'phase', 11);
 
+addpath('../utilities');
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
 switch cond
   case 1
@@ -56,7 +57,6 @@ end
 
 trialinfo = dataPlot.trialinfo;                                             % get trialinfo
 
-addpath('../utilities');
 phase = RPS_checkPhase( phase );                                            % check cfg.phase definition and translate it into trl number    
 trl  = find(trialinfo == phase);
 if isempty(trl)
