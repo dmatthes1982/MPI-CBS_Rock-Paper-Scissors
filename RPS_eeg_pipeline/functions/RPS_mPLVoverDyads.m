@@ -39,7 +39,7 @@ end
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/JAI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/RPS_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
 % -------------------------------------------------------------------------
@@ -113,7 +113,7 @@ for i=1:1:length(listOfDyads)
 end
 fprintf('\n');
 
-data = fixTrialOrder(data, trialinfo, generalDefinitions.phaseNum', ...
+data = fixTrialOrder(data, trialinfo, generalDefinitions.phaseNum, ...
                      listOfDyads);
 
 for i=1:1:4
@@ -158,7 +158,7 @@ emptyMatrix = NaN * ones(size(dataTmp{1}{1}, 1), size(dataTmp{1}{1}, 2));   % em
 
 for k = 1:1:4
   for l = 1:1:size(dataTmp, 2)
-    if ~isequal(trInf{k,l}, trInfOrg{k})
+    if ~isequal(trInf{k,l}, trInfOrg{k}')
       missingPhases = ~ismember(trInfOrg{k}, trInf{k,l});
       missingPhases = trInfOrg{k}(missingPhases);
       missingPhases = join_str(', ', num2cell(missingPhases)');

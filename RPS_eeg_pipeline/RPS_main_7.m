@@ -175,7 +175,7 @@ for i = numOfPart
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07b_plv/');
-  cfg.filename    = sprintf('RPS_d%02d_107b_plv10Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_07b_plv10Hz', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
