@@ -1,19 +1,35 @@
-function [ data ] = RPS_segmentation( data )
+function [ data ] = RPS_segmentation( cfg, data )
 % RPS_SEGMENTATION segments the data of each condition into segments with a
-% duration of 5 seconds
+% certain length
 %
 % Use as
 %   [ data ] = RPS_segmentation( data )
 %
-% where the input data can be the result from RPS_IMPORTDATASET or
-% RPS_PREPROCESSING
+% where the input data can be the result from RPS_IMPORTDATASET, 
+% RPS_PREPROCESSING, RPS_BPFILTERING or RPS_HILBERTPHASE
+%
+% The configuration options are
+%   cfg.length    = length of segments (excepted values: 0.2, 1, 5, 10 seconds, default: 1)
+%   cfg.overlap   = percentage of overlapping (range: 0 ... 1, default: 0)
 %
 % This function requires the fieldtrip toolbox.
 %
 % See also RPS_IMPORTDATASET, RPS_PREPROCESSING, FT_REDEFINETRIAL,
-% RPS_DATASTRUCTURE
+% RPS_DATASTRUCTURE, RPS_BPFILTERING, RPS_HILBERTPHASE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
+
+% -------------------------------------------------------------------------
+% Get and check config options
+% -------------------------------------------------------------------------
+segLength = ft_getopt(cfg, 'length', 1);
+overlap   = ft_getopt(cfg, 'overlap', 0);
+
+possibleLengths = [0.2, 1, 5, 10];
+
+if ~any(ismember(possibleLengths, segLength))
+  error('Excepted cfg.length values are only 0.2, 1, 5 and 10 seconds');
+end
 
 % -------------------------------------------------------------------------
 % Segmentation settings
@@ -22,8 +38,8 @@ cfg                 = [];
 cfg.feedback        = 'no';
 cfg.showcallinfo    = 'no';
 cfg.trials          = 'all';                                                  
-cfg.length          = 1;                                                    % segmentation into 1 seconds long segments
-cfg.overlap         = 0;                                                    % no overlap
+cfg.length          = segLength;
+cfg.overlap         = overlap;
 
 % -------------------------------------------------------------------------
 % Segmentation

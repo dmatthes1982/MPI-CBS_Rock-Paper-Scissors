@@ -60,11 +60,12 @@ for i = numOfPart
   fprintf('Load hilbert phase data at 10 Hz...\n');
   RPS_loadData( cfg );
   
-  % Segmentation of the hilbert phase data trials for PLV estimation %%%%%%
-  % split ONLY the resting state trials of every condition into subtrials 
-  % with a length of 5 seconds
+  cfg           = [];
+  cfg.length    = 1;
+  cfg.overlap   = 0;
+ 
   fprintf('Segmentation of Hilbert phase data at 10 Hz.\n');
-  data_hseg_10Hz  = RPS_specialSeg( data_hilbert_10Hz );
+  data_hseg_10Hz  = RPS_segmentation( cfg, data_hilbert_10Hz );
   
   % export the segmented hilbert (10 Hz) data into a *.mat file
   cfg             = [];
@@ -89,11 +90,12 @@ for i = numOfPart
   fprintf('Load hilbert phase data at 20 Hz...\n');
   RPS_loadData( cfg );
   
-  % Segmentation of the hilbert phase data trials for PLV estimation %%%%%%
-  % split ONLY the resting state trials of every condition into subtrials 
-  % with a length of 5 seconds
+  cfg           = [];
+  cfg.length    = 1;
+  cfg.overlap   = 0;
+  
   fprintf('Segmentation of Hilbert phase data at 20 Hz.\n');
-  data_hseg_20Hz  = RPS_specialSeg( data_hilbert_20Hz );
+  data_hseg_20Hz  = RPS_segmentation( cfg, data_hilbert_20Hz );
   
   % export the segmented hilbert (10 Hz, 20 Hz) data into a *.mat file
   cfg             = [];
