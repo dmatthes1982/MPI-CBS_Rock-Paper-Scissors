@@ -46,6 +46,13 @@ if isempty(cfg.trl)
 end
 
 % -------------------------------------------------------------------------
+% Load general definitions
+% -------------------------------------------------------------------------
+filepath = fileparts(mfilename('fullpath'));
+load(sprintf('%s/../general/RPS_generalDefinitions.mat', filepath), ...
+     'generalDefinitions');
+
+% -------------------------------------------------------------------------
 % Artifact detection settings
 % -------------------------------------------------------------------------
 ft_info off;
@@ -123,6 +130,22 @@ for condition = 1:1:8
   badNum    = length(cfgTmp.artfctdef.threshold.artifact);
   fprintf('%d artifacts detected!\n', badNum);
   
+  throwWarning = 0;
+  
+  if condition < 5
+    if badNum == sum(generalDefinitions.trialNum1sec{condition})
+      throwWarning = 1;
+    end 
+  else
+    if badNum == sum(generalDefinitions.trialNum1sec{condition - 4})
+      throwWarning = 1;
+    end 
+  end
+  
+   if throwWarning == 1
+    warning('All trials are marked as bad, it is recommended to recheck the channels quality!');
+  end
+  
   switch condition
     case 1
       cfgAutoArt.FP.part1       = cfgTmp;
@@ -148,8 +171,7 @@ for condition = 1:1:8
     case 8
       cfgAutoArt.C.part2        = cfgTmp;
       cfgAutoArt.C.bad2Num      = badNum;
-    
-  end
+  end  
 end
 
 ft_info on;
