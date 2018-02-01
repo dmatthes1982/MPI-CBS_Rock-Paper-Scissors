@@ -16,7 +16,7 @@ function cfgArtifacts = RPS_databrowser( cfg, data )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also RPS_IMPORTALLDATASETS, RPS_PREPROCESSING, RPS_SEGMENTATION, 
+% See also RPS_IMPORTALLCONDITIONS, RPS_PREPROCESSING, RPS_SEGMENTATION, 
 % RPS_DATASTRUCTURE, FT_DATABROWSER
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS

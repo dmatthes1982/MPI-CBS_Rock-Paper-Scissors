@@ -35,9 +35,10 @@ end
 % and export the imported and sorted data into an *.mat file
 
 for i = numOfPart
-  cfg       = [];
-  cfg.path  = srcPath;
-  cfg.dyad  = i;  
+  cfg             = [];
+  cfg.path        = srcPath;
+  cfg.dyad        = i;
+  cfg.continuous  = 'no';
 
   fprintf('Import data of dyad %d from: %s ...\n', i, cfg.path);
   ft_info off;

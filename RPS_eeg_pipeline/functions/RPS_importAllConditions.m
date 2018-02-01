@@ -6,8 +6,9 @@ function [ data ] = RPS_importAllConditions( cfg )
 %   [ data ] = = RPS_importAllConditions( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
-%   cfg.dyad      = number of dyad
+%   cfg.path        = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
+%   cfg.dyad        = number of dyad
+%   cfg.continuous  = 'yes' or 'no' (default: 'no')
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
 % absolute path specifications like in the example. Please be aware that 
@@ -23,8 +24,9 @@ function [ data ] = RPS_importAllConditions( cfg )
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-path      = ft_getopt(cfg, 'path', []);
-dyad      = ft_getopt(cfg, 'dyad', []);
+path        = ft_getopt(cfg, 'path', []);
+dyad        = ft_getopt(cfg, 'dyad', []);
+continuous  = ft_getopt(cfg, 'continuous', 'no');
 
 if isempty(path)
   error('No source path is specified!');
@@ -40,6 +42,7 @@ end
 cfg = [];
 cfg.path = path;
 cfg.dyad = dyad;
+cfg.continuous = continuous;
 
 % Condition 'FreePlay'
 cfg.condition = 'FP';
