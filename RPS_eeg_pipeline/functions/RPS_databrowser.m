@@ -3,7 +3,7 @@ function cfgArtifacts = RPS_databrowser( cfg, data )
 % using a appropriate scaling.
 %
 % Use as
-%   RPS_databrowser( data )
+%   RPS_databrowser( cfg, data )
 %
 % where the input can be the result of RPS_IMPORTDATASET or
 % RPS_PREPROCESSING

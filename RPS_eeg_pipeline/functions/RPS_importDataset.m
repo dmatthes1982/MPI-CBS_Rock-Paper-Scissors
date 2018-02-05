@@ -111,18 +111,42 @@ end
 % -------------------------------------------------------------------------
 % Data import
 % -------------------------------------------------------------------------
+cfg.channel = {'all', '-F3',   '-F4',   '-CP5',   '-CP6'     ...            % exclude channels which are not connected
+                      '-F3_1', '-F4_1', '-CP5_1', '-CP6_1'   ...
+                      '-F3_2', '-F4_2', '-CP5_2', '-CP6_2'};                       
 dataTmp = ft_preprocessing(cfg);                                            % import data
 
 data.part1 = dataTmp;                                                       % split dataset into two datasets, one for each participant
-data.part1.label = strrep(dataTmp.label(1:32), '_1', '');
+data.part1.label = strrep(dataTmp.label(1:28), '_1', '');
 for i=1:1:length(dataTmp.trial)
-  data.part1.trial{i} = dataTmp.trial{i}(1:32,:);
+  data.part1.trial{i} = dataTmp.trial{i}(1:28,:);
 end
 
 data.part2 = dataTmp;
-data.part2.label = strrep(dataTmp.label(33:64), '_2', '');
+data.part2.label = strrep(dataTmp.label(29:56), '_2', '');
 for i=1:1:length(dataTmp.trial)
-  data.part2.trial{i} = dataTmp.trial{i}(33:64,:);
+  data.part2.trial{i} = dataTmp.trial{i}(29:56,:);
 end
+
+% -------------------------------------------------------------------------
+% Rename EOG related channels
+% -------------------------------------------------------------------------
+loc = ismember(data.part1.label, 'Fp1');
+data.part1.label(loc) = {'V1'};
+loc = ismember(data.part1.label, 'Fp2');
+data.part1.label(loc) = {'V2'};
+loc = ismember(data.part1.label, 'PO9');
+data.part1.label(loc) = {'H1'};
+loc = ismember(data.part1.label, 'PO10');
+data.part1.label(loc) = {'H2'};
+
+loc = ismember(data.part2.label, 'Fp1');
+data.part2.label(loc) = {'V1'};
+loc = ismember(data.part2.label, 'Fp2');
+data.part2.label(loc) = {'V2'};
+loc = ismember(data.part2.label, 'PO9');
+data.part2.label(loc) = {'H1'};
+loc = ismember(data.part2.label, 'PO10');
+data.part2.label(loc) = {'H2'};
 
 end

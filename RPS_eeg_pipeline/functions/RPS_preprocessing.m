@@ -183,9 +183,9 @@ calcceogcomp = cfgR.calceogcomp;
 
 if strcmp(calcceogcomp, 'yes')
   cfgtmp              = [];
-  cfgtmp.channel      = {'PO9', 'PO10'};                                    % EOGH
+  cfgtmp.channel      = {'H1', 'H2'};                                       % EOGH
   cfgtmp.reref        = 'yes';
-  cfgtmp.refchannel   = 'PO10';
+  cfgtmp.refchannel   = 'H2';
   cfgtmp.showcallinfo = 'no';
   cfgtmp.feedback     = 'no';
   
@@ -199,9 +199,9 @@ if strcmp(calcceogcomp, 'yes')
   eogh                = ft_selectdata(cfgtmp, eogh); 
   
   cfgtmp              = [];
-  cfgtmp.channel      = {'Fp1', 'Fp2'};                                     % EOGV
+  cfgtmp.channel      = {'V1', 'V2'};                                       % EOGV
   cfgtmp.reref        = 'yes';
-  cfgtmp.refchannel   = 'Fp2';
+  cfgtmp.refchannel   = 'V2';
   cfgtmp.showcallinfo = 'no';
   cfgtmp.feedback     = 'no';
   
