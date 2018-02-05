@@ -45,6 +45,8 @@ for i = numOfPart
   cfg           = [];
   cfg.bpfreq    = [9 11];
   cfg.filtorder = fix(250 / filtCoeffDiv);
+  cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
+                   '-H1', 'H2'}; 
   
   data_bpfilt_10Hz = RPS_bpFiltering(cfg, data_eyecor);
   
@@ -67,6 +69,8 @@ for i = numOfPart
   cfg           = [];
   cfg.bpfreq    = [19 21];
   cfg.filtorder = fix(250 / filtCoeffDiv);
+  cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
+                   '-H1', 'H2'}; 
   
   data_bpfilt_20Hz = RPS_bpFiltering(cfg, data_eyecor);
 

@@ -11,6 +11,7 @@ function [ data ] = RPS_bpFiltering( cfg, data)
 % The configuration options are
 %   cfg.bpfreq      = passband range [begin end] (default: [1.9 2.1])
 %   cfg.filtorder   = define order of bandpass filter (default: 250)
+%   cfg.channel     = channel selection (default: {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', '-H1', '-H2' }
 %
 % This function is configured with a fixed filter order, to generate
 % comparable filter charakteristics for every operating point.
@@ -27,14 +28,14 @@ function [ data ] = RPS_bpFiltering( cfg, data)
 % -------------------------------------------------------------------------
 bpfreq    = ft_getopt(cfg, 'bpfreq', [1.9 2.1]);
 order     = ft_getopt(cfg, 'filtorder', 250);
-
+channel   = ft_getopt(cfg, 'channel', {'all', '-REF', '-EOGV', '-EOGH', ... % apply bandpass to every channel except REF, EOGV, EOGH, V1, V2, H1 and H2
+                                      '-V1', '-V2', '-H1', 'H2' }); 
 % -------------------------------------------------------------------------
 % Filtering settings
 % -------------------------------------------------------------------------
 cfg                 = [];
 cfg.trials          = 'all';                                                % apply bandpass to all trials
-cfg.channel         = {'all', '-REF', '-EOGV', '-EOGH', '-Fp1', '-Fp2', ... % apply bandpass to every channel except REF, EOGV, EOGH, Fp1, Fp2, PO9 and PO10
-                       '-PO9', '-PO10' };
+cfg.channel         = channel;
 cfg.bpfilter        = 'yes';
 cfg.bpfilttype      = 'fir';                                                % use a simple fir
 cfg.bpfreq          = bpfreq;                                               % define bandwith
