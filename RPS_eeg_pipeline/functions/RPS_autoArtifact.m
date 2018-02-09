@@ -127,8 +127,8 @@ for condition = 1:1:8
   
   cfgTmp    = ft_artifact_threshold(cfg, dataTmp);
   cfgTmp    = keepfields(cfgTmp, {'artfctdef', 'showcallinfo'});
-  badNum    = length(cfgTmp.artfctdef.threshold.artifact);
-  fprintf('%d artifacts detected!\n', badNum);
+  badNum    = calcBadNum( cfgTmp.artfctdef.threshold );
+  fprintf('%d segments of 1 second with artifacts detected!\n', badNum);
   
   throwWarning = 0;
   
@@ -175,5 +175,31 @@ for condition = 1:1:8
 end
 
 ft_info on;
+
+end
+
+% -------------------------------------------------------------------------
+% SUBFUNCTION which estimates segments of one second with artifacts
+% -------------------------------------------------------------------------
+function [ bNum ] = calcBadNum( threshold )
+
+if isempty(threshold.artifact)
+  bNum = 0;
+  return;
+end
+
+begtrl = find(threshold.trl(:,1) <= threshold.artifact(1,1), 1, 'last');    % find first segment with artifacts
+endtrl = find(threshold.trl(:,2) >= threshold.artifact(end,2), 1, 'first'); % find last segment with artifacts
+
+trlMask = zeros(900,1);
+
+for i = begtrl:endtrl
+  if any(threshold.trl(i,1) <= threshold.artifact(:,1) & ...
+         threshold.trl(i,2) >= threshold.artifact(:,2))
+    trlMask(i) = 1;
+  end
+end
+
+bNum = sum(trlMask);                                                        % calc number of bad segments
 
 end
