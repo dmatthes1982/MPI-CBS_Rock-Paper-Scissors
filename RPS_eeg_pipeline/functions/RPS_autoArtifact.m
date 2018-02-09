@@ -8,7 +8,7 @@ function [ cfgAutoArt ] = RPS_autoArtifact( cfg, data )
 % where data has to be a result of RPS_PREPROCESSING or RPS_CONCAT
 %
 % The configuration options are
-%   cfg.channel = cell-array with channel labels (default: {'Cz', 'O1', 'O2'}))
+%   cfg.channel     = cell-array with channel labels (default: {'Cz', 'O1', 'O2'}))
 %   cfg.continuous  = data is continuous ('yes' or 'no', default: 'no')
 %   cfg.trl         = trial definition (always necessary, generate with RPS_GENTRL) 
 %   cfg.method      = type of artifact detection (0: lower/upper limit, 1: range)
@@ -107,7 +107,7 @@ for condition = 1:1:8
       dataTmp = data.C.part1;
       cfg.trl = trl.C;
     case 5
-      fprintf('Estimate artifacts in participant 2...\n');
+      fprintf('\nEstimate artifacts in participant 2...\n');
       fprintf('Condition FreePlay...\n');
       dataTmp = data.FP.part2;
       cfg.trl = trl.FP;
@@ -128,7 +128,7 @@ for condition = 1:1:8
   cfgTmp    = ft_artifact_threshold(cfg, dataTmp);
   cfgTmp    = keepfields(cfgTmp, {'artfctdef', 'showcallinfo'});
   badNum    = calcBadNum( cfgTmp.artfctdef.threshold );
-  fprintf('%d segments of 1 second with artifacts detected!\n', badNum);
+  fprintf('%d segments with artifacts detected!\n', badNum);
   
   throwWarning = 0;
   
@@ -142,7 +142,7 @@ for condition = 1:1:8
     end 
   end
   
-   if throwWarning == 1
+  if throwWarning == 1
     warning('All trials are marked as bad, it is recommended to recheck the channels quality!');
   end
   

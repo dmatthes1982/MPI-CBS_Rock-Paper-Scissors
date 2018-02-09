@@ -93,13 +93,24 @@ if strcmp(continuous, 'no')
 
   elements = find(ismember(cfg.trl(:,4), 7));                               % remove duplicates of marker 'S  7', if arduino button is pressed multiple times within one trial
   if ~isempty(elements)
-    duplicates = [];
-    for i=2:1:length(elements)
-      if elements(i) == elements(i-1) + 1
-        duplicates = [duplicates elements(i)];                              %#ok<AGROW>
+    duplicates = find((elements(1:end-1) + 1) == elements(2:end));
+    if ~isempty(duplicates)
+      for i=1:1:length(duplicates)
+        warning(['duplicate of marker ''S  7'' found, trial %d will '...
+                 'be removed.'], elements(duplicates(i) + 1));
       end
     end
-    cfg.trl(duplicates, :) = []; 
+    cfg.trl(elements(duplicates + 1), :) = []; 
+  end
+  
+  overlapping = find(cfg.trl(1:end-1,2) > cfg.trl(2:end, 1));               % in case of overlapping trials, remove the first of theses trials
+  if ~isempty(overlapping)
+    for i = 1:1:length(overlapping)
+      warning(['trial %d with marker ''S%3d''  will be removed due to '...
+               'overlapping data with its successor.'], ...
+               overlapping(i), cfg.trl(overlapping(i), 4));
+    end
+    cfg.trl(overlapping, :) = []; 
   end
 else
   cfg                     = [];
