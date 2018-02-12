@@ -1,4 +1,4 @@
-function cfgArtifacts = RPS_databrowser( cfg, data )
+function [ cfgArtifacts ] = RPS_databrowser( cfg, data )
 % RPS_DATABROWSER displays a certain rock, paper, scissor project dataset 
 % using a appropriate scaling.
 %
@@ -75,9 +75,17 @@ fprintf('Databrowser - Condition: %d - Participant: %d\n', cond, part);
 
 switch part
   case 1
-    cfgArtifacts = ft_databrowser(cfg, dataPlot.part1);
+    if nargout > 0
+      cfgArtifacts = ft_databrowser(cfg, dataPlot.part1);
+    else
+      ft_databrowser(cfg, dataPlot.part1);
+    end
   case 2
-    cfgArtifacts = ft_databrowser(cfg, dataPlot.part2);
+    if nargout > 0
+      cfgArtifacts = ft_databrowser(cfg, dataPlot.part2);
+    else
+      ft_databrowser(cfg, dataPlot.part1);
+    end
 end
 
 end
