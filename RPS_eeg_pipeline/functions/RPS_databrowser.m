@@ -14,6 +14,8 @@ function [ cfgArtifacts ] = RPS_databrowser( cfg, data )
 %   cfg.condition = condition (default: 2 or 'PredDiff', see RPS data structure)
 %   cfg.artifact  = Nx2 matrix with artifact segments (default: [])
 %   cfg.channel   = channels of interest (default: 'all')
+%   cfg.ylim      = vertical scaling (default: [-100 100]);
+%   cfg.blocksize = duration in seconds for cutting the data up (default: [])
 %
 % This function requires the fieldtrip toolbox
 %
@@ -30,6 +32,8 @@ part      = ft_getopt(cfg, 'part', 1);
 cond      = ft_getopt(cfg, 'condition', 2);
 artifact  = ft_getopt(cfg, 'artifact', []);
 channel   = ft_getopt(cfg, 'channel', 'all');
+ylim      = ft_getopt(cfg, 'ylim', [-100 100]);
+blocksize = ft_getopt(cfg, 'blocksize', []);
 
 if isempty(dyad)                                                            % if dyad number is not specified
   event = [];                                                               % the associated markers cannot be loaded and displayed
@@ -63,7 +67,8 @@ end
 % Configure and start databrowser
 % -------------------------------------------------------------------------
 cfg                               = [];
-cfg.ylim                          = [-100 100];
+cfg.ylim                          = ylim;
+cfg.blocksize                     = blocksize;
 cfg.viewmode                      = 'vertical';
 cfg.artfctdef.threshold.artifact  = artifact;
 cfg.continuous                    = 'no';
@@ -84,7 +89,7 @@ switch part
     if nargout > 0
       cfgArtifacts = ft_databrowser(cfg, dataPlot.part2);
     else
-      ft_databrowser(cfg, dataPlot.part1);
+      ft_databrowser(cfg, dataPlot.part2);
     end
 end
 

@@ -101,7 +101,7 @@ for i = numOfPart
   cfg.sessionStr  = sessionStr;
   
   fprintf('Dyad %d\n', i);
-  fprintf('Load raw data...\n');
+  fprintf('Load repaired raw data...\n');
   RPS_loadData( cfg );
   
   cfg                   = [];
@@ -112,7 +112,7 @@ for i = numOfPart
   cfg.refchannel        = refchannel;
   
   ft_info off;
-  data_preproc = RPS_preprocessing( cfg, data_raw);
+  data_preproc = RPS_preprocessing( cfg, data_repaired);
   ft_info on;
   
   cfg             = [];
@@ -127,7 +127,7 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_preproc', data_preproc);
   fprintf('Data stored!\n\n');
-  clear data_preproc data_raw 
+  clear data_preproc data_repaired 
 end
 
 %% clear workspace

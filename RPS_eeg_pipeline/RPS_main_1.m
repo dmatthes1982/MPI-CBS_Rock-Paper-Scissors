@@ -62,9 +62,10 @@ for i = numOfPart
   clear data_raw
 end
 
+fprintf('Repairing of corrupted channels\n\n');
+
 %% repairing of corrupted channels %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = numOfPart
-  fprintf('Repairing of corrupted channels\n\n');
   fprintf('Dyad %d\n\n', i);
   
   cfg             = [];
@@ -95,11 +96,11 @@ for i = numOfPart
   fprintf('Bad channels of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_badchan', data_badchan);
-  fprintf('Data stored!\n');
+  fprintf('Data stored!\n\n');
   clear data_continuous
   
   % repair corrupted channels
-  data_repaired = RPS_repairBadChan( data_badChan, data_raw );
+  data_repaired = RPS_repairBadChan( data_badchan, data_raw );
   
   % export the bad channels in a *.mat file
   cfg             = [];
@@ -110,11 +111,11 @@ for i = numOfPart
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
 
-  fprintf('Bad channels of dyad %d will be saved in:\n', i); 
+  fprintf('Repaired raw data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_repaired', data_repaired);
-  fprintf('Data stored!\n');
-  clear data_repaired data_raw data_badChan 
+  fprintf('Data stored!\n\n');
+  clear data_repaired data_raw data_badchan 
 end
 
 %% clear workspace

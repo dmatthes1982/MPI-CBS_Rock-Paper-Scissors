@@ -6,6 +6,8 @@ conditions    = [1,2,3,4,1,2,3,4];
 
 for i = 1:1:8
   cfg           = [];
+  cfg.ylim      = [-200 200];
+  cfg.blocksize = 120;
   cfg.part      = participants(i);
   cfg.condition = conditions(i);
   
