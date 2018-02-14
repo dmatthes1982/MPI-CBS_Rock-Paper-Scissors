@@ -81,6 +81,8 @@ for i = numOfPart
   % Concatenated cleaned data of all conditions to a continuous stream
   cfg                 = [];
   cfg.showcallinfo    = 'no';
+  ft_info off;
+  ft_warning off;
   data_cleaned.part1  = ft_appenddata(cfg, data_cleaned.FP.part1, ...
                                       data_cleaned.PD.part1, ...
                                       data_cleaned.PS.part1, ...
@@ -89,6 +91,8 @@ for i = numOfPart
                                       data_cleaned.PD.part2, ...
                                       data_cleaned.PS.part2, ...
                                       data_cleaned.C.part2);
+  ft_warning on;
+  ft_info on;
   data_cleaned.part1.fsample  = data_cleaned.FP.part1.fsample;
   data_cleaned.part2.fsample  = data_cleaned.FP.part2.fsample;
   data_cleaned        = removefields(data_cleaned, {'FP', 'PD', 'PS', 'C'});
