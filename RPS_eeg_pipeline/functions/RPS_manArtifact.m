@@ -30,6 +30,7 @@ dyad      = ft_getopt(cfg, 'dyad', []);
 cfg             = [];
 cfg.dyad        = dyad;
 cfg.channel     = {'all', '-V1', '-V2', '-H1', '-H2'};
+cfg.ylim        = [-100 100];
 cfgTmp.part1    = [];                                       
 cfgTmp.part2    = [];
 cfgAllArt.FP    = cfgTmp;

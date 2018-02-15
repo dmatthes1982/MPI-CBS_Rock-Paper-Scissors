@@ -1,5 +1,5 @@
 function [ cfgArtifacts ] = RPS_databrowser( cfg, data )
-% RPS_DATABROWSER displays a certain rock, paper, scissor project dataset 
+% RPS_DATABROWSER displays a certain rock, paper, scissors project dataset 
 % using a appropriate scaling.
 %
 % Use as

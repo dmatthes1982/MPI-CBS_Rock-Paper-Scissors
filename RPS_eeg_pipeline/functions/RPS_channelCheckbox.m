@@ -1,7 +1,7 @@
 function [ badLabel ] = RPS_channelCheckbox()
 % RPS_CHANNELCHECKBOX is a function, which displays a small GUI for the 
-% selection of bad channels. It returns a logic vector in which the bad 
-% channels marked with one.
+% selection of bad channels. It returns a cell array including the labels
+% of the bad channels
 %
 % Use as
 %   [ badLabel ] = RPS_channelCheckbox()
