@@ -284,8 +284,8 @@ switch part
     tmpPath = strcat(desPath, '01a_raw/');
     fileNamePost = strcat(tmpPath, 'RPS_d*_01a_raw_', sessionStr, '.mat');
   case 2
-    tmpPath = strcat(desPath, '01a_raw/');
-    fileNamePre = strcat(tmpPath, 'RPS_d*_01a_raw_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '01c_repaired/');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_01c_repaired_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '02_preproc/');
     fileNamePost = strcat(tmpPath, 'RPS_d*_02_preproc_', sessionStr, '.mat');
   case 3

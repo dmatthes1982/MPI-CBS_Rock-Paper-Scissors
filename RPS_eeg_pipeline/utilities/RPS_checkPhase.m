@@ -1,10 +1,16 @@
 function [ num ] = RPS_checkPhase( phase )
 % RPS_CHECKPHASE - This functions checks the defined phase. 
 %
+% Use as
+%   [ num ] = RPS_checkPhase( phase )
+%
 % If phase is a number the function checks, if this number is equal to 
 % one of the default values and return this number in case of confirmity. 
 % If phase is a string, the function returns the associated number, if
 % the given string is valid. Otherwise the function throws an error.
+%
+% All available phase strings and numbers are defined in
+% RPS_DATASTRUCTURE
 %
 % See also RPS_DATASTRUCTURE
 

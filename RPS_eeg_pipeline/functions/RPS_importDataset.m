@@ -96,8 +96,10 @@ if strcmp(continuous, 'no')
     duplicates = find((elements(1:end-1) + 1) == elements(2:end));
     if ~isempty(duplicates)
       for i=1:1:length(duplicates)
+        warning('off','backtrace');
         warning(['duplicate of marker ''S  7'' found, trial %d will '...
                  'be removed.'], elements(duplicates(i) + 1));
+        warning('on','backtrace');
       end
     end
     cfg.trl(elements(duplicates + 1), :) = []; 
@@ -106,9 +108,11 @@ if strcmp(continuous, 'no')
   overlapping = find(cfg.trl(1:end-1,2) > cfg.trl(2:end, 1));               % in case of overlapping trials, remove the first of theses trials
   if ~isempty(overlapping)
     for i = 1:1:length(overlapping)
+      warning('off','backtrace');
       warning(['trial %d with marker ''S%3d''  will be removed due to '...
                'overlapping data with its successor.'], ...
                overlapping(i), cfg.trl(overlapping(i), 4));
+      warning('on','backtrace');
     end
     cfg.trl(overlapping, :) = []; 
   end

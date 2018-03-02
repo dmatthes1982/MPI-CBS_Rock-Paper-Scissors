@@ -5,7 +5,7 @@ function RPS_writeTbl(cfg, data)
 % Use as
 %   RPS_writeTbl( cfg )
 %
-% The input data hast to be from RPS_PHASELOCKVALUE
+% The input data hast to be from RPS_PHASELOCKVAL
 %
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/00_settings/')
@@ -16,7 +16,7 @@ function RPS_writeTbl(cfg, data)
 %
 % This function requires the fieldtrip toolbox.
 %
-% SEE also RPS_PHASELOCKVALUE
+% SEE also RPS_PHASELOCKVAL
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -72,16 +72,20 @@ if strcmp(type, 'plv')
   goodtrials{4} = [];
     
   for i = 1:1:4
-    [~,loc] = ismember(generalDefinitions.phaseNum{i},trialinfo{i});
-    goodtrials{i}{length(generalDefinitions.phaseNum{i})} = [];
-    
+    [~,loc] = ismember(generalDefinitions.phaseNum{i}, trialinfo{i});
+    if any(loc == 0)
+      emptyCond = (loc == 0);
+      emptyCond = generalDefinitions.phaseNum{i}(emptyCond);
+      str = vec2str(emptyCond, [], [], 0);
+      warning(['The following trials are completely rejected: ' str]);
+    end
+    goodtrials{i} = zeros(1, length(generalDefinitions.phaseNum{i}));
     for j = 1:1:length(generalDefinitions.phaseNum{i})
-      if loc(j) == 0
-        goodtrials{i}{j} = 0;
-      else
-        goodtrials{i}{j} = gt{i}(loc(j));
+      if loc(j) ~= 0
+        goodtrials{i}(j) = gt{i}(loc(j));
       end
     end
+    goodtrials{i} = num2cell(goodtrials{i});
   end
 end
 

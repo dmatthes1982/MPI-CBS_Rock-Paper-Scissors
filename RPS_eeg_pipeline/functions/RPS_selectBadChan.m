@@ -1,21 +1,45 @@
 function [ data_badchan ] = RPS_selectBadChan( data_raw )
-% RPS_SELECTBADCHAN 
+% RPS_SELECTBADCHAN can be used for selecting bad channels visually. The
+% data will be presented in the fieldtrip databrowser view and the bad
+% channels will be marked in the RPS_CHANNELCHECKBOX gui. The function
+% returns a fieldtrip-like datastructure which includes only a cell array 
+% for each participant with the selected bad channels.
+%
+% Use as
+%   [ data_badchan ] = RPS_selectBadChan( data_raw )
+%
+% where the input has to be raw data
+%
+% The function requires the fieldtrip toolbox
+%
+% SEE also RPS_DATABROWSER and RPS_CHANNELCHECKBOX
 
+% Copyright (C) 2018, Daniel Matthes, MPI CBS
+
+% -------------------------------------------------------------------------
+% General settings
+% -------------------------------------------------------------------------
 participants  = [1,1,1,1,2,2,2,2];
 conditions    = [1,2,3,4,1,2,3,4];
 
 for i = 1:1:8
+% -------------------------------------------------------------------------
+% Databrowser settings
+% ------------------------------------------------------------------------- 
   cfg           = [];
   cfg.ylim      = [-200 200];
   cfg.blocksize = 120;
   cfg.part      = participants(i);
   cfg.condition = conditions(i);
-  
+
+% -------------------------------------------------------------------------
+% Selection of bad channels
+% -------------------------------------------------------------------------
   fprintf('Select bad channels of participant %d in condition %d...\n', ...
           cfg.part, cfg.condition);
   RPS_databrowser( cfg, data_raw );
   badLabel = RPS_channelCheckbox();
-  close(gcf);
+  close(gcf);                                                               % close also databrowser view when the channelCheckbox will be closed
   
   fprintf('\n');
   

@@ -5,6 +5,8 @@ function [ badLabel ] = RPS_channelCheckbox()
 %
 % Use as
 %   [ badLabel ] = RPS_channelCheckbox()
+%
+% SEE also UIFIGURE, UICHECKBOX, UIBUTTON, UIRESUME, UIWAIT
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -128,7 +130,7 @@ btn.Text = 'Save';
 uiwait(SelectBadChannels);
 
 if ishandle(SelectBadChannels)                                              % if gui still exists
-  badLabel = [F7.Value; Fz.Value; F8.Value; FC5.Value; FC1.Value; ...                             % return existing selection
+  badLabel = [F7.Value; Fz.Value; F8.Value; FC5.Value; FC1.Value; ...       % return existing selection
               FC2.Value; FC6.Value; T7.Value; C3.Value; Cz.Value; ...
               C4.Value; T8.Value; FCz.Value; CP1.Value; CP2.Value; ...
               TP10.Value; P7.Value; P3.Value; Pz.Value; P4.Value; ...

@@ -1,12 +1,18 @@
 function [ num ] = RPS_checkCondition( condition )
 % RPS_CHECKCONDITION - This functions checks the defined condition. 
 %
+% Use as
+%   [ num ] = RPS_checkCondition( condition )
+%
 % If condition is a number the function checks, if this number is equal to 
 % one of the default values and return this number in case of confirmity. 
 % If condition is a string, the function returns the associated number, if
 % the given string is valid. Otherwise the function throws an error.
 %
-% See also RPS_DATASTRUCTURE
+% All available condition strings and numbers are defined in
+% RPS_DATASTRUCTURE
+%
+% SEE also RPS_DATASTRUCTURE
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 

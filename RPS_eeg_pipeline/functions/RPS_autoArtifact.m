@@ -42,7 +42,7 @@ switch method
 end
 
 if isempty(cfg.trl)
-  error('cfg.trl is missing. You can use JAI_genTrl to generate the trl matrix');
+  error('cfg.trl is missing. You can use RPS_genTrl to generate the trl matrix');
 end
 
 % -------------------------------------------------------------------------
@@ -198,6 +198,6 @@ for i = 1:size(threshold.trl,1)
 end
 
 bNum = sum(trlMask);                                                        % calc number of bad segments
-threshold.artifact = threshold.trl(logical(trlMask),1:2);                              % if trial contains artifacts, mark whole trial as artifact
+threshold.artifact = threshold.trl(logical(trlMask),1:2);                   % if trial contains artifacts, mark whole trial as artifact
 
 end

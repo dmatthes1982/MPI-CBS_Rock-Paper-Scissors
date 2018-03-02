@@ -24,7 +24,7 @@
 %    |               
 %    |---- FP
 %    |     |---part1 (1x1 fieldtrip data structure for participant 1)    
-%    |     |---- part2 (1x1 fieldtrip data structure for participant 2)
+%    |     |---part2 (1x1 fieldtrip data structure for participant 2)
 %    |
 %    |---- PD
 %    |---- PS

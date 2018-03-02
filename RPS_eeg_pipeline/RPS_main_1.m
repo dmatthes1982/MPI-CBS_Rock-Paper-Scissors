@@ -64,6 +64,25 @@ end
 
 fprintf('Repairing of corrupted channels\n\n');
 
+% Create settings file if not existing
+settings_file = [desPath '00_settings/' ...
+                  sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(settings_file, 'file') == 2)                                     % check if settings file already exist
+  cfg = [];
+  cfg.desFolder   = [desPath '00_settings/'];
+  cfg.type        = 'settings';
+  cfg.sessionStr  = sessionStr;
+  
+  RPS_createTbl(cfg);                                                       % create settings file
+end
+
+% Load settings file
+T = readtable(settings_file);
+delete(settings_file);
+warning off;
+T.dyad(numOfPart) = numOfPart;
+warning on;
+
 %% repairing of corrupted channels %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = numOfPart
   fprintf('Dyad %d\n\n', i);
@@ -99,6 +118,58 @@ for i = numOfPart
   fprintf('Data stored!\n\n');
   clear data_continuous
   
+  % add bad labels of bad channels to the settings file
+  if isempty(data_badchan.FP.part1.badChan)
+    bChanFPp1 = {'---'};
+  else
+    bChanFPp1 = {strjoin(data_badchan.FP.part1.badChan,',')};
+  end
+  if isempty(data_badchan.FP.part2.badChan)
+    bChanFPp2 = {'---'};
+  else
+    bChanFPp2 = {strjoin(data_badchan.FP.part2.badChan,',')};
+  end
+  if isempty(data_badchan.PD.part1.badChan)
+    bChanPDp1 = {'---'};
+  else
+    bChanPDp1 = {strjoin(data_badchan.PD.part1.badChan,',')};
+  end
+  if isempty(data_badchan.PD.part2.badChan)
+    bChanPDp2 = {'---'};
+  else
+    bChanPDp2 = {strjoin(data_badchan.PD.part2.badChan,',')};
+  end
+  if isempty(data_badchan.PS.part1.badChan)
+    bChanPSp1 = {'---'};
+  else
+    bChanPSp1 = {strjoin(data_badchan.PS.part1.badChan,',')};
+  end
+  if isempty(data_badchan.PS.part2.badChan)
+    bChanPSp2 = {'---'};
+  else
+    bChanPSp2 = {strjoin(data_badchan.PS.part2.badChan,',')};
+  end
+  if isempty(data_badchan.C.part1.badChan)
+    bChanCp1 = {'---'};
+  else
+    bChanCp1 = {strjoin(data_badchan.C.part1.badChan,',')};
+  end
+  if isempty(data_badchan.C.part2.badChan)
+    bChanCp2 = {'---'};
+  else
+    bChanCp2 = {strjoin(data_badchan.C.part2.badChan,',')};
+  end
+  warning off;
+  T.bChanFPp1(i) = bChanFPp1;
+  T.bChanFPp2(i) = bChanFPp2;
+  T.bChanPDp1(i) = bChanPDp1;
+  T.bChanPDp2(i) = bChanPDp2;
+  T.bChanPSp1(i) = bChanPSp1;
+  T.bChanPSp2(i) = bChanPSp2;
+  T.bChanCp1(i) = bChanCp1;
+  T.bChanCp2(i) = bChanCp2;
+  warning on;
+  
   % repair corrupted channels
   data_repaired = RPS_repairBadChan( data_badchan, data_raw );
   
@@ -118,5 +189,10 @@ for i = numOfPart
   clear data_repaired data_raw data_badchan 
 end
 
+% store settings table
+writetable(T, settings_file);
+
 %% clear workspace
-clear file_path cfg sourceList numOfSources i
+clear file_path cfg sourceList numOfSources i T bChanFPp1 bChanFPp2 ...
+      bChanPDp1 bChanPDp2 bChanPSp1 bChanPSp2 bChanCp1 bChanCp2 ...
+      settings_file

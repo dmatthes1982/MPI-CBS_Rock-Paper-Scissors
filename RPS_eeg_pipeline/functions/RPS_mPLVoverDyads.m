@@ -22,7 +22,6 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
               '/data/pt_01843/eegData/DualEEG_RPS_processedData/07c_mplv/');
-            
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', '10Hz');
 
@@ -45,7 +44,7 @@ load(sprintf('%s/../general/RPS_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-fprintf('Averaging of Phase Locking Values over dyads at %s...\n\n', passband);
+fprintf('Averaging of Phase Locking Values over dyads at %s...\n', passband);
 
 dyadsList   = dir([path, sprintf('RPS_d*_07c_mplv%s_%03d.mat', ...
                   fileSuffix, session)]);
@@ -161,7 +160,7 @@ for k = 1:1:4
     if ~isequal(trInf{k,l}, trInfOrg{k}')
       missingPhases = ~ismember(trInfOrg{k}, trInf{k,l});
       missingPhases = trInfOrg{k}(missingPhases);
-      missingPhases = join_str(', ', num2cell(missingPhases)');
+      missingPhases = vect2str(missingPhases, [], [], 0);
       cprintf([0,0.6,0], ...
               sprintf('Dyad %d - Condition %s: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
               dyadNum(l), condition{k}, missingPhases));
@@ -176,32 +175,13 @@ for k = 1:1:4
         end
       end
       dataTmp{k,l} = tmpBuffer;
+      fixed = true;
     end
   end
 end
 
-%--------------------------------------------------------------------------
-% SUBFUNCTION which transform a cell array of labels into a string
-%--------------------------------------------------------------------------
-function t = join_str(separator,cells)
-
-if isempty(cells)
-  t = '';
-  return;
+if fixed == true
+  fprintf('\n');
 end
-
-if ischar(cells)
-  t = cells;
-  return;
-end
-
-t = char(num2str(cells{1}));
-
-for i=2:length(cells)
-  t = [t separator char(num2str(cells{i}))];                                %#ok<AGROW>
-end
-
-end
-
 
 end

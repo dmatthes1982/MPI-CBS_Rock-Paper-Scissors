@@ -4,7 +4,7 @@ function [ data ] = RPS_timeFreqanalysis( cfg, data )
 % Use as
 %   [ data ] = RPS_timeFreqanalysis(cfg, data)
 %
-% where the input data have to be the result from RPS_IMPORTDATASET,
+% where the input data has to be the result from RPS_IMPORTDATASET,
 % RPS_PREPROCESSING or RPS_SEGMENTATION
 %
 % The configuration options are

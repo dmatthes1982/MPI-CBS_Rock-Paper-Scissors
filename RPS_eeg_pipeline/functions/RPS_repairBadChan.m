@@ -1,9 +1,34 @@
 function [ data_repaired ] = RPS_repairBadChan( data_badchan, data_raw )
-%RPS_REPAIRBADCHAN 
+% RPS_REPAIRBADCHAN can be used for repairing previously selected bad
+% channels. For repairing this function uses the weighted neighbour
+% approach. After the repairing operation, the result will be displayed in
+% the fieldtrip databrowser for verification purpose.
+%
+% Use as
+%   [ data_repaired ] = RPS_repairBadChan( data_badchan, data_raw )
+%
+% where data_raw has to be raw data and data_badchan the result of
+% RPS_SELECTBADCHAN.
+%
+% Used layout and neighbour definitions:
+%   mpi_customized_acticap32.mat
+%   mpi_customized_acticap32_neighb.mat
+%
+% The function requires the fieldtrip toolbox
+%
+% SEE also RPS_DATABROWSER and FT_CHANNELREPAIR
 
+% Copyright (C) 2018, Daniel Matthes, MPI CBS
+
+% -------------------------------------------------------------------------
+% Load layout and neighbour definitions
+% -------------------------------------------------------------------------
 load('mpi_002_customized_acticap32_neighb.mat', 'neighbours');
 load('mpi_002_customized_acticap32.mat', 'lay');
 
+% -------------------------------------------------------------------------
+% Configure Repairing
+% -------------------------------------------------------------------------
 cfg               = [];
 cfg.method        = 'weighted';
 cfg.neighbours    = neighbours;
@@ -11,6 +36,9 @@ cfg.layout        = lay;
 cfg.trials        = 'all';
 cfg.showcallinfo  = 'no';
 
+% -------------------------------------------------------------------------
+% Repairing bad channels
+% -------------------------------------------------------------------------
 for i = 1:1:8
   switch i
     case 1
@@ -54,6 +82,27 @@ for i = 1:1:8
   else
     data = ft_channelrepair(cfg, data);
     data = removefields(data, {'elec'});
+    
+    cfgView               = [];
+    cfgView.ylim          = [-200 200];
+    cfgView.blocksize     = 120;
+    cfgView.viewmode      = 'vertical';
+    cfgView.continuous    = 'yes';
+    cfgView.channel       = 'all';
+    cfgView.showcallinfo  = 'no';
+    if i < 5
+      part = 1;
+    else
+      part = 2;
+    end
+    
+    fprintf('\nVerification view for participant %d...\n', part);
+    ft_warning off;
+    ft_databrowser( cfgView, data );
+    commandwindow;                                                            % set focus to commandwindow
+    input('Press enter to continue!:');
+    close(gcf);
+    ft_warning on;
   end
   
   switch i
