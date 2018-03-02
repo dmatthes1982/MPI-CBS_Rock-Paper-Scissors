@@ -13,7 +13,7 @@ RPS_init;
 % Path settings
 % -------------------------------------------------------------------------
 srcPath = '/data/pt_01843/eegData/DualEEG_RPS_rawData/';
-desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData_branch_ica/';
+desPath = '/data/pt_01843/eegData/DualEEG_RPS_processedData/';
 
 fprintf('\nThe default paths are:\n');
 fprintf('Source: %s\n',srcPath);
