@@ -70,6 +70,7 @@ if strcmp(type, 'plv')
   gt{4,1} = data.C.dyad.goodtrials';
   
   goodtrials{4} = [];
+  condition     = {'FP', 'PD', 'PD', 'C'};
     
   for i = 1:1:4
     [~,loc] = ismember(generalDefinitions.phaseNum{i}, trialinfo{i});
@@ -77,7 +78,7 @@ if strcmp(type, 'plv')
       emptyCond = (loc == 0);
       emptyCond = generalDefinitions.phaseNum{i}(emptyCond);
       str = vec2str(emptyCond, [], [], 0);
-      warning(['The following trials are completely rejected: ' str]);
+      warning([sprintf('The following trials in condition %s are completely rejected: ', condition{i}) str]);
     end
     goodtrials{i} = zeros(1, length(generalDefinitions.phaseNum{i}));
     for j = 1:1:length(generalDefinitions.phaseNum{i})

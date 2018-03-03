@@ -160,7 +160,7 @@ for k = 1:1:4
     if ~isequal(trInf{k,l}, trInfOrg{k}')
       missingPhases = ~ismember(trInfOrg{k}, trInf{k,l});
       missingPhases = trInfOrg{k}(missingPhases);
-      missingPhases = vect2str(missingPhases, [], [], 0);
+      missingPhases = vec2str(missingPhases, [], [], 0);
       cprintf([0,0.6,0], ...
               sprintf('Dyad %d - Condition %s: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
               dyadNum(l), condition{k}, missingPhases));

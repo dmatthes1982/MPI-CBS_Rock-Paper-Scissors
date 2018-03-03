@@ -47,8 +47,6 @@ fprintf('\n');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation and Artifact rejection
 
-fprintf('Note: Segmentation of resting state trials will be applied before plv calculation.\n\n');
-
 for i = numOfPart
   fprintf('Dyad %d\n\n', i);
   
