@@ -26,6 +26,9 @@ end
 
 %% part 6
 
+cprintf([0,0.6,0], '<strong>[6] - Narrow band filtering and Hilbert transform</strong>\n');
+fprintf('\n');
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% bandpass filtering
 
@@ -35,7 +38,7 @@ for i = numOfPart
   cfg.filename    = sprintf('RPS_d%02d_04b_eyecor', i);
   cfg.sessionStr  = sessionStr;
   
-  fprintf('Dyad %d\n', i);
+  fprintf('<strong>Dyad %d</strong>\n', i);
   fprintf('Load eye-artifact corrected data...\n\n');
   RPS_loadData( cfg );
   
@@ -94,7 +97,7 @@ end
 %% hilbert phase calculation
 
 for i = numOfPart
-  fprintf('Dyad %d\n', i);
+  fprintf('<strong>Dyad %d</strong>\n', i);
    
   % calculate hilbert phase at 10Hz
   cfg             = [];

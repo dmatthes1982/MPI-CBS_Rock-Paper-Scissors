@@ -50,7 +50,7 @@ centerFreq = (bpfreq(2) + bpfreq(1))/2;
 % -------------------------------------------------------------------------
 data.centerFreq = [];
 
-fprintf('Apply bandpass to participant 1 with a center frequency of %g Hz...\n', ...           
+fprintf('<strong>Apply bandpass to participant 1 with a center frequency of %g Hz...</strong>\n', ...           
           centerFreq);
 fprintf('Condition FreePlay...\n');
 data.FP.part1   = ft_preprocessing(cfg, data.FP.part1); 
@@ -61,7 +61,7 @@ data.PS.part1   = ft_preprocessing(cfg, data.PS.part1);
 fprintf('Condition Control...\n');        
 data.C.part1   = ft_preprocessing(cfg, data.C.part1);        
           
-fprintf('Apply bandpass to participant 2 with a center frequency of %g Hz...\n', ...           
+fprintf('<strong>Apply bandpass to participant 2 with a center frequency of %g Hz...</strong>\n', ...           
           centerFreq);
 fprintf('Condition FreePlay...\n');
 data.FP.part2   = ft_preprocessing(cfg, data.FP.part2); 

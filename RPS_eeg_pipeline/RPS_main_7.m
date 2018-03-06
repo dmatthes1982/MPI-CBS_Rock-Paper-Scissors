@@ -26,6 +26,9 @@ end
 
 %% part 7
 
+cprintf([0,0.6,0], '<strong>[7]  - Estimation of Phase Locking Values (PLV)</strong>\n');
+fprintf('\n');
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% general adjustment
 choise = false;
@@ -44,11 +47,29 @@ while choise == false
 end
 fprintf('\n');
 
+% Write selected settings to settings file
+file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
+  cfg = [];
+  cfg.desFolder   = [desPath '00_settings/'];
+  cfg.type        = 'settings';
+  cfg.sessionStr  = sessionStr;
+  
+  RPS_createTbl(cfg);                                                       % create settings file
+end
+
+T = readtable(file_path);                                                   % update settings table
+warning off;
+T.artRejectPLV(numOfPart) = {x};
+warning on;
+delete(file_path);
+writetable(T, file_path);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Segmentation and Artifact rejection
 
 for i = numOfPart
-  fprintf('Dyad %d\n\n', i);
+  fprintf('<strong>Dyad %d</strong>\n\n', i);
   
   % 10 Hz branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg             = [];                                                     % load hilbert phase data
@@ -62,7 +83,7 @@ for i = numOfPart
   cfg.length    = 1;
   cfg.overlap   = 0;
  
-  fprintf('Segmentation of Hilbert phase data at 10 Hz.\n');
+  fprintf('<strong>Segmentation of Hilbert phase data at 10 Hz.</strong>\n');
   data_hseg_10Hz  = RPS_segmentation( cfg, data_hilbert_10Hz );
   
   % export the segmented hilbert (10 Hz) data into a *.mat file
@@ -92,7 +113,7 @@ for i = numOfPart
   cfg.length    = 1;
   cfg.overlap   = 0;
   
-  fprintf('Segmentation of Hilbert phase data at 20 Hz.\n');
+  fprintf('<strong>Segmentation of Hilbert phase data at 20 Hz.</strong>\n');
   data_hseg_20Hz  = RPS_segmentation( cfg, data_hilbert_20Hz );
   
   % export the segmented hilbert (10 Hz, 20 Hz) data into a *.mat file
@@ -149,7 +170,7 @@ for i = numOfPart
       cfg.reject    = 'complete';
       cfg.target    = 'dual';
   
-      fprintf('Artifact Rejection of Hilbert phase data at 10 Hz.\n');
+      fprintf('<strong>Artifact Rejection of Hilbert phase data at 10 Hz.</strong>\n');
       data_hseg_10Hz = RPS_rejectArtifacts(cfg, data_hseg_10Hz);
       fprintf('\n');
     end
@@ -218,7 +239,7 @@ for i = numOfPart
       cfg.reject    = 'complete';
       cfg.target    = 'dual';
       
-      fprintf('Artifact Rejection of Hilbert phase data at 20 Hz.\n');
+      fprintf('<strong>Artifact Rejection of Hilbert phase data at 20 Hz.</strong>\n');
       data_hseg_20Hz = RPS_rejectArtifacts(cfg, data_hseg_20Hz);
       fprintf('\n');
       
@@ -275,4 +296,4 @@ end
 
 %% clear workspace
 clear cfg file_path sourceList numOfSources i artifactRejection ...
-      artifactAvailable x choise
+      artifactAvailable x choise T

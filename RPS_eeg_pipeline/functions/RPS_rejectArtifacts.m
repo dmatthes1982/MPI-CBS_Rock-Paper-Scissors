@@ -61,29 +61,29 @@ end
 % -------------------------------------------------------------------------
 % Clean Data
 % -------------------------------------------------------------------------
-fprintf('\nCleaning data of part 1...\n');
-fprintf('Condition FreePlay...\n');
+fprintf('\n<strong>Cleaning data of participant 1...</strong>\n');
+fprintf('<strong>Condition FreePlay...</strong>\n');
 ft_warning off;
 data.FP.part1 = ft_rejectartifact(artifact.FP.part1, data.FP.part1);
 if strcmp(target, 'dual')
   ft_warning off;
   data.FP.part1 = ft_rejectartifact(artifact.FP.part2, data.FP.part1);
 end
-fprintf('Condition PredDiff...\n');
+fprintf('<strong>Condition PredDiff...</strong>\n');
 ft_warning off;
 data.PD.part1 = ft_rejectartifact(artifact.PD.part1, data.PD.part1);
 if strcmp(target, 'dual')
   ft_warning off;
   data.PD.part1 = ft_rejectartifact(artifact.PD.part2, data.PD.part1);
 end
-fprintf('Condition PredSame...\n');
+fprintf('<strong>Condition PredSame...</strong>\n');
 ft_warning off;
 data.PS.part1 = ft_rejectartifact(artifact.PS.part1, data.PS.part1);
 if strcmp(target, 'dual')
   ft_warning off;
   data.PS.part1 = ft_rejectartifact(artifact.PS.part2, data.PS.part1);
 end
-fprintf('Condition Control...\n');
+fprintf('<strong>Condition Control...</strong>\n');
 ft_warning off;
 data.C.part1 = ft_rejectartifact(artifact.C.part1, data.C.part1);
 if strcmp(target, 'dual')
@@ -91,29 +91,29 @@ if strcmp(target, 'dual')
   data.C.part1 = ft_rejectartifact(artifact.C.part2, data.C.part1);
 end
 
-fprintf('\nCleaning data of part 2...\n');
-fprintf('Condition FreePlay...\n');
+fprintf('\n<strong>Cleaning data of participant 2...</strong>\n');
+fprintf('<strong>Condition FreePlay...</strong>\n');
 ft_warning off;
 data.FP.part2 = ft_rejectartifact(artifact.FP.part2, data.FP.part2);
 if strcmp(target, 'dual')
   ft_warning off;
   data.FP.part2 = ft_rejectartifact(artifact.FP.part1, data.FP.part2);
 end
-fprintf('Condition PredDiff...\n');
+fprintf('<strong>Condition PredDiff...</strong>\n');
 ft_warning off;
 data.PD.part2 = ft_rejectartifact(artifact.PD.part2, data.PD.part2);
 if strcmp(target, 'dual')
   ft_warning off;
   data.PD.part2 = ft_rejectartifact(artifact.PD.part1, data.PD.part2);
 end
-fprintf('Condition PredSame...\n');
+fprintf('<strong>Condition PredSame...</strong>\n');
 ft_warning off;
 data.PS.part2 = ft_rejectartifact(artifact.PS.part2, data.PS.part2);
 if strcmp(target, 'dual')
   ft_warning off;
   data.PS.part2 = ft_rejectartifact(artifact.PS.part1, data.PS.part2);
 end
-fprintf('Condition Control...\n');
+fprintf('<strong>Condition Control...</strong>\n');
 ft_warning off;
 data.C.part2 = ft_rejectartifact(artifact.C.part2, data.C.part2);
 if strcmp(target, 'dual')

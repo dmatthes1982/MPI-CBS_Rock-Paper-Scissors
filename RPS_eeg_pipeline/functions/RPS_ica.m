@@ -35,13 +35,13 @@ cfg.updatesens    = 'no';
 cfg.showcallinfo  = 'no';
 
 if isfield(data, 'part1')
-  fprintf('\nICA decomposition for participant 1...\n\n');
+  fprintf('\n<strong>ICA decomposition for participant 1...</strong>\n\n');
   data.part1 = ft_componentanalysis(cfg, data.part1);
   
-  fprintf('\nICA decomposition for participant 2...\n\n');
+  fprintf('\n<strong>ICA decomposition for participant 2...</strong>\n\n');
   data.part2 = ft_componentanalysis(cfg, data.part2);
 else
-  fprintf('\nICA decomposition for participant 1...\n');
+  fprintf('\n<strong>ICA decomposition for participant 1...</strong>\n');
   fprintf('Condition FreePlay...\n');
   data.FP.part1   = ft_componentanalysis(data.FP.part1); 
   fprintf('Condition PredDiff...\n');
@@ -51,7 +51,7 @@ else
   fprintf('Condition Control...\n');        
   data.C.part1   = ft_componentanalysis(data.C.part1); 
 
-  fprintf('\nICA decomposition for participant 2...\n');
+  fprintf('\n<strong>ICA decomposition for participant 2...</strong>\n');
   fprintf('Condition FreePlay...\n');
   data.FP.part2   = ft_componentanalysis(data.FP.part2); 
   fprintf('Condition PredDiff...\n');

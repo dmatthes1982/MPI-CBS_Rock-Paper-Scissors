@@ -42,62 +42,62 @@ cfgAllArt.C     = cfgTmp;
 % Check Data
 % -------------------------------------------------------------------------
 
-fprintf('\nSearch for artifacts with part 1...\n');
+fprintf('\n<strong>Search for artifacts with participant 1...</strong>\n');
 cfg.part = 1;
 
-fprintf('Condition FreePlay...\n');
+fprintf('<strong>Condition FreePlay...</strong>\n');
 cfg.artifact = artifact.FP.part1.artfctdef.threshold.artifact;
 cfg.condition = 1;
 ft_warning off;
 cfgAllArt.FP.part1 = RPS_databrowser(cfg, data);
 cfgAllArt.FP.part1 = keepfields(cfgAllArt.FP.part1, {'artfctdef', 'showcallinfo'});
   
-fprintf('Condition PredDiff...\n');
+fprintf('<strong>Condition PredDiff...</strong>\n');
 cfg.artifact = artifact.PD.part1.artfctdef.threshold.artifact;
 cfg.condition = 2;
 ft_warning off;
 cfgAllArt.PD.part1 = RPS_databrowser(cfg, data);
 cfgAllArt.PD.part1 = keepfields(cfgAllArt.PD.part1, {'artfctdef', 'showcallinfo'});
   
-fprintf('Condition PredSame...\n');
+fprintf('<strong>Condition PredSame...</strong>\n');
 cfg.artifact = artifact.PS.part1.artfctdef.threshold.artifact;
 cfg.condition = 3;
 ft_warning off;
 cfgAllArt.PS.part1 = RPS_databrowser(cfg, data);
 cfgAllArt.PS.part1 = keepfields(cfgAllArt.PS.part1, {'artfctdef', 'showcallinfo'});
   
-fprintf('Condition Control...\n');
+fprintf('<strong>Condition Control...</strong>\n');
 cfg.artifact = artifact.C.part1.artfctdef.threshold.artifact;
 cfg.condition = 4;
 ft_warning off;
 cfgAllArt.C.part1 = RPS_databrowser(cfg, data);
 cfgAllArt.C.part1 = keepfields(cfgAllArt.C.part1, {'artfctdef', 'showcallinfo'});
   
-fprintf('\nSearch for artifacts with part 2...\n');
+fprintf('\n<strong>Search for artifacts with participant 2...</strong>\n');
 cfg.part = 2;
 
-fprintf('Condition FreePlay...\n');
+fprintf('<strong>Condition FreePlay...</strong>\n');
 cfg.artifact = artifact.FP.part2.artfctdef.threshold.artifact;
 cfg.condition = 1;
 ft_warning off;
 cfgAllArt.FP.part2 = RPS_databrowser(cfg, data);
 cfgAllArt.FP.part2 = keepfields(cfgAllArt.FP.part2, {'artfctdef', 'showcallinfo'});
   
-fprintf('Condition PredDiff...\n');
+fprintf('<strong>Condition PredDiff...</strong>\n');
 cfg.artifact = artifact.PD.part2.artfctdef.threshold.artifact;
 cfg.condition = 2;
 ft_warning off;
 cfgAllArt.PD.part2 = RPS_databrowser(cfg, data);
 cfgAllArt.PD.part2 = keepfields(cfgAllArt.PD.part2, {'artfctdef', 'showcallinfo'});
   
-fprintf('Condition PredSame...\n');
+fprintf('<strong>Condition PredSame...</strong>\n');
 cfg.artifact = artifact.PS.part2.artfctdef.threshold.artifact;
 cfg.condition = 3;
 ft_warning off;
 cfgAllArt.PS.part2 = RPS_databrowser(cfg, data);
 cfgAllArt.PS.part2 = keepfields(cfgAllArt.PS.part2, {'artfctdef', 'showcallinfo'});
   
-fprintf('Condition Control...\n');
+fprintf('<strong>Condition Control...</strong>\n');
 cfg.artifact = artifact.C.part2.artfctdef.threshold.artifact;
 cfg.condition = 4;
 ft_warning off;

@@ -44,7 +44,8 @@ cfg.overlap         = overlap;
 % -------------------------------------------------------------------------
 % Segmentation
 % -------------------------------------------------------------------------
-fprintf('Segment data of participant 1...\n');
+fprintf('<strong>Segment data of participant 1 in segments of %d sec...</strong>\n', ...
+        segLength);
 ft_info off;
 ft_warning off;
 fprintf('Condition FreePlay...\n');
@@ -62,7 +63,8 @@ ft_warning off;
 fprintf('Condition Control...\n');
 data.C.part1 = ft_redefinetrial(cfg, data.C.part1);
     
-fprintf('Segment data of participant 2...\n');
+fprintf('<strong>Segment data of participant 2 in segments of %d sec...</strong>\n', ...
+        segLength);
 ft_info off;
 ft_warning off;
 fprintf('Condition FreePlay...\n');

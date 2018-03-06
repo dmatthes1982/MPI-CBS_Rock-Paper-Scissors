@@ -75,7 +75,7 @@ cfgDS.showcallinfo     = 'no';                                              % pr
 % -------------------------------------------------------------------------
 % Preprocessing
 % -------------------------------------------------------------------------
-fprintf('Preproc participant 1...\n');
+fprintf('<strong>Preproc participant 1...</strong>\n');
 fprintf('Condition FreePlay...\n');
 orgFs = data.FP.part1.fsample;
 data.FP.part1   = bpfilter(cfgBP, data.FP.part1);
@@ -116,7 +116,7 @@ else
   data.C.part1.fsample = orgFs;
 end
 
-fprintf('Preproc participant 2...\n');
+fprintf('<strong>Preproc participant 2...</strong>\n');
 fprintf('Condition FreePlay...\n');
 orgFs = data.FP.part2.fsample;
 data.FP.part2   = bpfilter(cfgBP, data.FP.part2);

@@ -21,6 +21,7 @@ function [ data_badchan ] = RPS_selectBadChan( data_raw )
 % -------------------------------------------------------------------------
 participants  = [1,1,1,1,2,2,2,2];
 conditions    = [1,2,3,4,1,2,3,4];
+condString    = {'FP','PD','PS','C','FP','PD','PS','C'};
 
 for i = 1:1:8
 % -------------------------------------------------------------------------
@@ -35,8 +36,8 @@ for i = 1:1:8
 % -------------------------------------------------------------------------
 % Selection of bad channels
 % -------------------------------------------------------------------------
-  fprintf('Select bad channels of participant %d in condition %d...\n', ...
-          cfg.part, cfg.condition);
+  fprintf('<strong>Select bad channels of participant %d in condition %s...</strong>\n', ...
+          cfg.part, condString{i});
   RPS_databrowser( cfg, data_raw );
   badLabel = RPS_channelCheckbox();
   close(gcf);                                                               % close also databrowser view when the channelCheckbox will be closed

@@ -15,7 +15,7 @@ function [ data ] = RPS_removeEOGArt( data_eogcomp, data )
 
 % Copyright (C) 2017, Daniel Matthes, MPI CBS
 
-fprintf('Cleanig data of participant 1 from eye-artifacts...\n');
+fprintf('<strong>Cleanig data of participant 1 from eye-artifacts...</strong>\n');
 fprintf('Condition FreePlay...\n');
 data.FP.part1 = removeArtifacts(data_eogcomp.part1, data.FP.part1);
 fprintf('Condition PredDiff...\n');
@@ -25,7 +25,7 @@ data.PS.part1 = removeArtifacts(data_eogcomp.part1, data.PS.part1);
 fprintf('Condition Control...\n');        
 data.C.part1 = removeArtifacts(data_eogcomp.part1, data.C.part1);
 
-fprintf('Cleanig data of participant 2 from eye-artifacts...\n');
+fprintf('<strong>Cleanig data of participant 2 from eye-artifacts...</strong>\n');
 fprintf('Condition FreePlay...\n');
 data.FP.part2 = removeArtifacts(data_eogcomp.part2, data.FP.part2);
 fprintf('Condition PredDiff...\n');

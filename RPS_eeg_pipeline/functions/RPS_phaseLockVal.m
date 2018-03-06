@@ -46,7 +46,7 @@ dataPLV.dyad = [];
 for condition = 1:1:4
   switch condition
     case 1
-      fprintf('Calc PLVs with a center frequency of %d Hz...\n', ...           
+      fprintf('<strong>Calc PLVs with a center frequency of %d Hz...</strong>\n', ...           
          data.centerFreq);
       fprintf('Condition FreePlay...\n');
       dataTmp = data.FP;

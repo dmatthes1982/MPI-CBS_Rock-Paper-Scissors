@@ -45,7 +45,7 @@ cfg.showcallinfo    = 'no';                                                 % su
 % -------------------------------------------------------------------------
 % Time-Frequency Response (Analysis)
 % -------------------------------------------------------------------------
-fprintf('Calc TFRs of participant 1...\n');
+fprintf('<strong>Calc TFRs of participant 1...</strong>\n');
 ft_warning off;
 fprintf('Condition FreePlay...\n');
 data.FP.part1 = ft_freqanalysis(cfg, data.FP.part1);
@@ -60,7 +60,7 @@ fprintf('Condition Control...\n');
 data.C.part1 = ft_freqanalysis(cfg, data.C.part1);
 
   
-fprintf('Calc TFRs of participant 2...\n');
+fprintf('<strong>Calc TFRs of participant 2...</strong>\n');
 ft_warning off;
 fprintf('Condition FreePlay...\n');
 data.FP.part2 = ft_freqanalysis(cfg, data.FP.part2);

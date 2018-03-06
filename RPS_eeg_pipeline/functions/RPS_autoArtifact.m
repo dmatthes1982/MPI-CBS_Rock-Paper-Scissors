@@ -90,7 +90,7 @@ cfgAutoArt.C.trialsNum = size(trl.C, 1);
 for condition = 1:1:8
   switch condition
     case 1
-      fprintf('Estimate artifacts in participant 1...\n');
+      fprintf('<strong>Estimate artifacts in participant 1...</strong>\n');
       fprintf('Condition FreePlay...\n');
       dataTmp = data.FP.part1;
       cfg.trl = trl.FP;
@@ -107,7 +107,7 @@ for condition = 1:1:8
       dataTmp = data.C.part1;
       cfg.trl = trl.C;
     case 5
-      fprintf('\nEstimate artifacts in participant 2...\n');
+      fprintf('\n<strong>Estimate artifacts in participant 2...</strong>\n');
       fprintf('Condition FreePlay...\n');
       dataTmp = data.FP.part2;
       cfg.trl = trl.FP;
