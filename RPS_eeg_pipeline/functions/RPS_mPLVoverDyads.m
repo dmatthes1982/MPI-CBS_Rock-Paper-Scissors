@@ -8,8 +8,8 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/07c_mplv/')
 %   cfg.session   = session number (default: 1)
-%   cfg.passband  = select passband of interest (default: 10Hz)
-%                   (accepted values: 10Hz, 20 Hz)
+%   cfg.passband  = select passband of interest (default: alpha)
+%                   (accepted values: alpha, beta, gamma, gammahigh)
 %
 % This function requires the fieldtrip toolbox
 % 
@@ -23,13 +23,13 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 path      = ft_getopt(cfg, 'path', ...
               '/data/pt_01843/eegData/DualEEG_RPS_processedData/07c_mplv/');
 session   = ft_getopt(cfg, 'session', 1);
-passband  = ft_getopt(cfg, 'passband', '10Hz');
+passband  = ft_getopt(cfg, 'passband', 'alpha');
 
-bands     = {'10Hz', '20Hz'};
-suffix    = {'10Hz', '20Hz'};
+bands     = {'alpha', 'beta', 'gamma', 'gammahigh'};
+suffix    = {'Alpha', 'Beta', 'Gamma', 'Gammahigh'};
 
 if ~any(strcmp(passband, bands))
-  error('Define cfg.passband could only be ''10Hz'', ''20Hz''.');
+  error('Define cfg.passband could only be ''alpha'', ''beta'', ''gamma'' or ''gammahigh''.');
 else
   fileSuffix = suffix{strcmp(passband, bands)};
 end
@@ -154,6 +154,7 @@ function dataTmp = fixTrialOrder( dataTmp, trInf, trInfOrg, dyadNum )
 
 condition = {'FP', 'PD', 'PS', 'C'};                                        % condition acronyms
 emptyMatrix = NaN * ones(size(dataTmp{1}{1}, 1), size(dataTmp{1}{1}, 2));   % empty matrix with NaNs
+fixed = false;
 
 for k = 1:1:4
   for l = 1:1:size(dataTmp, 2)

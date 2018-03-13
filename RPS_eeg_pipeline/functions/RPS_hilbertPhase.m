@@ -102,8 +102,10 @@ for trial=1:1:trialNum
     Val2low = length(find(hilbert_avRatio(trial, :) < 10));
     
     if (Val2low ~= 0)
+      warning('off','backtrace');
       warning('Hilbert average ratio in trial %d is %d time(s) below 10.', ...
              trial, Val2low);
+      warning('on','backtrace');
     end
 end
 

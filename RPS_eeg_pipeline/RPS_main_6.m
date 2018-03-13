@@ -44,53 +44,77 @@ for i = numOfPart
   
   filtCoeffDiv = 500 / data_eyecor.FP.part1.fsample;                        % estimate sample frequency dependent divisor of filter length
 
-  % bandpass filter data at 10Hz
+  % bandpass filter data at alpha (8-12 Hz)
   cfg           = [];
-  cfg.bpfreq    = [9 11];
+  cfg.bpfreq    = [8 12];
   cfg.filtorder = fix(250 / filtCoeffDiv);
   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
                    '-H1', 'H2'}; 
   
-  data_bpfilt_10Hz = RPS_bpFiltering(cfg, data_eyecor);
+  data_bpfilt_alpha = RPS_bpFiltering(cfg, data_eyecor);
   
   % export the filtered data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '06a_bpfilt/');
-  cfg.filename    = sprintf('RPS_d%02d_06a_bpfilt10Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_06a_bpfiltAlpha', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving bandpass filtered data (10Hz) of dyad %d in:\n', i); 
+  fprintf('Saving bandpass filtered data (alpha: 8-12Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_bpfilt_10Hz', data_bpfilt_10Hz);
+  RPS_saveData(cfg, 'data_bpfilt_alpha', data_bpfilt_alpha);
   fprintf('Data stored!\n\n');
-  clear data_bpfilt_10Hz
+  clear data_bpfilt_alpha
 
-  % bandpass filter data at 20Hz
+  % bandpass filter data at beta (13-30Hz)
   cfg           = [];
-  cfg.bpfreq    = [19 21];
+  cfg.bpfreq    = [13 30];
   cfg.filtorder = fix(250 / filtCoeffDiv);
   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
-                   '-H1', 'H2'}; 
+                   '-H1', 'H2'};
   
-  data_bpfilt_20Hz = RPS_bpFiltering(cfg, data_eyecor);
+  data_bpfilt_beta = RPS_bpFiltering(cfg, data_eyecor);
 
   % export the filtered data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '06a_bpfilt/');
-  cfg.filename    = sprintf('RPS_d%02d_06a_bpfilt20Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_06a_bpfiltBeta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving bandpass filtered data (20Hz) of dyad %d in:\n', i); 
+  fprintf('Saving bandpass filtered data (beta: 13-30Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_bpfilt_20Hz', data_bpfilt_20Hz);
+  RPS_saveData(cfg, 'data_bpfilt_beta', data_bpfilt_beta);
   fprintf('Data stored!\n\n');
-  clear data_bpfilt_20Hz data_eyecor 
+  clear data_bpfilt_beta
+  
+  % bandpass filter data at gamma (31-100Hz)
+  cfg           = [];
+  cfg.bpfreq    = [31 100];
+  cfg.filtorder = fix(250 / filtCoeffDiv);
+   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
+                   '-H1', 'H2'};
+  
+  data_bpfilt_gamma = RPS_bpFiltering(cfg, data_eyecor);
+
+  % export the filtered data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '06a_bpfilt/');
+  cfg.filename    = sprintf('RPS_d%02d_06a_bpfiltGamma', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving bandpass filtered data (beta: 31-100Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_bpfilt_gamma', data_bpfilt_gamma);
+  fprintf('Data stored!\n\n');
+  clear data_bpfilt_gamma data_eyecor
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,55 +123,80 @@ end
 for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n', i);
    
-  % calculate hilbert phase at 10Hz
+  % calculate hilbert phase at alpha (8-12Hz)
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '06a_bpfilt/');
-  cfg.filename    = sprintf('RPS_d%02d_06a_bpfilt10Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_06a_bpfiltAlpha', i);
   cfg.sessionStr  = sessionStr;
-  fprintf('Load the at 10Hz bandpass filtered data...\n');
+  fprintf('Load the at alpha (8-12Hz) bandpass filtered data ...\n');
   RPS_loadData( cfg );
   
-  data_hilbert_10Hz = RPS_hilbertPhase(data_bpfilt_10Hz);
+  data_hilbert_alpha = RPS_hilbertPhase(data_bpfilt_alpha);
   
   % export the hilbert phase data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '06b_hilbert/');
-  cfg.filename    = sprintf('RPS_d%02d_06b_hilbert10Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertAlpha', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving Hilbert phase data (10Hz) of dyad %d in:\n', i); 
+  fprintf('Saving Hilbert phase data (alpha: 8-12Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hilbert_10Hz', data_hilbert_10Hz);
+  RPS_saveData(cfg, 'data_hilbert_alpha', data_hilbert_alpha);
   fprintf('Data stored!\n\n');
-  clear data_hilbert_10Hz data_bpfilt_10Hz
+  clear data_hilbert_alpha data_bpfilt_alpha
   
-  % calculate hilbert phase at 20Hz
+  % calculate hilbert phase at beta (13-30Hz)
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '06a_bpfilt/');
-  cfg.filename    = sprintf('RPS_d%02d_06a_bpfilt20Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_06a_bpfiltBeta', i);
   cfg.sessionStr  = sessionStr;
-  fprintf('Load the at 20Hz bandpass filtered data...\n');
+  fprintf('Load the at beta (13-30Hz) bandpass filtered data ...\n');
   RPS_loadData( cfg );
   
-  data_hilbert_20Hz = RPS_hilbertPhase(data_bpfilt_20Hz);
+  data_hilbert_beta = RPS_hilbertPhase(data_bpfilt_beta);
   
   % export the hilbert phase data into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '06b_hilbert/');
-  cfg.filename    = sprintf('RPS_d%02d_06b_hilbert20Hz', i);
+  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertBeta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving Hilbert phase data (20Hz) of dyad %d in:\n', i); 
+  fprintf('Saving Hilbert phase data (beta: 13-30Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hilbert_20Hz', data_hilbert_20Hz);
+  RPS_saveData(cfg, 'data_hilbert_beta', data_hilbert_beta);
   fprintf('Data stored!\n\n');
-  clear data_hilbert_20Hz data_bpfilt_20Hz
+  clear data_hilbert_beta data_bpfilt_beta
+  
+  % calculate hilbert phase at gamma (31-100Hz)
+  cfg             = [];
+  cfg.srcFolder   = strcat(desPath, '06a_bpfilt/');
+  cfg.filename    = sprintf('RPS_d%02d_06a_bpfiltGamma', i);
+  cfg.sessionStr  = sessionStr;
+  fprintf('Load the at gamma (31-100Hz) bandpass filtered data ...\n');
+  RPS_loadData( cfg );
+  
+  data_hilbert_gamma = RPS_hilbertPhase(data_bpfilt_gamma);
+  
+  % export the hilbert phase data into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '06b_hilbert/');
+  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertGamma', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving Hilbert phase data (gamma: 31-100Hz) of dyad %d in:\n', i); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_hilbert_gamma', data_hilbert_gamma);
+  fprintf('Data stored!\n\n');
+  clear data_hilbert_gamma data_bpfilt_gamma
 end
 
 %% clear workspace

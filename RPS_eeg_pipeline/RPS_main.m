@@ -307,12 +307,12 @@ switch part
     tmpPath = strcat(desPath, '04b_eyecor/');
     fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '06b_hilbert/');
-    fileNamePost = strcat(tmpPath, 'RPS_d*_06b_hilbert20Hz_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_06b_hilbertGamma_', sessionStr, '.mat');
   case 7
     tmpPath = strcat(desPath, '06b_hilbert/');
-    fileNamePre = strcat(tmpPath, 'RPS_d*_06b_hilbert20Hz_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'RPS_d*_06b_hilbertGamma_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '07c_mplv/');
-    fileNamePost = strcat(tmpPath, 'RPS_d*_07c_mplv20Hz_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_07c_mplvGamma_', sessionStr, '.mat');
   case 8
     tmpPath = strcat(desPath, '04b_eyecor/');
     fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
