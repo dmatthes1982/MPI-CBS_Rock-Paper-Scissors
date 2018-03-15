@@ -77,6 +77,32 @@ while selection == false
 end
 fprintf('\n');
 
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Please select your favoured bandpass for preprocessing:\n');
+  fprintf('[1] - Regular bandpass 1...48 Hz \n');
+  fprintf('[2] - Extended bandpass 1...200 Hz with dft filter for line noise removal\n');
+  x = input('Option: ');
+
+  switch x
+    case 1
+      selection = true;
+      bpRange = [1 48];
+      bandpass = {'[1 48]'};
+      lnRemoval = 'no';
+      lineNoiseFilt = {'n'};
+    case 2
+      selection = true;
+      bpRange = [1 200];
+      bandpass = {'[1 200]'};
+      lnRemoval = 'yes';
+      lineNoiseFilt = {'y'};
+    otherwise
+      cprintf([1,0.5,0], 'Wrong input!\n');
+  end
+end
+fprintf('\n');
+
 % Write selected settings to settings file
 file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
 if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
@@ -89,11 +115,13 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
 end
 
 T = readtable(file_path);                                                   % update settings table
-delete(file_path);
 warning off;
 T.fsample(numOfPart) = samplingRate;
 T.reference(numOfPart) = reference;
+T.bandpass(numOfPart) = bandpass;
+T.lineNoiseFilt(numOfPart) = lineNoiseFilt;
 warning on;
+delete(file_path);
 writetable(T, file_path);
 
 for i = numOfPart
@@ -107,9 +135,11 @@ for i = numOfPart
   RPS_loadData( cfg );
   
   cfg                   = [];
-  cfg.bpfreq            = [1 48];                                           % passband from 1 to 48 Hz
+  cfg.bpfreq            = bpRange;                                          % passband from 1 to either 48 or 200 Hz
   cfg.bpfilttype        = 'but';
   cfg.bpinstabilityfix  = 'split';
+  cfg.dftfilter         = lnRemoval;                                        % dft filter for additional line noise removal
+  cfg.dftfreq           = [50 100 150];
   cfg.samplingRate      = samplingRate;
   cfg.refchannel        = refchannel;
   
@@ -134,4 +164,4 @@ end
 
 %% clear workspace
 clear file_path cfg sourceList numOfSources i selection samplingRate x ...
-      refchannel reference T
+      refchannel reference T bandpass bpRange lineNoiseFilt lnRemoval

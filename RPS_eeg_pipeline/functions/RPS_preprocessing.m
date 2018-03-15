@@ -10,6 +10,8 @@ function [ data ] = RPS_preprocessing( cfg, data )
 %   cfg.bpfreq            = passband range [begin end] (default: [0.1 48])
 %   cfg.bpfilttype        = bandpass filter type, 'but' or 'fir' (default: fir')
 %   cfg.bpinstabilityfix  = deal with filter instability, 'no' or 'split' (default: 'no')
+%   cfg.dftfilter         = 'no' or 'yes'  line noise removal using discrete fourier transform (default = 'no')
+%   cfg.dftfreq           = line noise frequencies in Hz for DFT filter (default = [50 100 150])
 %   cfg.reref             = re-referencing: 'yes' or 'no' (default: 'yes')
 %   cfg.refchannel        = re-reference channel (default: 'TP10')
 %   cfg.samplingRate      = sampling rate in Hz (default: 500)
@@ -28,6 +30,8 @@ function [ data ] = RPS_preprocessing( cfg, data )
 bpfreq            = ft_getopt(cfg, 'bpfreq', [0.1 48]);
 bpfilttype        = ft_getopt(cfg, 'bpfilttype', 'fir');
 bpinstabilityfix  = ft_getopt(cfg, 'bpinstabilityfix', 'no');
+dftfilter         = ft_getopt(cfg, 'dftfilter', 'no');
+dftfreq           = ft_getopt(cfg, 'dftfreq', [50 100 150]);
 reref             = ft_getopt(cfg, 'reref', 'yes');
 refchannel        = ft_getopt(cfg, 'refchannel', 'TP10');
 samplingRate      = ft_getopt(cfg, 'samplingRate', 500);
@@ -45,6 +49,8 @@ cfgBP.bpfilter          = 'yes';                                            % us
 cfgBP.bpfreq            = bpfreq;                                           % bandpass range  
 cfgBP.bpfilttype        = bpfilttype;                                       % bandpass filter type = fir      
 cfgBP.bpinstabilityfix  = bpinstabilityfix;                                 % deal with filter instability
+cfgBP.dftfilter         = dftfilter;                                        % dft filter for line noise removal
+cfgBP.dftfreq           = dftfreq;                                          % line noise frequencies
 cfgBP.channel           = 'all';                                            % use all channels
 cfgBP.trials            = 'all';                                            % use all trials
 cfgBP.feedback          = 'no';                                             % feedback should not be presented

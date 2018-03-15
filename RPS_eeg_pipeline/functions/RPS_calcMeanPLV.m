@@ -19,7 +19,7 @@ function [ data ] = RPS_calcMeanPLV( data )
 for condition=1:1:4
   switch condition
     case 1
-      fprintf('<strong>Calc mean PLVs with a center frequency of %d Hz...</strong>\n', ...           
+      fprintf('<strong>Calc mean PLVs with a center frequency of %g Hz...</strong>\n', ...           
           data.centerFreq);
       fprintf('Condition FreePlay...\n');
       dataTmp = data.FP;

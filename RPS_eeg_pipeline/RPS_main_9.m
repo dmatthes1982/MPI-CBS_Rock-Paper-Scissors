@@ -83,7 +83,7 @@ if avgOverDyads == true
   
   % gamma
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '10a_mplvod/');
+  cfg.desFolder   = strcat(desPath, '09a_mplvod/');
   cfg.filename    = 'RPS_10a_mplvodGamma';
   cfg.sessionStr  = sessionStr;
 
@@ -93,7 +93,7 @@ if avgOverDyads == true
   fprintf('Saving mean PLVs over dyads at gamma (31-100Hz) in:\n'); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_mplvod_gamma', data_mplvod_gamma);
-  fprintf('Data stored!\n\n');
+  fprintf('Data stored!\n');
   clear data_mplvod_gamma
 end
   
