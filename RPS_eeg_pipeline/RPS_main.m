@@ -1,12 +1,13 @@
 % -------------------------------------------------------------------------
 % Add directory and subfolders to path
 % -------------------------------------------------------------------------
+clc;
 RPS_init;
 
 cprintf([0,0.6,0], '<strong>----------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>Rock, paper, scissor project - data processing</strong>\n');
 cprintf([0,0.6,0], '<strong>Version: 0.2</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2017, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], 'Copyright (C) 2017-2018, Daniel Matthes, MPI CBS\n');
 cprintf([0,0.6,0], '<strong>----------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
