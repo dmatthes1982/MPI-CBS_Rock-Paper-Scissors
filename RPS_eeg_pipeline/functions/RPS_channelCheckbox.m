@@ -17,111 +17,142 @@ SelectBadChannels = uifigure;
 SelectBadChannels.Position = [150 400 535 210];
 SelectBadChannels.Name = 'Select bad channels';
 
+warningLabel = uilabel(SelectBadChannels);
+warningLabel.Position = [55 180 410 15];
+warningLabel.FontColor = [1,0.5,0];
+warningLabel.Text = '';
+
 % Create F7CheckBox
-F7 = uicheckbox(SelectBadChannels);
-F7.Text = 'F7';
-F7.Position = [45 150 80 15];
+Elec.F7 = uicheckbox(SelectBadChannels);
+Elec.F7.Text = 'F7';
+Elec.F7.Position = [45 150 80 15];
 % Create FzCheckBox
-Fz = uicheckbox(SelectBadChannels);
-Fz.Text = 'Fz';
-Fz.Position = [125 150 80 15];
+Elec.Fz = uicheckbox(SelectBadChannels);
+Elec.Fz.Text = 'Fz';
+Elec.Fz.Position = [125 150 80 15];
 % Create F8CheckBox
-F8 = uicheckbox(SelectBadChannels);
-F8.Text = 'F8';
-F8.Position = [205 150 80 15];
+Elec.F8 = uicheckbox(SelectBadChannels);
+Elec.F8.Text = 'F8';
+Elec.F8.Position = [205 150 80 15];
 % Create FC5CheckBox
-FC5 = uicheckbox(SelectBadChannels);
-FC5.Text = 'FC5';
-FC5.Position = [285 150 80 15];
+Elec.FC5 = uicheckbox(SelectBadChannels);
+Elec.FC5.Text = 'FC5';
+Elec.FC5.Position = [285 150 80 15];
 % Create FC1CheckBox
-FC1 = uicheckbox(SelectBadChannels);
-FC1.Text = 'FC1';
-FC1.Position = [365 150 80 15];
+Elec.FC1 = uicheckbox(SelectBadChannels);
+Elec.FC1.Text = 'FC1';
+Elec.FC1.Position = [365 150 80 15];
 % Create FC2CheckBox
-FC2 = uicheckbox(SelectBadChannels);
-FC2.Text = 'FC2';
-FC2.Position = [445 150 80 15];
+Elec.FC2 = uicheckbox(SelectBadChannels);
+Elec.FC2.Text = 'FC2';
+Elec.FC2.Position = [445 150 80 15];
 
 % Create FC6CheckBox
-FC6 = uicheckbox(SelectBadChannels);
-FC6.Text = 'FC6';
-FC6.Position = [45 125 80 15];
+Elec.FC6 = uicheckbox(SelectBadChannels);
+Elec.FC6.Text = 'FC6';
+Elec.FC6.Position = [45 125 80 15];
 % Create T7CheckBox
-T7 = uicheckbox(SelectBadChannels);
-T7.Text = 'T7';
-T7.Position = [125 125 80 15];
+Elec.T7 = uicheckbox(SelectBadChannels);
+Elec.T7.Text = 'T7';
+Elec.T7.Position = [125 125 80 15];
 % Create C3CheckBox
-C3 = uicheckbox(SelectBadChannels);
-C3.Text = 'C3';
-C3.Position = [205 125 80 15];
+Elec.C3 = uicheckbox(SelectBadChannels);
+Elec.C3.Text = 'C3';
+Elec.C3.Position = [205 125 80 15];
 % Create CzCheckBox
-Cz = uicheckbox(SelectBadChannels);
-Cz.Text = 'Cz';
-Cz.Position = [285 125 80 15];
+Elec.Cz = uicheckbox(SelectBadChannels);
+Elec.Cz.Text = 'Cz';
+Elec.Cz.Position = [285 125 80 15];
 % Create C4CheckBox
-C4 = uicheckbox(SelectBadChannels);
-C4.Text = 'C4';
-C4.Position = [365 125 80 15];
+Elec.C4 = uicheckbox(SelectBadChannels);
+Elec.C4.Text = 'C4';
+Elec.C4.Position = [365 125 80 15];
 % Create T8CheckBox
-T8 = uicheckbox(SelectBadChannels);
-T8.Text = 'T8';
-T8.Position = [445 125 80 15];
+Elec.T8 = uicheckbox(SelectBadChannels);
+Elec.T8.Text = 'T8';
+Elec.T8.Position = [445 125 80 15];
 
 % Create FCzCheckBox
-FCz = uicheckbox(SelectBadChannels);
-FCz.Text = 'FCz';
-FCz.Position = [45 100 80 15];
+Elec.FCz = uicheckbox(SelectBadChannels);
+Elec.FCz.Text = 'FCz';
+Elec.FCz.Position = [45 100 80 15];
 % Create CP1CheckBox
-CP1 = uicheckbox(SelectBadChannels);
-CP1.Text = 'CP1';
-CP1.Position = [125 100 80 15];
+Elec.CP1 = uicheckbox(SelectBadChannels);
+Elec.CP1.Text = 'CP1';
+Elec.CP1.Position = [125 100 80 15];
 % Create CP2CheckBox
-CP2 = uicheckbox(SelectBadChannels);
-CP2.Text = 'CP2';
-CP2.Position = [205 100 80 15];
+Elec.CP2 = uicheckbox(SelectBadChannels);
+Elec.CP2.Text = 'CP2';
+Elec.CP2.Position = [205 100 80 15];
 % Create TP10CheckBox
-TP10 = uicheckbox(SelectBadChannels);
-TP10.Text = 'TP10';
-TP10.Position = [285 100 80 15];
+Elec.TP10 = uicheckbox(SelectBadChannels);
+Elec.TP10.Text = 'TP10';
+Elec.TP10.Position = [285 100 80 15];
 % Create P7CheckBox
-P7 = uicheckbox(SelectBadChannels);
-P7.Text = 'P7';
-P7.Position = [365 100 80 15];
+Elec.P7 = uicheckbox(SelectBadChannels);
+Elec.P7.Text = 'P7';
+Elec.P7.Position = [365 100 80 15];
 % Create P3CheckBox
-P3 = uicheckbox(SelectBadChannels);
-P3.Text = 'P3';
-P3.Position = [445 100 80 15];
+Elec.P3 = uicheckbox(SelectBadChannels);
+Elec.P3.Text = 'P3';
+Elec.P3.Position = [445 100 80 15];
 
 % Create PzCheckBox
-Pz = uicheckbox(SelectBadChannels);
-Pz.Text = 'Pz';
-Pz.Position = [45 75 80 15];
+Elec.Pz = uicheckbox(SelectBadChannels);
+Elec.Pz.Text = 'Pz';
+Elec.Pz.Position = [45 75 80 15];
 % Create P4CheckBox
-P4 = uicheckbox(SelectBadChannels);
-P4.Text = 'P4';
-P4.Position = [125 75 80 15];
+Elec.P4 = uicheckbox(SelectBadChannels);
+Elec.P4.Text = 'P4';
+Elec.P4.Position = [125 75 80 15];
 % Create P8CheckBox
-P8 = uicheckbox(SelectBadChannels);
-P8.Text = 'P8';
-P8.Position = [205 75 80 15];
+Elec.P8 = uicheckbox(SelectBadChannels);
+Elec.P8.Text = 'P8';
+Elec.P8.Position = [205 75 80 15];
 % Create O1CheckBox
-O1 = uicheckbox(SelectBadChannels);
-O1.Text = 'O1';
-O1.Position = [285 75 80 15];
+Elec.O1 = uicheckbox(SelectBadChannels);
+Elec.O1.Text = 'O1';
+Elec.O1.Position = [285 75 80 15];
 % Create OzCheckBox
-Oz = uicheckbox(SelectBadChannels);
-Oz.Text = 'Oz';
-Oz.Position = [365 75 80 15];
+Elec.Oz = uicheckbox(SelectBadChannels);
+Elec.Oz.Text = 'Oz';
+Elec.Oz.Position = [365 75 80 15];
 % Create O2CheckBox
-O2 = uicheckbox(SelectBadChannels);
-O2.Text = 'O2';
-O2.Position = [445 75 80 15];
+Elec.O2 = uicheckbox(SelectBadChannels);
+Elec.O2.Text = 'O2';
+Elec.O2.Position = [445 75 80 15];
 
 % Create SaveButton
 btn = uibutton(SelectBadChannels, 'push');
 btn.ButtonPushedFcn = @(btn, evt)SaveButtonPushed(SelectBadChannels);
 btn.Position = [217 27 101 21];
 btn.Text = 'Save';
+
+% Create ValueChangedFcn pointers
+Elec.F7.ValueChangedFcn = @(F7, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.Fz.ValueChangedFcn = @(Fz, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.F8.ValueChangedFcn = @(F8, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.FC5.ValueChangedFcn = @(FC5, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.FC1.ValueChangedFcn = @(FC1, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.FC2.ValueChangedFcn = @(FC2, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.FC6.ValueChangedFcn = @(FC6, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.T7.ValueChangedFcn = @(T7, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.C3.ValueChangedFcn = @(C3, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.Cz.ValueChangedFcn = @(Cz, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.C4.ValueChangedFcn = @(C4, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.T8.ValueChangedFcn = @(T8, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.FCz.ValueChangedFcn = @(FCz, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.CP1.ValueChangedFcn = @(CP1, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.CP2.ValueChangedFcn = @(CP2, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.TP10.ValueChangedFcn = @(TP10, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.P7.ValueChangedFcn = @(P7, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.P3.ValueChangedFcn = @(P3, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.Pz.ValueChangedFcn = @(Pz, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.P4.ValueChangedFcn = @(P4, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.P8.ValueChangedFcn = @(P8, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.O1.ValueChangedFcn = @(O1, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.Oz.ValueChangedFcn = @(Oz, evt)CheckboxValueChanged(Elec, warningLabel, btn);
+Elec.O2.ValueChangedFcn = @(O2, evt)CheckboxValueChanged(Elec, warningLabel, btn);
 
 % -------------------------------------------------------------------------
 % Wait for user input and return selection after btn 'save' was pressed
@@ -130,11 +161,14 @@ btn.Text = 'Save';
 uiwait(SelectBadChannels);
 
 if ishandle(SelectBadChannels)                                              % if gui still exists
-  badLabel = [F7.Value; Fz.Value; F8.Value; FC5.Value; FC1.Value; ...       % return existing selection
-              FC2.Value; FC6.Value; T7.Value; C3.Value; Cz.Value; ...
-              C4.Value; T8.Value; FCz.Value; CP1.Value; CP2.Value; ...
-              TP10.Value; P7.Value; P3.Value; Pz.Value; P4.Value; ...
-              P8.Value; O1.Value; Oz.Value; O2.Value];
+  badLabel = [Elec.F7.Value; Elec.Fz.Value; Elec.F8.Value; ...              % return existing selection
+              Elec.FC5.Value; Elec.FC1.Value; Elec.FC2.Value; ...
+              Elec.FC6.Value; Elec.T7.Value; Elec.C3.Value; ...
+              Elec.Cz.Value; Elec.C4.Value; Elec.T8.Value; ...
+              Elec.FCz.Value; Elec.CP1.Value; Elec.CP2.Value; ...
+              Elec.TP10.Value; Elec.P7.Value; Elec.P3.Value; ...
+              Elec.Pz.Value; Elec.P4.Value; Elec.P8.Value; ...
+              Elec.O1.Value; Elec.Oz.Value; Elec.O2.Value];
   label    = {'F7', 'Fz', 'F8', 'FC5', 'FC1', 'FC2', 'FC6' 'T7', 'C3', ...
               'Cz', 'C4', 'T8', 'FCz', 'CP1', 'CP2', 'TP10', 'P7', 'P3',...
               'Pz', 'P4', 'P8', 'O1', 'Oz', 'O2'};
@@ -155,4 +189,24 @@ end
 % Button pushed function: btn
 function  SaveButtonPushed(SelectBadChannels)
   uiresume(SelectBadChannels);                                              % resume from wait status                                                                             
+end
+
+% Checkbox value changed function
+function  CheckboxValueChanged(Elec, warningLabel, btn)
+  badLabel = [Elec.F7.Value; Elec.Fz.Value; Elec.F8.Value; ...              % get status of all checkboxes
+              Elec.FC5.Value; Elec.FC1.Value; Elec.FC2.Value; ...
+              Elec.FC6.Value; Elec.T7.Value; Elec.C3.Value; ...
+              Elec.Cz.Value; Elec.C4.Value; Elec.T8.Value; ...
+              Elec.FCz.Value; Elec.CP1.Value; Elec.CP2.Value; ...
+              Elec.TP10.Value; Elec.P7.Value; Elec.P3.Value; ...
+              Elec.Pz.Value; Elec.P4.Value; Elec.P8.Value; ...
+              Elec.O1.Value; Elec.Oz.Value; Elec.O2.Value];
+  NumOfBad = sum(double(badLabel));
+  if NumOfBad > 3
+    warningLabel.Text = 'Too many channels selected! It''s only allowed to repair maximum 3 channels.';
+    btn.Enable = 'off';
+  else
+    warningLabel.Text = '';
+    btn.Enable = 'on';
+  end    
 end
