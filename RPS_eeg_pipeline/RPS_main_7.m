@@ -137,14 +137,14 @@ for i = numOfPart
   cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
   cfg.filename    = sprintf('RPS_d%02d_06b_hilbertGamma', i);
-  fprintf('Load hilbert phase data at gamma (31-100Hz)...\n');
+  fprintf('Load hilbert phase data at gamma (31-90Hz)...\n');
   RPS_loadData( cfg );
     
   cfg           = [];
   cfg.length    = 1;
   cfg.overlap   = 0;
     
-  fprintf('<strong>Segmentation of Hilbert phase data at gamma (31-100Hz).</strong>\n');
+  fprintf('<strong>Segmentation of Hilbert phase data at gamma (31-90Hz).</strong>\n');
   data_hseg_gamma  = RPS_segmentation( cfg, data_hilbert_gamma );
   
   % export the segmented hilbert (gamma) data into a *.mat file
@@ -156,7 +156,7 @@ for i = numOfPart
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('The segmented hilbert data (gamma: 31-100Hz) of dyad %d will be saved in:\n', i); 
+  fprintf('The segmented hilbert data (gamma: 31-90Hz) of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_hseg_gamma', data_hseg_gamma);
   fprintf('Data stored!\n\n');
@@ -328,7 +328,7 @@ for i = numOfPart
   cfg.srcFolder   = strcat(desPath, '07a_hseg/');
   cfg.sessionStr  = sessionStr;
   cfg.filename    = sprintf('RPS_d%02d_07a_hsegGamma', i);
-  fprintf('Load segmented hilbert data at gamma (31-100Hz)...\n');
+  fprintf('Load segmented hilbert data at gamma (31-90Hz)...\n');
   RPS_loadData( cfg );
   
   % artifact rejection at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -339,7 +339,7 @@ for i = numOfPart
       cfg.reject    = 'complete';
       cfg.target    = 'dual';
   
-      fprintf('<strong>Artifact Rejection of Hilbert phase data at gamma (31-100Hz).</strong>\n');
+      fprintf('<strong>Artifact Rejection of Hilbert phase data at gamma (31-90Hz).</strong>\n');
       data_hseg_gamma = RPS_rejectArtifacts(cfg, data_hseg_gamma);
       fprintf('\n');
       
@@ -373,7 +373,7 @@ for i = numOfPart
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving PLVs (gamma: 31-100Hz) of dyad %d in:\n', i); 
+  fprintf('Saving PLVs (gamma: 31-90Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_plv_gamma', data_plv_gamma);
   fprintf('Data stored!\n');
@@ -388,7 +388,7 @@ for i = numOfPart
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving mean PLVs (gamma: 31-100Hz) of dyad %d in:\n', i); 
+  fprintf('Saving mean PLVs (gamma: 31-90Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_mplv_gamma', data_mplv_gamma);
   fprintf('Data stored!\n\n');

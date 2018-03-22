@@ -90,7 +90,7 @@ if avgOverDyads == true
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving mean PLVs over dyads at gamma (31-100Hz) in:\n'); 
+  fprintf('Saving mean PLVs over dyads at gamma (31-90Hz) in:\n'); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_mplvod_gamma', data_mplvod_gamma);
   fprintf('Data stored!\n');

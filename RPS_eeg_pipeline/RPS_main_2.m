@@ -81,7 +81,7 @@ selection = false;
 while selection == false
   cprintf([0,0.6,0], 'Please select your favoured bandpass for preprocessing:\n');
   fprintf('[1] - Regular bandpass 1...48 Hz \n');
-  fprintf('[2] - Extended bandpass 1...200 Hz with dft filter for line noise removal\n');
+  fprintf('[2] - Extended bandpass 1...98 Hz with dft filter for line noise removal\n');
   x = input('Option: ');
 
   switch x
@@ -93,8 +93,8 @@ while selection == false
       lineNoiseFilt = {'n'};
     case 2
       selection = true;
-      bpRange = [1 200];
-      bandpass = {'[1 200]'};
+      bpRange = [1 98];
+      bandpass = {'[1 98]'};
       lnRemoval = 'yes';
       lineNoiseFilt = {'y'};
     otherwise
