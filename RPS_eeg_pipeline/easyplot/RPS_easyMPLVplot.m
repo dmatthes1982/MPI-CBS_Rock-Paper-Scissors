@@ -24,7 +24,9 @@ function RPS_easyMPLVplot( cfg, data )
 cond      = ft_getopt(cfg, 'condition', 2);
 phase     = ft_getopt(cfg, 'phase', 11);
 
-addpath('../utilities');
+filepath = fileparts(mfilename('fullpath'));
+addpath(sprintf('%s/../utilities', filepath));
+
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
 switch cond
   case 1

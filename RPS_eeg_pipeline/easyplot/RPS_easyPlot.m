@@ -34,7 +34,9 @@ if ~ismember(part, [1,2])                                                   % ch
   error('cfg.part has to either 1 or 2');
 end
 
-addpath('../utilities');
+filepath = fileparts(mfilename('fullpath'));
+addpath(sprintf('%s/../utilities', filepath));
+
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
 switch cond
   case 1

@@ -27,7 +27,9 @@ phase     = ft_getopt(cfg, 'phase', 11);
 elecPart1 = ft_getopt(cfg, 'elecPart1', 'Cz');
 elecPart2 = ft_getopt(cfg, 'elecPart2', 'Cz');
 
-addpath('../utilities');
+filepath = fileparts(mfilename('fullpath'));
+addpath(sprintf('%s/../utilities', filepath));
+
 cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
 switch cond
   case 1
