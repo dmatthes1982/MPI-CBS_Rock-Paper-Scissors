@@ -110,7 +110,7 @@ for i = numOfPart
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving bandpass filtered data (beta: 31-90Hz) of dyad %d in:\n', i); 
+  fprintf('Saving bandpass filtered data (gamma: 31-90Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_bpfilt_gamma', data_bpfilt_gamma);
   fprintf('Data stored!\n\n');
