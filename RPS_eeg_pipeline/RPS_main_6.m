@@ -33,12 +33,13 @@ fprintf('\n');
 %% bandpass filtering
 
 for i = numOfPart
+  fprintf('<strong>Dyad %d</strong>\n', i);
+  
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '04b_eyecor/');
   cfg.filename    = sprintf('RPS_d%02d_04b_eyecor', i);
   cfg.sessionStr  = sessionStr;
   
-  fprintf('<strong>Dyad %d</strong>\n', i);
   fprintf('Load eye-artifact corrected data...\n\n');
   RPS_loadData( cfg );
   

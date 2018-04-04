@@ -79,7 +79,7 @@ fprintf('\n');
 data_mplv.FP.trialinfo = generalDefinitions.phaseNum{1};
 data_mplv.PD.trialinfo = generalDefinitions.phaseNum{2};
 data_mplv.PS.trialinfo = generalDefinitions.phaseNum{3};
-data_mplv.C.trialinfo = generalDefinitions.phaseNum{4};
+data_mplv.C.trialinfo  = generalDefinitions.phaseNum{4};
 
 data{4, length(listOfDyads)} = [];
 trialinfo{4, length(listOfDyads)} = []; 
@@ -127,7 +127,7 @@ end
 data(:,2:end) = [];
 
 % -------------------------------------------------------------------------
-% Estimate averaged Phase Locking Value (over dyads)
+% Estimate averaged phase locking value (over dyads)
 % ------------------------------------------------------------------------- 
 for i=1:1:4
   if length(listOfDyads) > 1
@@ -147,8 +147,8 @@ data_mplv.dyads = listOfDyads;
 end
 
 %--------------------------------------------------------------------------
-% SUBFUNCTION which fixes trial Order an creates empty matrices for missing
-% phases.
+% SUBFUNCTION which fixes trial order and creates empty matrices for 
+% missing phases.
 %--------------------------------------------------------------------------
 function dataTmp = fixTrialOrder( dataTmp, trInf, trInfOrg, dyadNum )
 

@@ -28,7 +28,7 @@ function RPS_easyTFRplot(cfg, data)
 % -------------------------------------------------------------------------
 part    = ft_getopt(cfg, 'part', 1);
 cond    = ft_getopt(cfg, 'condition', 2);
-phase = ft_getopt(cfg, 'phase', 11);
+phase   = ft_getopt(cfg, 'phase', 11);
 elec    = ft_getopt(cfg, 'electrode', 'Cz');
 trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimit', [2 50]);
@@ -129,12 +129,12 @@ colormap jet;                                                               % us
 switch part
   case 1
     ft_singleplotTFR(cfg, dataPlot.part1);
-    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s - Elec.: %s', ...
+    title(sprintf('Cond.: %d - Part.: %d - Phase: %d - Trial of Phase: %s - Elec.: %s', ...
           cond, part, phase, trlInCond, ...
           strrep(dataPlot.part1.label{elec}, '_', '\_')));   
   case 2
     ft_singleplotTFR(cfg, dataPlot.part2);
-    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s - Elec.: %s', ...
+    title(sprintf('Cond.: %d - Part.: %d - Phase: %d - Trial of Phase: %s - Elec.: %s', ...
           cond, part, phase, trlInCond, ...
           strrep(dataPlot.part2.label{elec}, '_', '\_')));
 end

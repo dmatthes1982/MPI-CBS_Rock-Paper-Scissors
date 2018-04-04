@@ -93,9 +93,50 @@ if avgOverDyads == true
   fprintf('Saving mean PLVs over dyads at gamma (31-90Hz) in:\n'); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_mplvod_gamma', data_mplvod_gamma);
-  fprintf('Data stored!\n');
+  fprintf('Data stored!\n\n');
   clear data_mplvod_gamma
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Averaging psd over dyads
+choise = false;
+while choise == false
+  cprintf([0,0.6,0], 'Averaging PSD over dyads?\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    choise = true;
+    avgOverDyads = true;
+  elseif strcmp('n', x)
+    choise = true;
+    avgOverDyads = false;
+  else
+    choise = false;
+  end
+end
+fprintf('\n');
+
+if avgOverDyads == true
+  cfg             = [];
+  cfg.path        = strcat(desPath, '08b_pwelch/');
+  cfg.session     = str2num(sessionStr);                                    %#ok<ST2NM>
   
+  data_pwelchod   = RPS_PSDoverDyads( cfg );
+  
+  % export the averaged PSD values into a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '09b_pwelchod/');
+  cfg.filename    = 'RPS_09b_pwelchod';
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+                   
+  fprintf('Saving PSD values over dyads in:\n'); 
+  fprintf('%s ...\n', file_path);
+  RPS_saveData(cfg, 'data_pwelchod', data_pwelchod);
+  fprintf('Data stored!\n');
+  clear data_pwelchod
+end
+
 %% clear workspace
 clear cfg file_path avgOverDyads x choise

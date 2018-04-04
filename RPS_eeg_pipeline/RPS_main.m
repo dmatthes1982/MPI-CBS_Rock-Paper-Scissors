@@ -94,8 +94,14 @@ end
 if ~exist(strcat(desPath, '08a_tfr'), 'dir')
   mkdir(strcat(desPath, '08a_tfr'));
 end
+if ~exist(strcat(desPath, '08b_pwelch'), 'dir')
+  mkdir(strcat(desPath, '08b_pwelch'));
+end
 if ~exist(strcat(desPath, '09a_mplvod'), 'dir')
   mkdir(strcat(desPath, '09a_mplvod'));
+end
+if ~exist(strcat(desPath, '09b_pwelchod'), 'dir')
+  mkdir(strcat(desPath, '09b_pwelchod'));
 end
 
 clear sessionStr numOfPart part newPaths
@@ -221,7 +227,7 @@ else
     fprintf('[5]  - Automatic and manual artifact detection\n');
     fprintf('[6]  - Narrow band filtering and Hilbert transform\n'); 
     fprintf('[7]  - Estimation of Phase Locking Values (PLV)\n');
-    fprintf('[8]  - Power analysis (TFR)\n');
+    fprintf('[8]  - Power analysis (TFR, pWelch)\n');
     fprintf('[9]  - Averaging over dyads\n');
     fprintf('[10] - Quit data processing\n\n');
     x = input('Option: ');
@@ -317,8 +323,8 @@ switch part
   case 8
     tmpPath = strcat(desPath, '04b_eyecor/');
     fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '09a_tfr/');
-    fileNamePost = strcat(tmpPath, 'RPS_d*_09a_tfr_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '08b_pwelch/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_08b_pwelch_', sessionStr, '.mat');
   case 9
     fileNamePre = 0;
   otherwise
@@ -507,7 +513,7 @@ while sessionStatus == true
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
         fprintf('<strong>[6]  - Narrow band filtering and Hilbert transform?</strong>\n');
-        fprintf('<strong>[8]  - Power analysis (TFR)?</strong>\n');
+        fprintf('<strong>[8]  - Power analysis (TFR, pWelch)?</strong>\n');
         fprintf('<strong>[10] - Quit data processing?</strong>\n');
         x = input('\nSelect one of these options: ');
         switch x
@@ -550,7 +556,7 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
-        fprintf('<strong>[8]  - Power analysis (TFR)?</strong>\n');
+        fprintf('<strong>[8]  - Power analysis (TFR, pWelch)?</strong>\n');
         fprintf('<strong>[9]  - Averaging over dyads</strong>\n');
         fprintf('<strong>[10] - Quit data processing?</strong>\n');
         x = input('\nSelect one of these options: ');
