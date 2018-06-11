@@ -55,22 +55,17 @@ for i = numOfPart
   
   % Detect and reject transient artifacts (200uV delta within 200 ms. 
   % The window is shifted with 100 ms, what means 50 % overlapping.)
-  cfg         = [];
-  cfg.length  = 200;                                                        % window length: 200 msec        
-  cfg.overlap = 50;                                                         % 50 % overlapping
-  trl         = RPS_genTrl(cfg, data_continuous);                           % define artifact detection intervals
-  
   cfg             = [];
   cfg.channel     = {'all', '-EOGV', '-EOGH', '-REF'};                      % use all channels for transient artifact detection expect EOGV, EOGH and REF
+  cfg.method      = 'range';
+  cfg.sliding     = 'no';
   cfg.continuous  = 'yes';
-  cfg.trl         = trl; 
-  cfg.method      = 1;                                                      % method: range
+  cfg.trllength   = 200;                                                    % minimal subtrial length: 200 msec
+  cfg.overlap     = 50;                                                     % 50 % overlapping
   cfg.range       = 200;                                                    % 200 uV
    
   cfg_autoart     = RPS_autoArtifact(cfg, data_continuous);
   
-  clear trl
-   
   cfg           = [];
   cfg.artifact  = cfg_autoart;
   cfg.reject    = 'partial';                                                % partial rejection

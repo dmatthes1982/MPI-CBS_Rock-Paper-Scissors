@@ -9,7 +9,10 @@ function RPS_easyMultiTFRplot(cfg, data)
 % where the input data is a results from RPS_TIMEFREQANALYSIS.
 %
 % The configuration options are 
-%   cfg.part        = number of participant (1 or 2) (default: 1)
+%   cfg.part        = number of participant (default: 1)
+%                     0 - plot the averaged data
+%                     1 - plot data of participant 1
+%                     2 - plot data of participant 2
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS data structure)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS data structure)
 %   cfg.trial       = numbers of trials (i.e.: 1, 'all', [1:60], [1,12,25,53] (default: 1)
@@ -32,10 +35,6 @@ trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimits', [2 30]);
 timelim = ft_getopt(cfg, 'timelimits', [0 3]);
 
-if ~ismember(part, [1,2])                                                   % check cfg.part definition
-  error('cfg.part has to either 1 or 2');
-end
-
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
@@ -53,13 +52,34 @@ switch cond
     error('Condition %d is not valid', cond);
 end
 
-if part == 1                                                                % get trialinfo
-  trialinfo = dataPlot.part1.trialinfo;
-elseif part == 2
-  trialinfo = dataPlot.part2.trialinfo;
+switch part                                                                 % check validity of cfg.part
+  case 0
+    if isfield(dataPlot, 'part1')
+      warning backtrace off;
+      warning('You are using dyad-specific data. Please specify either cfg.part = 1 or cfg.part = 2');
+      warning backtrace on;
+      return;
+    end
+  case 1
+    if ~isfield(dataPlot, 'part1')
+      warning backtrace off;
+      warning('You are using data averaged over dyads. Please specify cfg.part = 0');
+      warning backtrace on;
+      return;
+    end
+    dataPlot = dataPlot.part1;
+  case 2
+    if ~isfield(dataPlot, 'part2')
+      warning backtrace off;
+      warning('You are using data averaged over dyads. Please specify cfg.part = 0');
+      warning backtrace on;
+      return;
+    end
+    dataPlot = dataPlot.part2;
 end
 
 phase = RPS_checkPhase( phase );                                            % check cfg.phase
+trialinfo = dataPlot.trialinfo;
 trials  = find(trialinfo == phase);                                         % check if trials with defined phase exist
 if isempty(trials)
   error('The selected dataset contains no phase %d.', phase);
@@ -92,7 +112,6 @@ end
 % -------------------------------------------------------------------------
 % Plot time frequency spectrum
 % -------------------------------------------------------------------------
-
 ft_warning off;
 colormap 'jet';
 
@@ -112,17 +131,12 @@ cfg.colorbar      = 'yes';
 
 cfg.showcallinfo  = 'no';                                                   % suppress function call output
 
-switch part
-  case 1
-    ft_multiplotTFR(cfg, dataPlot.part1);
-    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s', ...
-          cond, part, phase, trlInCond));      
-  case 2
-    ft_multiplotTFR(cfg, dataPlot.part2);
-    title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s', ...
-          cond, part, phase, trlInCond));
-end
+
+ft_multiplotTFR(cfg, dataPlot);
+title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s', ...
+      cond, part, phase, trlInCond));
 
 ft_warning on;
 
 end
+

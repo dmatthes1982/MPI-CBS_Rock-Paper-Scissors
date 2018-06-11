@@ -1,9 +1,9 @@
-function  [ data_pwelch ] = RPS_PSDoverDyads( cfg )
+function  [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
 % RPS_PSDOVERDYADS estimates the mean of the power spectral density values 
 % for all conditions and over all participants.
 %
 % Use as
-%   [ data_psdod ] = RPS_PSDoverDyads( cfg )
+%   [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/08b_pwelch/')
@@ -79,7 +79,7 @@ for i=1:1:numOfDyads
   fprintf('Load %s ...\n', filename);
   load(file, 'data_pwelch');
   
-  data{1, i}                    = data_pwelch.FP.part1.powspctrm;           %#ok<NODEF>
+  data{1, i}                    = data_pwelch.FP.part1.powspctrm;
   data{1, i + numOfDyads}       = data_pwelch.FP.part2.powspctrm;
   trialinfo{1, i}               = data_pwelch.FP.part1.trialinfo;
   trialinfo{1, i + numOfDyads}  = data_pwelch.FP.part2.trialinfo;
@@ -115,11 +115,10 @@ end
 fprintf('\n');
 
 for i=1:1:4
+  data(i,:) = cellfun(@(x) num2cell(x, [2,3])', data(i,:), ...
+                      'UniformOutput', false);
   for j=1:1:2*numOfDyads
-    data{i,j} = num2cell(data{i,j}, [2 3])';
-    for k=1:1:size(trialinfo{i,j}, 1)
-      data{i,j}{k} = squeeze(data{i,j}{k});
-    end
+    data{i,j} = cellfun(@(x) squeeze(x), data{i,j}, 'UniformOutput', false);
   end
 end
 
@@ -127,10 +126,8 @@ data = fixTrialOrder( data, trialinfo, generalDefinitions.phaseNum, ...
                       repmat(listOfDyads,1,2) );
 
 for i=1:1:4
-  for j=1:1:2*numOfDyads
-    data{i,j} = cat(3, data{i,j}{:});
-    data{i,j} = shiftdim(data{i,j}, 2);
-  end
+  data(i,:) = cellfun(@(x) cat(3, x{:}), data(i,:), 'UniformOutput', false);
+  data(i,:) = cellfun(@(x) shiftdim(x, 2), data(i,:), 'UniformOutput', false);
   data{i} = cat(4, data{i,:});
 end
 
@@ -149,7 +146,7 @@ data_out.PS.powspctrm = data{3};
 data_out.C.powspctrm = data{4};
 data_out.dyads = listOfDyads;
 
-data_pwelch = data_out;
+data_pwelchod = data_out;
 
 end
 
@@ -171,7 +168,7 @@ for k = 1:1:4
       missingPhases = trInfOrg{k}(missingPhases);
       missingPhases = vec2str(missingPhases, [], [], 0);
       cprintf([0,0.6,0], ...
-              sprintf('Dyad %d/%d - Condition % s: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
+              sprintf('Dyad %d/%d - Condition %s: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
               dyadNum(l), part(l), condition{k}, missingPhases));
       [~, loc] = ismember(trInfOrg{k}, trInf{k, l});
       tmpBuffer = [];

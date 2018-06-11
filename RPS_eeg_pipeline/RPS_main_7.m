@@ -25,6 +25,12 @@ if ~exist('numOfPart', 'var')                                               % es
 end
 
 %% part 7
+% 1. Segmentation of the hilbert phase data trials for PLV estimation.
+%    Split the data of every condition into subtrials with a length of 5
+%    seconds
+% 2. Artifact rejection
+% 3. PLV estimation
+% 4. mPLV estimation
 
 cprintf([0,0.6,0], '<strong>[7]  - Estimation of Phase Locking Values (PLV)</strong>\n');
 fprintf('\n');
@@ -66,104 +72,12 @@ delete(file_path);
 writetable(T, file_path);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Segmentation and Artifact rejection
-
+%% Segmentation, artifact rejection, PLV and mPLV estimation
 for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n\n', i);
   
-  % alpha branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  cfg             = [];                                                     % load hilbert phase data
-  cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
-  cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertAlpha', i);
-  fprintf('Load hilbert phase data at alpha (8-12Hz)...\n');
-  RPS_loadData( cfg );
-
-  cfg           = [];
-  cfg.length    = 1;
-  cfg.overlap   = 0;
-  
-  fprintf('<strong>Segmentation of Hilbert phase data at alpha (8-12Hz).</strong>\n');
-  data_hseg_alpha  = RPS_segmentation( cfg, data_hilbert_alpha );
-  
-  % export the segmented hilbert (alpha) data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07a_hseg/');
-  cfg.filename    = sprintf('RPS_d%02d_07a_hsegAlpha', i);
-  cfg.sessionStr  = sessionStr;
- 
-  
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('The segmented hilbert data (alpha: 8-12Hz) of dyad %d will be saved in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hseg_alpha', data_hseg_alpha);
-  fprintf('Data stored!\n\n');
-  clear data_hseg_alpha data_hilbert_alpha
-  
-  % beta branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  cfg             = [];                                                     % load hilbert phase data
-  cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
-  cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertBeta', i);
-  fprintf('Load hilbert phase data at beta (13-30Hz)...\n');
-  RPS_loadData( cfg );
-    
-  cfg           = [];
-  cfg.length    = 1;
-  cfg.overlap   = 0;
-    
-  fprintf('<strong>Segmentation of Hilbert phase data at beta (13-30Hz).</strong>\n');
-  data_hseg_beta  = RPS_segmentation( cfg, data_hilbert_beta );
-  
-  % export the segmented hilbert (beta) data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07a_hseg/');
-  cfg.filename    = sprintf('RPS_d%02d_07a_hsegBeta', i);
-  cfg.sessionStr  = sessionStr;
-  
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('The segmented hilbert data (beta: 13-30Hz) of dyad %d will be saved in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hseg_beta', data_hseg_beta);
-  fprintf('Data stored!\n\n');
-  clear data_hseg_beta data_hilbert_beta
-  
-  % gamma branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  cfg             = [];                                                     % load hilbert phase data
-  cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
-  cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertGamma', i);
-  fprintf('Load hilbert phase data at gamma (31-90Hz)...\n');
-  RPS_loadData( cfg );
-    
-  cfg           = [];
-  cfg.length    = 1;
-  cfg.overlap   = 0;
-    
-  fprintf('<strong>Segmentation of Hilbert phase data at gamma (31-90Hz).</strong>\n');
-  data_hseg_gamma  = RPS_segmentation( cfg, data_hilbert_gamma );
-  
-  % export the segmented hilbert (gamma) data into a *.mat file
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07a_hseg/');
-  cfg.filename    = sprintf('RPS_d%02d_07a_hsegGamma', i);
-  cfg.sessionStr  = sessionStr;
-  
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('The segmented hilbert data (gamma: 31-90Hz) of dyad %d will be saved in:\n', i); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_hseg_gamma', data_hseg_gamma);
-  fprintf('Data stored!\n\n');
-  clear data_hseg_gamma data_hilbert_gamma
-    
-  % Load Artifact definitions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  if artifactRejection == true                                              % load artifact definitions
+  %% Load Artifact definitions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if artifactRejection == true
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '05b_allart/');
     cfg.filename    = sprintf('RPS_d%02d_05b_allart', i);
@@ -183,15 +97,22 @@ for i = numOfPart
   fprintf('\n');
   end
   
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %% artifact rejection, PLV and mPLV calculation
-  % load segmented hilbert phase data at alpha %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% alpha branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % load hilbert phase data at alpha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '07a_hseg/');
+  cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('RPS_d%02d_07a_hsegAlpha', i);
-  fprintf('Load segmented hilbert data at alpha (8-12Hz)...\n');
+  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertAlpha', i);
+  fprintf('Load hilbert phase data at alpha (8-12Hz)...\n');
   RPS_loadData( cfg );
+  
+  % segmentation at alpha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  cfg           = [];
+  cfg.length    = 1;
+  cfg.overlap   = 0;
+  
+  fprintf('<strong>Segmentation of Hilbert phase data at alpha (8-12Hz).</strong>\n');
+  data_hilbert_alpha  = RPS_segmentation( cfg, data_hilbert_alpha );
   
   % artifact rejection at alpha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -202,7 +123,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at alpha (8-12Hz).</strong>\n');
-      data_hseg_alpha = RPS_rejectArtifacts(cfg, data_hseg_alpha);
+      data_hilbert_alpha = RPS_rejectArtifacts(cfg, data_hilbert_alpha);
       fprintf('\n');
     end
   end
@@ -211,9 +132,9 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
   
-  data_plv_alpha  = RPS_phaseLockVal(cfg, data_hseg_alpha);
+  data_plv_alpha  = RPS_phaseLockVal(cfg, data_hilbert_alpha);
   data_mplv_alpha = RPS_calcMeanPLV(data_plv_alpha);
-  clear data_hseg_alpha
+  clear data_hilbert_alpha
   
   % export number of good trials into a spreadsheet
   cfg           = [];
@@ -226,8 +147,8 @@ for i = numOfPart
   
   % export the PLVs into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07b_plv/');
-  cfg.filename    = sprintf('RPS_d%02d_07b_plvAlpha', i);
+  cfg.desFolder   = strcat(desPath, '07a_plv/');
+  cfg.filename    = sprintf('RPS_d%02d_07a_plvAlpha', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -241,8 +162,8 @@ for i = numOfPart
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07c_mplv/');
-  cfg.filename    = sprintf('RPS_d%02d_07c_mplvAlpha', i);
+  cfg.desFolder   = strcat(desPath, '07b_mplv/');
+  cfg.filename    = sprintf('RPS_d%02d_07b_mplvAlpha', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -254,13 +175,22 @@ for i = numOfPart
   fprintf('Data stored!\n\n');
   clear data_mplv_alpha
   
-  % load segmented hilbert phase data at beta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% beta branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % load hilbert phase data at beta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '07a_hseg/');
+  cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('RPS_d%02d_07a_hsegBeta', i);
-  fprintf('Load segmented hilbert data at beta (13-30Hz)...\n');
+  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertBeta', i);
+  fprintf('Load hilbert phase data at beta (13-30Hz)...\n');
   RPS_loadData( cfg );
+  
+  % segmentation at beta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  cfg           = [];
+  cfg.length    = 1;
+  cfg.overlap   = 0;
+    
+  fprintf('<strong>Segmentation of Hilbert phase data at beta (13-30Hz).</strong>\n');
+  data_hilbert_beta  = RPS_segmentation( cfg, data_hilbert_beta );
   
   % artifact rejection at beta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -271,7 +201,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at beta (13-30Hz).</strong>\n');
-      data_hseg_beta = RPS_rejectArtifacts(cfg, data_hseg_beta);
+      data_hilbert_beta = RPS_rejectArtifacts(cfg, data_hilbert_beta);
       fprintf('\n');
     end
   end
@@ -280,9 +210,9 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
   
-  data_plv_beta  = RPS_phaseLockVal(cfg, data_hseg_beta);
+  data_plv_beta  = RPS_phaseLockVal(cfg, data_hilbert_beta);
   data_mplv_beta = RPS_calcMeanPLV(data_plv_beta);
-  clear data_hseg_beta
+  clear data_hilbert_beta
   
   % export number of good trials into a spreadsheet
   cfg           = [];
@@ -295,8 +225,8 @@ for i = numOfPart
   
   % export the PLVs into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07b_plv/');
-  cfg.filename    = sprintf('RPS_d%02d_07b_plvBeta', i);
+  cfg.desFolder   = strcat(desPath, '07a_plv/');
+  cfg.filename    = sprintf('RPS_d%02d_07a_plvBeta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -310,8 +240,8 @@ for i = numOfPart
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07c_mplv/');
-  cfg.filename    = sprintf('RPS_d%02d_07c_mplvBeta', i);
+  cfg.desFolder   = strcat(desPath, '07b_mplv/');
+  cfg.filename    = sprintf('RPS_d%02d_07b_mplvBeta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -323,13 +253,22 @@ for i = numOfPart
   fprintf('Data stored!\n\n');
   clear data_mplv_beta
   
-  % load segmented hilbert phase data at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% gamma branch %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % load hilbert phase data at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '07a_hseg/');
+  cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('RPS_d%02d_07a_hsegGamma', i);
-  fprintf('Load segmented hilbert data at gamma (31-90Hz)...\n');
+  cfg.filename    = sprintf('RPS_d%02d_06b_hilbertGamma', i);
+  fprintf('Load hilbert phase data at gamma (31-90Hz)...\n');
   RPS_loadData( cfg );
+  
+  % segmentation at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  cfg           = [];
+  cfg.length    = 1;
+  cfg.overlap   = 0;
+    
+  fprintf('<strong>Segmentation of Hilbert phase data at gamma (31-90Hz).</strong>\n');
+  data_hilbert_gamma  = RPS_segmentation( cfg, data_hilbert_gamma );
   
   % artifact rejection at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -340,7 +279,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at gamma (31-90Hz).</strong>\n');
-      data_hseg_gamma = RPS_rejectArtifacts(cfg, data_hseg_gamma);
+      data_hilbert_gamma = RPS_rejectArtifacts(cfg, data_hilbert_gamma);
       fprintf('\n');
       
       clear cfg_allart
@@ -351,9 +290,9 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
   
-  data_plv_gamma  = RPS_phaseLockVal(cfg, data_hseg_gamma);
+  data_plv_gamma  = RPS_phaseLockVal(cfg, data_hilbert_gamma);
   data_mplv_gamma = RPS_calcMeanPLV(data_plv_gamma);
-  clear data_hseg_gamma
+  clear data_hilbert_gamma
   
   % export number of good trials into a spreadsheet
   cfg           = [];
@@ -366,8 +305,8 @@ for i = numOfPart
   
   % export the PLVs into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07b_plv/');
-  cfg.filename    = sprintf('RPS_d%02d_07b_plvGamma', i);
+  cfg.desFolder   = strcat(desPath, '07a_plv/');
+  cfg.filename    = sprintf('RPS_d%02d_07a_plvGamma', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -381,8 +320,8 @@ for i = numOfPart
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '07c_mplv/');
-  cfg.filename    = sprintf('RPS_d%02d_07c_mplvGamma', i);
+  cfg.desFolder   = strcat(desPath, '07b_mplv/');
+  cfg.filename    = sprintf('RPS_d%02d_07b_mplvGamma', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

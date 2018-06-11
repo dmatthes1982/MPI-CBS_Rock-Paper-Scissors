@@ -5,7 +5,7 @@ clc;
 RPS_init;
 
 cprintf([0,0.6,0], '<strong>----------------------------------------------</strong>\n');
-cprintf([0,0.6,0], '<strong>Rock, paper, scissor project - data processing</strong>\n');
+cprintf([0,0.6,0], '<strong>Rock, paper, scissors project - data processing</strong>\n');
 cprintf([0,0.6,0], '<strong>Version: 0.2</strong>\n');
 cprintf([0,0.6,0], 'Copyright (C) 2017-2018, Daniel Matthes, MPI CBS\n');
 cprintf([0,0.6,0], '<strong>----------------------------------------------</strong>\n');
@@ -82,14 +82,11 @@ end
 if ~exist(strcat(desPath, '06b_hilbert'), 'dir')
   mkdir(strcat(desPath, '06b_hilbert'));
 end
-if ~exist(strcat(desPath, '07a_hseg'), 'dir')
-  mkdir(strcat(desPath, '07a_hseg'));
+if ~exist(strcat(desPath, '07a_plv'), 'dir')
+  mkdir(strcat(desPath, '07a_plv'));
 end
-if ~exist(strcat(desPath, '07b_plv'), 'dir')
-  mkdir(strcat(desPath, '07b_plv'));
-end
-if ~exist(strcat(desPath, '07c_mplv'), 'dir')
-  mkdir(strcat(desPath, '07c_mplv'));
+if ~exist(strcat(desPath, '07b_mplv'), 'dir')
+  mkdir(strcat(desPath, '07b_mplv'));
 end
 if ~exist(strcat(desPath, '08a_tfr'), 'dir')
   mkdir(strcat(desPath, '08a_tfr'));
@@ -100,8 +97,11 @@ end
 if ~exist(strcat(desPath, '09a_mplvod'), 'dir')
   mkdir(strcat(desPath, '09a_mplvod'));
 end
-if ~exist(strcat(desPath, '09b_pwelchod'), 'dir')
-  mkdir(strcat(desPath, '09b_pwelchod'));
+if ~exist(strcat(desPath, '09b_tfrod'), 'dir')
+  mkdir(strcat(desPath, '09b_tfrod'));
+end
+if ~exist(strcat(desPath, '09c_pwelchod'), 'dir')
+  mkdir(strcat(desPath, '09c_pwelchod'));
 end
 
 clear sessionStr numOfPart part newPaths
@@ -318,8 +318,8 @@ switch part
   case 7
     tmpPath = strcat(desPath, '06b_hilbert/');
     fileNamePre = strcat(tmpPath, 'RPS_d*_06b_hilbertGamma_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '07c_mplv/');
-    fileNamePost = strcat(tmpPath, 'RPS_d*_07c_mplvGamma_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '07b_mplv/');
+    fileNamePost = strcat(tmpPath, 'RPS_d*_07b_mplvGamma_', sessionStr, '.mat');
   case 8
     tmpPath = strcat(desPath, '04b_eyecor/');
     fileNamePre = strcat(tmpPath, 'RPS_d*_04b_eyecor_', sessionStr, '.mat');
@@ -609,3 +609,4 @@ fprintf('<strong>Session will be closed.</strong>\n');
 
 clear sessionStr numOfPart srcPath desPath sessionPart sessionStatus ...
       selection x
+

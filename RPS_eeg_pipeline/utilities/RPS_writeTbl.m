@@ -1,16 +1,16 @@
-function RPS_writeTbl(cfg, data)
+function RPS_writeTbl( cfg, data )
 % RPS_WRITETBL writes the numbers of good trials for each phase in each 
 % condition of a specific dyad in plv estimations to the associated file.
 %
 % Use as
-%   RPS_writeTbl( cfg )
+%   RPS_writeTbl( cfg, data )
 %
 % The input data hast to be from RPS_PHASELOCKVAL
 %
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/00_settings/')
 %   cfg.dyad        = number of dyad
-%   cfg.type        = type of documentation file (options: settings, plv)
+%   cfg.type        = type of documentation file (options: plv)
 %   cfg.param       = additional params for type 'plv' (options: '10Hz', '20Hz');
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %

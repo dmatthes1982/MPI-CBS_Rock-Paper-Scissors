@@ -10,6 +10,9 @@ function RPS_easyTFRplot(cfg, data)
 %
 % The configuration options are 
 %   cfg.part        = number of participant (default: 1)
+%                     0 - plot the averaged data
+%                     1 - plot data of participant 1
+%                     2 - plot data of participant 2
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
@@ -34,10 +37,6 @@ trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimit', [2 50]);
 timelim = ft_getopt(cfg, 'timelimit', [0 3]);
 
-if ~ismember(part, [1,2])                                                   % check cfg.part definition
-  error('cfg.part has to either 1 or 2');
-end
-
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
@@ -55,13 +54,34 @@ switch cond
     error('Condition %d is not valid', cond);
 end
 
-if part == 1                                                                % get trialinfo
-  trialinfo = dataPlot.part1.trialinfo;
-elseif part == 2
-  trialinfo = dataPlot.part2.trialinfo;
+switch part                                                                 % check validity of cfg.part
+  case 0
+    if isfield(dataPlot, 'part1')
+      warning backtrace off;
+      warning('You are using dyad-specific data. Please specify either cfg.part = 1 or cfg.part = 2');
+      warning backtrace on;
+      return;
+    end
+  case 1
+    if ~isfield(dataPlot, 'part1')
+      warning backtrace off;
+      warning('You are using data averaged over dyads. Please specify cfg.part = 0');
+      warning backtrace on;
+      return;
+    end
+    dataPlot = dataPlot.part1;
+  case 2
+    if ~isfield(dataPlot, 'part2')
+      warning backtrace off;
+      warning('You are using data averaged over dyads. Please specify cfg.part = 0');
+      warning backtrace on;
+      return;
+    end
+    dataPlot = dataPlot.part2;
 end
 
 phase = RPS_checkPhase( phase );                                            % check cfg.phase
+trialinfo = dataPlot.trialinfo;
 trials  = find(trialinfo == phase);                                         % check if trials with defined phase exist
 if isempty(trials)
   error('The selected dataset contains no phase %d.', phase);
@@ -91,11 +111,7 @@ else
   end
 end
 
-if part == 1                                                                % get labels
-  label = dataPlot.part1.label;                                             
-elseif part == 2
-  label = dataPlot.part2.label;
-end
+label = dataPlot.label;                                                     % get labels
 
 if isnumeric(elec)
   if ~ismember(elec,  1:1:32)
@@ -111,7 +127,6 @@ end
 % -------------------------------------------------------------------------
 % Plot time frequency spectrum
 % -------------------------------------------------------------------------
-
 ft_warning off;
 
 cfg                 = [];                                                       
@@ -126,18 +141,10 @@ cfg.showcallinfo    = 'no';                                                 % su
 
 colormap jet;                                                               % use the older and more common colormap
 
-switch part
-  case 1
-    ft_singleplotTFR(cfg, dataPlot.part1);
-    title(sprintf('Cond.: %d - Part.: %d - Phase: %d - Trial of Phase: %s - Elec.: %s', ...
-          cond, part, phase, trlInCond, ...
-          strrep(dataPlot.part1.label{elec}, '_', '\_')));   
-  case 2
-    ft_singleplotTFR(cfg, dataPlot.part2);
-    title(sprintf('Cond.: %d - Part.: %d - Phase: %d - Trial of Phase: %s - Elec.: %s', ...
-          cond, part, phase, trlInCond, ...
-          strrep(dataPlot.part2.label{elec}, '_', '\_')));
-end
+ft_singleplotTFR(cfg, dataPlot);
+title(sprintf('Cond.: %d - Part.: %d - Phase: %d - Trial of Phase: %s - Elec.: %s', ...
+      cond, part, phase, trlInCond, ...
+      strrep(dataPlot.label{elec}, '_', '\_')));
 
 xlabel('time in sec');                                                      % set xlabel
 ylabel('frequency in Hz');                                                  % set ylabel
@@ -145,3 +152,4 @@ ylabel('frequency in Hz');                                                  % se
 ft_warning on;
 
 end
+
