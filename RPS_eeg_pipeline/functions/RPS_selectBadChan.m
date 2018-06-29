@@ -27,11 +27,12 @@ for i = 1:1:8
 % -------------------------------------------------------------------------
 % Databrowser settings
 % ------------------------------------------------------------------------- 
-  cfg           = [];
-  cfg.ylim      = [-200 200];
-  cfg.blocksize = 120;
-  cfg.part      = participants(i);
-  cfg.condition = conditions(i);
+  cfg             = [];
+  cfg.ylim        = [-200 200];
+  cfg.blocksize   = 120;
+  cfg.part        = participants(i);
+  cfg.condition   = conditions(i);
+  cfg.plotevents  = 'no';
 
 % -------------------------------------------------------------------------
 % Selection of bad channels
