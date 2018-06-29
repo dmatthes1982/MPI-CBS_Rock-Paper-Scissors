@@ -49,28 +49,44 @@ fprintf('<strong>Condition FreePlay...</strong>\n');
 cfg.artifact = artifact.FP.part1.artfctdef.threshold.artifact;
 cfg.condition = 1;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420]; 
 cfgAllArt.FP.part1 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.FP.part1 = keepfields(cfgAllArt.FP.part1, {'artfctdef', 'showcallinfo'});
   
 fprintf('<strong>Condition PredDiff...</strong>\n');
 cfg.artifact = artifact.PD.part1.artfctdef.threshold.artifact;
 cfg.condition = 2;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.PD.part1 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.PD.part1 = keepfields(cfgAllArt.PD.part1, {'artfctdef', 'showcallinfo'});
   
 fprintf('<strong>Condition PredSame...</strong>\n');
 cfg.artifact = artifact.PS.part1.artfctdef.threshold.artifact;
 cfg.condition = 3;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.PS.part1 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.PS.part1 = keepfields(cfgAllArt.PS.part1, {'artfctdef', 'showcallinfo'});
   
 fprintf('<strong>Condition Control...</strong>\n');
 cfg.artifact = artifact.C.part1.artfctdef.threshold.artifact;
 cfg.condition = 4;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.C.part1 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.C.part1 = keepfields(cfgAllArt.C.part1, {'artfctdef', 'showcallinfo'});
   
 fprintf('\n<strong>Search for artifacts with participant 2...</strong>\n');
@@ -80,28 +96,44 @@ fprintf('<strong>Condition FreePlay...</strong>\n');
 cfg.artifact = artifact.FP.part2.artfctdef.threshold.artifact;
 cfg.condition = 1;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.FP.part2 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.FP.part2 = keepfields(cfgAllArt.FP.part2, {'artfctdef', 'showcallinfo'});
   
 fprintf('<strong>Condition PredDiff...</strong>\n');
 cfg.artifact = artifact.PD.part2.artfctdef.threshold.artifact;
 cfg.condition = 2;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.PD.part2 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.PD.part2 = keepfields(cfgAllArt.PD.part2, {'artfctdef', 'showcallinfo'});
   
 fprintf('<strong>Condition PredSame...</strong>\n');
 cfg.artifact = artifact.PS.part2.artfctdef.threshold.artifact;
 cfg.condition = 3;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.PS.part2 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.PS.part2 = keepfields(cfgAllArt.PS.part2, {'artfctdef', 'showcallinfo'});
   
 fprintf('<strong>Condition Control...</strong>\n');
 cfg.artifact = artifact.C.part2.artfctdef.threshold.artifact;
 cfg.condition = 4;
 ft_warning off;
+RPS_easyArtfctmapPlot(cfg, artifact);                                       % plot artifact map
+fig = gcf;                                                                  % default position is [560 528 560 420]
+fig.Position = [0 528 560 420];
 cfgAllArt.C.part2 = RPS_databrowser(cfg, data);
+close all;
 cfgAllArt.C.part2 = keepfields(cfgAllArt.C.part2, {'artfctdef', 'showcallinfo'});
   
 ft_warning on;
