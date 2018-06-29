@@ -255,31 +255,57 @@ for condition = 1:1:8
     warning('All trials are marked as bad, it is recommended to recheck the channels quality!');
   end
   
+  if isfield(cfgTmp.artfctdef.threshold, 'artfctmap')
+    artfctmap = cfgTmp.artfctdef.threshold.artfctmap;
+    artfctmap = cellfun(@(x) sum(x, 2), artfctmap, 'UniformOutput', false);
+    badNumChan = sum(cat(2,artfctmap{:}),2);
+  end
+  
   switch condition
     case 1
       cfgAutoArt.FP.part1       = cfgTmp;
       cfgAutoArt.FP.bad1Num     = badNum;
+      cfgAutoArt.FP.bad1NumChan = badNumChan;
     case 2
       cfgAutoArt.PD.part1       = cfgTmp;
       cfgAutoArt.PD.bad1Num     = badNum;
+      cfgAutoArt.PD.bad1NumChan = badNumChan;
     case 3
       cfgAutoArt.PS.part1       = cfgTmp;
       cfgAutoArt.PS.bad1Num     = badNum;
+      cfgAutoArt.PS.bad1NumChan = badNumChan;
     case 4
       cfgAutoArt.C.part1        = cfgTmp;
       cfgAutoArt.C.bad1Num      = badNum;
+      cfgAutoArt.C.bad1NumChan  = badNumChan;
     case 5
       cfgAutoArt.FP.part2       = cfgTmp;
       cfgAutoArt.FP.bad2Num     = badNum;
+      cfgAutoArt.FP.bad2NumChan = badNumChan;
+      cfgAutoArt.FP.label       = ft_channelselection(...
+                                    cfgTmp.artfctdef.threshold.channel, ...
+                                    dataTmp.label);
     case 6
       cfgAutoArt.PD.part2       = cfgTmp;
       cfgAutoArt.PD.bad2Num     = badNum;
+      cfgAutoArt.PD.bad2NumChan = badNumChan;
+      cfgAutoArt.PD.label       = ft_channelselection(...
+                                    cfgTmp.artfctdef.threshold.channel, ...
+                                    dataTmp.label);
     case 7
       cfgAutoArt.PS.part2       = cfgTmp;
       cfgAutoArt.PS.bad2Num     = badNum;
+      cfgAutoArt.PS.bad2NumChan = badNumChan;
+      cfgAutoArt.PS.label       = ft_channelselection(...
+                                    cfgTmp.artfctdef.threshold.channel, ...
+                                    dataTmp.label);
     case 8
       cfgAutoArt.C.part2        = cfgTmp;
       cfgAutoArt.C.bad2Num      = badNum;
+      cfgAutoArt.C.bad2NumChan  = badNumChan;
+      cfgAutoArt.C.label        = ft_channelselection(...
+                                    cfgTmp.artfctdef.threshold.channel, ...
+                                    dataTmp.label);
   end  
 end
 
