@@ -259,6 +259,8 @@ for condition = 1:1:8
     artfctmap = cfgTmp.artfctdef.threshold.artfctmap;
     artfctmap = cellfun(@(x) sum(x, 2), artfctmap, 'UniformOutput', false);
     badNumChan = sum(cat(2,artfctmap{:}),2);
+  else
+    badNumChan = [];
   end
   
   switch condition
