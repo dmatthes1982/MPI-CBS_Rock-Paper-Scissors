@@ -9,7 +9,7 @@ function RPS_createTbl( cfg )
 % The configuration options are
 %   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/00_settings/')
 %   cfg.type        = type of documentation file (options: 'settings', 'plv')
-%   cfg.param       = additional params for type 'plv' (options: '10Hz', '20Hz');
+%   cfg.param       = additional params for type 'plv' (options: 'alpha', 'beta', 'gamma');
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
 % Explanation:
@@ -72,7 +72,11 @@ switch type
     writetable(T, filepath);
   case 'plv'
     A(1) = {1};
-    A(2:19) = {0};
+    numberOfColumns = length(generalDefinitions.phaseNum{1}) + ...
+                      length(generalDefinitions.phaseNum{2}) + ...
+                      length(generalDefinitions.phaseNum{3}) + ...
+                      length(generalDefinitions.phaseNum{4}) + 1;
+    A(2:numberOfColumns) = {0};
     T = cell2table(A);
     FP  = num2cell(generalDefinitions.phaseNum{1});
     PD  = num2cell(generalDefinitions.phaseNum{2});

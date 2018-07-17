@@ -92,8 +92,7 @@ for trial=1:1:trialNum
     
     amp_diff = diff(data_amplitude.trial{trial} ,1 ,2);
     amp = data_amplitude.trial{trial};
-    trialLength = size(amp, 2);                                             % get length of one trial
-    amp(:, trialLength) =  [];
+    amp(:, 1) =  [];                                                        % delete the first amplitude, since there are no amplitude and phase differences available at this point
     amp_ratio_abs = abs(amp_diff ./ amp);
     ratio = (phase_diff_abs ./ amp_ratio_abs);
 

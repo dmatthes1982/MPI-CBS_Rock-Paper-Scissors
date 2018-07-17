@@ -187,7 +187,8 @@ function [dataTmp, NoT] = fixTrialOrder( dataTmp, trlInf, trlInfOrg, ...
                                         dyadNum, part, cond )
 
 condition = {'FP', 'PD', 'PS', 'C'};                                        % condition acronyms                                      
-emptyMatrix = zeros(31, 49, 7);                                             % empty matrix
+emptyMatrix = zeros(size(dataTmp{1}, 1), size(dataTmp{1}, 2), ...           % empty matrix
+                    size(dataTmp{1}, 3));
 NoT = ones(1, length(trlInfOrg));
 
 if ~isequal(trlInf, trlInfOrg')
