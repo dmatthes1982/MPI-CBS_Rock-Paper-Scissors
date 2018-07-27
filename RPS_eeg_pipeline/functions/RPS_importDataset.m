@@ -126,21 +126,25 @@ end
 % -------------------------------------------------------------------------
 % Data import
 % -------------------------------------------------------------------------
-cfg.channel = {'all', '-F3',   '-F4',   '-CP5',   '-CP6'     ...            % exclude channels which are not connected
-                      '-F3_1', '-F4_1', '-CP5_1', '-CP6_1'   ...
-                      '-F3_2', '-F4_2', '-CP5_2', '-CP6_2'};                       
+cfg.channel = {'all', '-F3',   '-F4',   '-CP5',   '-CP6'    ...             % exclude channels which are not connected
+                      '-F3_1', '-F4_1', '-CP5_1', '-CP6_1'  ...
+                      '-F3_2', '-F4_2', '-CP5_2', '-CP6_2'  ...
+                      '-T7', '-T8', '-P7', '-P8', '-TP10'   ...             % exclude all general bad channels
+                      '-T7_1', '-T7_2', '-T8_1', '-T8_2',   ...
+                      '-P7_1', '-P7_2', '-P8_1', '-P8_2',   ...
+                      '-TP10_1', '-TP10_2'};                       
 dataTmp = ft_preprocessing(cfg);                                            % import data
 
 data.part1 = dataTmp;                                                       % split dataset into two datasets, one for each participant
-data.part1.label = strrep(dataTmp.label(1:28), '_1', '');
+data.part1.label = strrep(dataTmp.label(1:23), '_1', '');
 for i=1:1:length(dataTmp.trial)
-  data.part1.trial{i} = dataTmp.trial{i}(1:28,:);
+  data.part1.trial{i} = dataTmp.trial{i}(1:23,:);
 end
 
 data.part2 = dataTmp;
-data.part2.label = strrep(dataTmp.label(29:56), '_2', '');
+data.part2.label = strrep(dataTmp.label(24:46), '_2', '');
 for i=1:1:length(dataTmp.trial)
-  data.part2.trial{i} = dataTmp.trial{i}(29:56,:);
+  data.part2.trial{i} = dataTmp.trial{i}(24:46,:);
 end
 
 % -------------------------------------------------------------------------

@@ -101,12 +101,22 @@ clear sessionNum fileListCopy y userList match filePath cmdout attrib
 % Extract and export number of artifacts
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '05a_autoart/');
-label = {'F7','Fz','F8','FC5','FC1','FC2','FC6','T7','C3','Cz','C4', ...
-          'T8','FCz','CP1','CP2','TP10','P7','P3','Pz','P4','P8','O1', ...
-          'Oz','O2'};
 
-label_1 = cellfun(@(x) strcat(x, '_1'), label, 'UniformOutput', false);
-label_2 = cellfun(@(x) strcat(x, '_2'), label, 'UniformOutput', false);
+fileList     = dir([tmpPath, ['RPS_d*_05a_autoart_' sessionStr '.mat']]);
+fileList     = struct2cell(fileList);
+fileList     = fileList(1,:);
+numOfFiles  = length(fileList);
+numOfPart   = zeros(1, numOfFiles);
+for i = 1:1:numOfFiles
+  numOfPart(i) = sscanf(fileList{i}, strcat('RPS_d%d*', sessionStr, '.mat'));
+end
+
+file_path = strcat(tmpPath, fileList{i});
+load(file_path, 'cfg_autoart');
+
+label = cfg_autoart.FP.label;
+label_1 = cellfun(@(x) strcat(x, '_1'), label, 'UniformOutput', false)';
+label_2 = cellfun(@(x) strcat(x, '_2'), label, 'UniformOutput', false)';
 
 T_all = table(0,0,0,0,0,0,0,0,0);
 T_all.Properties.VariableNames = {'dyad', 'FP_ArtifactsPart1', 'FP_ArtifactsPart2', ...
@@ -114,7 +124,7 @@ T_all.Properties.VariableNames = {'dyad', 'FP_ArtifactsPart1', 'FP_ArtifactsPart
                               'PS_ArtifactsPart1', 'PS_ArtifactsPart2', ...
                               'C_ArtifactsPart1', 'C_ArtifactsPart2'};
 
-T_FP = cell2table(num2cell(zeros(1,49)));
+T_FP = cell2table(num2cell(zeros(1, length(label) * 2 + 1 )));
 T_FP.Properties.VariableNames = [{'dyad'}, label_1 label_2];                % create empty table with variable names
 
 T_PD = T_FP;
@@ -138,72 +148,72 @@ for i = 1:1:length(fileList)
   chan = ismember(label, cfg_autoart.FP.label);                             % determine all channels which were used for artifact detection
   pos = find(ismember(cfg_autoart.FP.label, label));                        % determine the order of the channels
 
-  tmpArt1 = zeros(1,24);
+  tmpArt1 = zeros(1, length(label));
   tmpArt1(chan) = cfg_autoart.FP.bad1NumChan(pos);                          % extract number of artifacts per channel for participant 1
   tmpArt1 = num2cell(tmpArt1);
 
-  tmpArt2 = zeros(1,24);
+  tmpArt2 = zeros(1, length(label));
   tmpArt2(chan) = cfg_autoart.FP.bad2NumChan(pos);                          % extract number of artifacts per channel for participant 2
   tmpArt2 = num2cell(tmpArt2);
 
   warning off;
   T_FP.dyad(i) = numOfPart(i);
-  T_FP(i,2:25)   = tmpArt1;
-  T_FP(i,26:49)  = tmpArt2;
+  T_FP(i,2:length(label) + 1)                           = tmpArt1;
+  T_FP(i, (length(label) + 2):(2 * length(label) + 1))  = tmpArt2;
   warning on;
 
   % PD
   chan = ismember(label, cfg_autoart.PD.label);                             % determine all channels which were used for artifact detection
   pos = find(ismember(cfg_autoart.PD.label, label));                        % determine the order of the channels
 
-  tmpArt1 = zeros(1,24);
+  tmpArt1 = zeros(1, length(label));
   tmpArt1(chan) = cfg_autoart.PD.bad1NumChan(pos);                          % extract number of artifacts per channel for participant 1
   tmpArt1 = num2cell(tmpArt1);
 
-  tmpArt2 = zeros(1,24);
+  tmpArt2 = zeros(1, length(label));
   tmpArt2(chan) = cfg_autoart.PD.bad2NumChan(pos);                          % extract number of artifacts per channel for participant 2
   tmpArt2 = num2cell(tmpArt2);
 
   warning off;
   T_PD.dyad(i) = numOfPart(i);
-  T_PD(i,2:25)   = tmpArt1;
-  T_PD(i,26:49)  = tmpArt2;
+  T_PD(i,2:length(label) + 1)                           = tmpArt1;
+  T_PD(i, (length(label) + 2):(2 * length(label) + 1))  = tmpArt2;
   warning on;
 
   % PS
   chan = ismember(label, cfg_autoart.PS.label);                             % determine all channels which were used for artifact detection
   pos = find(ismember(cfg_autoart.PS.label, label));                        % determine the order of the channels
 
-  tmpArt1 = zeros(1,24);
+  tmpArt1 = zeros(1, length(label));
   tmpArt1(chan) = cfg_autoart.PS.bad1NumChan(pos);                          % extract number of artifacts per channel for participant 1
   tmpArt1 = num2cell(tmpArt1);
 
-  tmpArt2 = zeros(1,24);
+  tmpArt2 = zeros(1, length(label));
   tmpArt2(chan) = cfg_autoart.PS.bad2NumChan(pos);                          % extract number of artifacts per channel for participant 2
   tmpArt2 = num2cell(tmpArt2);
 
   warning off;
   T_PS.dyad(i) = numOfPart(i);
-  T_PS(i,2:25)   = tmpArt1;
-  T_PS(i,26:49)  = tmpArt2;
+  T_PS(i,2:length(label) + 1)                           = tmpArt1;
+  T_PS(i, (length(label) + 2):(2 * length(label) + 1))  = tmpArt2;
   warning on;
 
   % C
   chan = ismember(label, cfg_autoart.C.label);                              % determine all channels which were used for artifact detection
   pos = find(ismember(cfg_autoart.C.label, label));                         % determine the order of the channels
 
-  tmpArt1 = zeros(1,24);
+  tmpArt1 = zeros(1, length(label));
   tmpArt1(chan) = cfg_autoart.C.bad1NumChan(pos);                           % extract number of artifacts per channel for participant 1
   tmpArt1 = num2cell(tmpArt1);
 
-  tmpArt2 = zeros(1,24);
+  tmpArt2 = zeros(1, length(label));
   tmpArt2(chan) = cfg_autoart.C.bad2NumChan(pos);                           % extract number of artifacts per channel for participant 2
   tmpArt2 = num2cell(tmpArt2);
 
   warning off;
   T_C.dyad(i) = numOfPart(i);
-  T_C(i,2:25)   = tmpArt1;
-  T_C(i,26:49)  = tmpArt2;
+  T_C(i,2:length(label) + 1)                            = tmpArt1;
+  T_C(i, (length(label) + 2):(2 * length(label) + 1))   = tmpArt2;
   warning on;
 
   % all conditions
