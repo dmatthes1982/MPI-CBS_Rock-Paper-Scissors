@@ -116,6 +116,12 @@ if strcmp(continuous, 'no')
     end
     cfg.trl(overlapping, :) = []; 
   end
+
+  hdr = ft_read_header(headerfile);                                         % read header file
+  if cfg.trl(end,2) > hdr.nSamples                                          % adapt trial size, if recording was aborted
+    cfg.trl(end,2) = hdr.nSamples;
+  end
+
 else
   cfg                     = [];
   cfg.dataset             = headerfile;
