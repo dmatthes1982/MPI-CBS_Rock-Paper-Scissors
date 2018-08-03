@@ -119,7 +119,13 @@ if strcmp(continuous, 'no')
 
   hdr = ft_read_header(headerfile);                                         % read header file
   if cfg.trl(end,2) > hdr.nSamples                                          % adapt trial size, if recording was aborted
+    missing_samples = cfg.trl(end,2) - hdr.nSamples;
     cfg.trl(end,2) = hdr.nSamples;
+    warning('off','backtrace');
+    warning(['recording was finished to early, last trial is ' ...
+             'shorter than expected, %d samples are missing'], ...
+             missing_samples);
+    warning('on','backtrace');
   end
 
 else
