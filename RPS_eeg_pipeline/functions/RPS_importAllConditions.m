@@ -1,9 +1,9 @@
-function [ data ] = RPS_importAllConditions( cfg )
+function [ data, cfg_manart ] = RPS_importAllConditions( cfg )
 % RPS_IMPORTALLCONDITIONS imports the data of all four conditions of a
 % single dyad
 %
 % Use as
-%   [ data ] = = RPS_importAllConditions( cfg )
+%   [ data, cfg_manart ] = RPS_importAllConditions( cfg )
 %
 % The configuration options are
 %   cfg.path        = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
@@ -47,21 +47,21 @@ cfg.continuous = continuous;
 % Condition 'FreePlay'
 cfg.condition = 'FP';
 fprintf('Condition FreePlay...\n');
-data.FP = RPS_importDataset( cfg );
+[data.FP, cfg_manart.FP] = RPS_importDataset( cfg );
 
 % Condition 'PredDiff'
 cfg.condition = 'PD';
 fprintf('Condition PredDiff...\n');
-data.PD = RPS_importDataset( cfg );
+[data.PD, cfg_manart.PD] = RPS_importDataset( cfg );
 
 % Condition 'PredSame'
 cfg.condition = 'PS';
 fprintf('Condition PredSame...\n');
-data.PS = RPS_importDataset( cfg );
+[data.PS, cfg_manart.PS] = RPS_importDataset( cfg );
 
 % Condition 'Control'
 cfg.condition = 'C';
 fprintf('Condition Control...\n');
-data.C = RPS_importDataset( cfg );
+[data.C, cfg_manart.C] = RPS_importDataset( cfg );
 
 end

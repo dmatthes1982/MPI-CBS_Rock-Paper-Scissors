@@ -40,7 +40,7 @@ threshold_range   = [50, 200; ...                                           % ra
                      20, 80; ...                                            % range for method 'stddev'
                      3, 7];                                                 % range for method 'mad'
 
-% method selectiom
+% method selection
 selection = false;
 while selection == false
   cprintf([0,0.6,0], 'Please select an artifact detection method:\n');
@@ -127,6 +127,23 @@ if isempty(threshold)
 fprintf('\n');  
 end
 
+% exlude cycles with decisions are not made in the right phase
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Do you want add the bad cycles (in which decisions are not made in the right phase) to the artifacts collection?\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    selection = true;
+    reject_bad_cycles = x;
+  elseif strcmp('n', x)
+    selection = true;
+    reject_bad_cycles = x;
+  else
+    selection = false;
+  end
+end
+fprintf('\n');
+
 % Write selected settings to settings file
 file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
 if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
@@ -142,6 +159,7 @@ T = readtable(file_path);                                                   % up
 warning off;
 T.artMethod(numOfPart) = {method};
 T.artThreshold(numOfPart) = threshold;
+T.rejectBadCycles(numOfPart) = {reject_bad_cycles};
 warning on;
 delete(file_path);
 writetable(T, file_path);
@@ -156,6 +174,16 @@ for i = numOfPart
   fprintf('Load eye-artifact corrected data...\n');
   RPS_loadData( cfg );
   
+  if strcmp(reject_bad_cycles, 'y')
+    cfg             = [];
+    cfg.srcFolder   = strcat(desPath, '01b_manart/');
+    cfg.filename    = sprintf('RPS_d%02d_01b_manart', i);
+    cfg.sessionStr  = sessionStr;
+
+    fprintf('Load bad cycles artifact definition...\n');
+    RPS_loadData( cfg );
+  end
+
   % automatic artifact detection
   cfg             = [];
   cfg.channel     = {'all', '-V1', '-V2', '-H1', '-H2', '-REF', ...
@@ -174,9 +202,12 @@ for i = numOfPart
 
   cfg_autoart   = RPS_autoArtifact(cfg, data_eyecor);                       % auto artifact detection
   
-   % verify automatic detected artifacts / manual artifact detection
+  % verify automatic detected artifacts / manual artifact detection
   cfg           = [];
-  cfg.artifact  = cfg_autoart;
+  cfg.threshArt = cfg_autoart;
+  if strcmp(reject_bad_cycles, 'y')
+    cfg.manArt    = cfg_manart;
+  end
   cfg.dyad      = i;
   
   cfg_allart    = RPS_manArtifact(cfg, data_eyecor);                 
@@ -194,7 +225,7 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'cfg_autoart', cfg_autoart);
   fprintf('Data stored!\n');
-  clear cfg_autoart data_eyecor trl
+  clear cfg_autoart cfg_manart data_eyecor trl
   
   % export the verified and the additional artifacts into a *.mat file
   cfg             = [];
@@ -219,7 +250,9 @@ for i = numOfPart
       if strcmp('y', x)
         selection = true;
       elseif strcmp('n', x)
-        clear file_path numOfSources sourceList cfg i x selection
+        clear file_path numOfSources sourceList cfg i x y selection T ...
+              threshold method winsize sliding default_threshold ...
+              threshold_range reject_bad_cycles
         return;
       else
         selection = false;
@@ -231,5 +264,5 @@ end
 
 %% clear workspace
 clear file_path numOfSources sourceList cfg i x y selection T threshold ...
-      method winsize sliding default_threshold threshold_range
-
+      method winsize sliding default_threshold threshold_range ...
+      reject_bad_cycles

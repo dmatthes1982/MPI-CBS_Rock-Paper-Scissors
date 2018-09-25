@@ -1,15 +1,21 @@
-function [ data ] = RPS_importDataset( cfg )
+function [ data, cfg_manart ] = RPS_importDataset( cfg )
 % RPS_IMPORTDATASET imports one specific dataset recorded with a device 
 % from brain vision.
 %
 % Use as
-%   [ data ] = RPS_importDataset( cfg )
+%   [ data, cfg_manart ] = RPS_importDataset( cfg )
 %
 % The configuration options are
 %   cfg.path        = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
 %   cfg.condition   = condition string ('C', 'FP', 'PD', 'PS')
 %   cfg.dyad        = number of dyad
 %   cfg.continuous  = 'yes' or 'no' (default: 'no')
+%
+% The second output variable holds a artifact definition, which is created
+% during data import. All cycles (complete set of all phases of a certain
+% condition) in which descision markers are missing, in which they emerge
+% to early or to late and in which the decisions were made mutiple times
+% are marked as bad.
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
 % absolute path specifications like in the example. Please be aware that 
@@ -52,13 +58,11 @@ if strcmp(continuous, 'no')
   load(sprintf('%s/../general/RPS_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
-  % definition of all possible stimuli, which seperate trials. Two values 
-  % for each phase, the first one is the original one and the second one 
-  % handles the 'video trigger bug'
+  % definition of all possible stimuli, which seperate trials.
   [~, condNum] = ismember(condition, generalDefinitions.condLetter);
 
-  eventvalues = [ generalDefinitions.phaseMark{condNum}(1,:) ...
-                generalDefinitions.phaseMark{condNum}(2,:) ];
+  eventvalues = generalDefinitions.phaseMark{condNum};
+  decisionvalues = generalDefinitions.decisionMark{condNum};
 
   samplingRate = 500;
   dur = generalDefinitions.duration{condNum} * samplingRate;
@@ -79,19 +83,94 @@ if strcmp(continuous, 'no')
   cfg = ft_definetrial(cfg);                                                % generate config for segmentation
   cfg = rmfield(cfg, {'notification'});                                     % workarround for mergeconfig bug                       
 
-  for i = 1:1:size(cfg.trl, 1)                                              % correct false stimulus numbers
-    if any(generalDefinitions.phaseNum128Bug{condNum} == cfg.trl(i,4))
-      element = generalDefinitions.phaseNum128Bug{condNum} == cfg.trl(i,4);
-      cfg.trl(i,4) = generalDefinitions.phaseNum{condNum}(element);
-    end
-  end
-
   for i = 1:1:length(cfg.trl)                                               % set specific trial lengths
     element = generalDefinitions.phaseNum{condNum} == cfg.trl(i,4);
     cfg.trl(i, 2) = dur(element) + cfg.trl(i, 1) - 1;
   end
 
-  elements = find(ismember(cfg.trl(:,4), 7));                               % remove duplicates of marker 'S  7', if arduino button is pressed multiple times within one trial
+  % -----------------------------------------------------------------------
+  % 1.) Import decision markers
+  % 2.) Find cycles where decisions are missing, where decisions are made
+  % either to early or to late and where multiple decisions were made.
+  % 3.) Mark trials theses cycles as bad.
+  % -----------------------------------------------------------------------
+  if ~(isempty(decisionvalues) || ismember(dyad, [7,8]))
+    cfgD                      = [];
+    cfgD.dataset              = headerfile;
+    cfgD.trialfun             = 'ft_trialfun_general';
+    cfgD.trialdef.eventtype   = 'Stimulus';
+    cfgD.trialdef.prestim     = 0;
+    cfgD.showcallinfo         = 'no';
+    cfgD.feedback             = 'error';
+    cfgD.trialdef.eventvalue  = decisionvalues;
+
+    cfgD = ft_definetrial(cfgD);                                            % extract decision markers
+    decisionList = [cfgD.trl(:,4), cfgD.trl(:,1)];                          % create a decision list
+
+    begCycle = cfg.trl(ismember(cfg.trl(:,4), ...
+                        generalDefinitions.phaseNum{condNum}(2)), 1);
+    endCycle = cfg.trl(ismember(cfg.trl(:,4), ...
+                        generalDefinitions.phaseNum{condNum}(end)), 2);
+    cycle = [begCycle, endCycle];                                           % create a list with start and end sample numbers of all available cycles
+
+    condButtonPress = cfg.trl(ismember(cfg.trl(:,4), ...
+                        generalDefinitions.phaseNum{condNum}(3)), 1:2);     % create a list with start and end sample numbers of all available ButtonPress conditions
+
+    tmp = NaN(size(cycle,1), 2);                                            % extend conditons list with NaN lines for cycles without ButtonPress conditions
+    for i = 1:1:size(cycle,1)
+      match = (cycle(i,1) <= condButtonPress(:,1)) & ...
+          (cycle(i,2) >= condButtonPress(:,1));
+      if any(match)
+        tmp(i,:) = condButtonPress(match, :);
+      end
+    end
+    condButtonPress = tmp;
+
+    actPerCycle                 = zeros(size(cycle, 1), 1);                 % allocate memmory
+    actPerCond                  = zeros(size(cycle, 1), 1);
+    actions{size(cycle, 1), 1}  = [];
+
+    for i = 1:1:size(cycle,1)
+      row             = (cycle(i,1) <= decisionList(:,2) & ...
+                          cycle(i,2) >= decisionList(:,2));
+      actPerCycle(i)  = sum(row);                                           % estimate the numbers of decisions per cycle
+      row             = (condButtonPress(i,1) <= decisionList(:,2) & ...
+                          condButtonPress(i,2) >= decisionList(:,2));
+      actPerCond(i)   = sum(row);                                           % estimate the numbers of decisions within condition ButtonPress
+      actions{i}      = decisionList(row,1)';                               % estimate the specific decision markes within condition ButtonPress
+    end
+
+    wrongDecisionTime = actPerCycle ~= actPerCond;                          % estimate cycles where decisions are made either to early or to late
+    multipleDecisions = actPerCond > 2;                                     % estimate cycles where multiple decisions were made
+    condMissing = ~(cell2mat(cellfun(@(x) any(ismember(x, [1,2,3])), ...    % estimate cycles where decisions are missing
+                    actions, 'UniformOutput', false)) & ...
+                    cell2mat(cellfun(@(x) any(ismember(x, [4,5,6])), ...
+                    actions, 'UniformOutput', false)));
+
+    badCycles = wrongDecisionTime | multipleDecisions | condMissing;        % combine all cases to a vector of bad cycles
+    artifact  = cycle(badCycles,:);
+  end
+
+  % ---------------------------------------------------------------------
+  % Generate artifact config
+  % ---------------------------------------------------------------------
+  if ~(isempty(decisionvalues) || ismember(dyad, [7,8]))
+    cfg_manart = [];
+    cfg_manart.part1.artfctdef.xxx.artifact = artifact;
+    cfg_manart.part2.artfctdef.xxx.artifact = artifact;
+    cfg_manart.badNum = sum(badCycles);
+  else
+    cfg_manart = [];
+    cfg_manart.part1.artfctdef.xxx.artifact = [];
+    cfg_manart.part2.artfctdef.xxx.artifact = [];
+    cfg_manart.badNum = 0;
+  end
+
+  % -----------------------------------------------------------------------
+  % Remove duplicates of marker 'S  7',
+  % if arduino button is pressed multiple times within one trial
+  % -----------------------------------------------------------------------
+  elements = find(ismember(cfg.trl(:,4), 7));
   if ~isempty(elements)
     duplicates = find((elements(1:end-1) + 1) == elements(2:end));
     if ~isempty(duplicates)
@@ -105,7 +184,10 @@ if strcmp(continuous, 'no')
     cfg.trl(elements(duplicates + 1), :) = []; 
   end
   
-  overlapping = find(cfg.trl(1:end-1,2) > cfg.trl(2:end, 1));               % in case of overlapping trials, remove the first of theses trials
+  % -----------------------------------------------------------------------
+  % In case of overlapping trials, remove the first of theses trials
+  % -----------------------------------------------------------------------
+  overlapping = find(cfg.trl(1:end-1,2) > cfg.trl(2:end, 1));
   if ~isempty(overlapping)
     for i = 1:1:length(overlapping)
       warning('off','backtrace');
@@ -117,8 +199,11 @@ if strcmp(continuous, 'no')
     cfg.trl(overlapping, :) = []; 
   end
 
+  % -----------------------------------------------------------------------
+  % Adapt trial size, if recording was aborted
+  % -----------------------------------------------------------------------
   hdr = ft_read_header(headerfile);                                         % read header file
-  if cfg.trl(end,2) > hdr.nSamples                                          % adapt trial size, if recording was aborted
+  if cfg.trl(end,2) > hdr.nSamples
     missing_samples = cfg.trl(end,2) - hdr.nSamples;
     cfg.trl(end,2) = hdr.nSamples;
     warning('off','backtrace');
