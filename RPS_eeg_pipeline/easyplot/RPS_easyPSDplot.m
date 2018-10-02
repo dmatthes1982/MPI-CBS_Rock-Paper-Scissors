@@ -16,6 +16,7 @@ function RPS_easyPSDplot(cfg, data)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
 %   cfg.electrode   = number of electrodes (default: {'Cz'} repsectively [10])
 %                     examples: {'Cz'}, {'F7', 'Fz', 'F8'}, [10] or [2, 1, 3]
+%   cfg.avgelec     = plot average over selected electrodes, options: 'yes' or 'no' (default: 'no')
 %
 % This function requires the fieldtrip toolbox
 %
@@ -30,6 +31,7 @@ part  = ft_getopt(cfg, 'part', 1);
 cond  = ft_getopt(cfg, 'condition', 2);
 phase = ft_getopt(cfg, 'phase', 11);
 elec  = ft_getopt(cfg, 'electrode', {'Cz'});
+avgelec = ft_getopt(cfg, 'avgelec', 'no');
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
@@ -49,7 +51,7 @@ switch cond
 end
 
 if ~ismember(part, [0,1,2])                                                 % check cfg.part definition
-  error('cfg.part has to either 0, 1 or 2');
+  error('cfg.part has to be either 0, 1 or 2');
 end
 
 switch part                                                                 % check validity of cfg.part
@@ -85,7 +87,7 @@ phase = RPS_checkPhase( phase );                                            % ch
 if isempty(find(trialinfo == phase, 1))
   error('The selected dataset contains no phase %d.', phase);
 else
-  trialNum = find(ismember(trialinfo, phase));
+  trialNum = ismember(trialinfo, phase);
 end
 
 if isnumeric(elec)                                                          % check cfg.electrode
@@ -105,20 +107,37 @@ else
   elec = tmpElec;
 end
 
+if ~ismember(avgelec, {'yes', 'no'})                                        % check cfg.avgelec definition
+  error('cfg.avgelec has to be either ''yes'' or ''no''.');
+end
+
 % -------------------------------------------------------------------------
 % Plot power spectral density (PSD)
 % -------------------------------------------------------------------------
-plot(data.freq, squeeze(data.powspctrm(trialNum, elec,:)));                 %#ok<FNDSB>
-labelString = strjoin(data.label(elec), ',');
-if part == 0                                                                % set figure title
-  title(sprintf('PSD - Cond.: %d - Phase: %d - Elec.: %s', cond, ...
-        phase, labelString));
+legend('-DynamicLegend');
+hold on;
+
+if strcmp(avgelec, 'no')
+  for i = 1:1:length(elec)
+    plot(data.freq, squeeze(data.powspctrm(trialNum, elec(i),:)), ...
+        'DisplayName', data.label{elec(i)});
+  end
 else
-  title(sprintf('PSD - Part.: %d - Cond.: %d - Phase: %d - Elec.: %s', ...
-        part, cond, phase, labelString));
+  labelString = strjoin(data.label(elec), ',');
+  plot(data.freq, mean(squeeze(data.powspctrm(trialNum, elec,:)), 1), ...
+        'DisplayName', labelString);
+end
+
+if part == 0                                                                % set figure title
+  title(sprintf('PSD - Cond.: %d - Phase: %d', cond, phase));
+else
+  title(sprintf('PSD - Part.: %d - Cond.: %d - Phase: %d', ...
+        part, cond, phase));
 end
 
 xlabel('frequency in Hz');                                                  % set xlabel
-ylabel('PSD');                                                              % set ylabel
+ylabel('power in uV^2');                                                    % set ylabel
+
+hold off;
 
 end
