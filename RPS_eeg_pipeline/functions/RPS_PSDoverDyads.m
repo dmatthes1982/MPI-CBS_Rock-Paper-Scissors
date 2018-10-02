@@ -54,7 +54,8 @@ while selection == false
     cprintf([1,0.5,0], 'Wrong input!\n');
   else
     selection = true;
-    listOfDyads = x;
+    listOfDyads = unique(x);
+    numOfDyads  = length(listOfDyads);
   end
 end
 fprintf('\n');
@@ -66,8 +67,6 @@ data_out.FP.trialinfo = generalDefinitions.phaseNum{1}';
 data_out.PD.trialinfo = generalDefinitions.phaseNum{2}';
 data_out.PS.trialinfo = generalDefinitions.phaseNum{3}';
 data_out.C.trialinfo  = generalDefinitions.phaseNum{4}';
-
-numOfDyads  = length(listOfDyads);
 
 data{4, 2 * numOfDyads} = [];
 trialinfo{4, 2 * numOfDyads} = [];
