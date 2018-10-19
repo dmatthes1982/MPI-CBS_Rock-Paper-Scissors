@@ -50,7 +50,7 @@ for i = numOfPart
   cfg.bpfreq    = [8 12];
   cfg.filtorder = fix(250 / filtCoeffDiv);
   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
-                   '-H1', 'H2'}; 
+                   '-H1', '-H2'}; 
   
   data_bpfilt_alpha = RPS_bpFiltering(cfg, data_eyecor);
   
@@ -74,7 +74,7 @@ for i = numOfPart
   cfg.bpfreq    = [13 30];
   cfg.filtorder = fix(250 / filtCoeffDiv);
   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
-                   '-H1', 'H2'};
+                   '-H1', '-H2'};
   
   data_bpfilt_beta = RPS_bpFiltering(cfg, data_eyecor);
 
@@ -98,7 +98,7 @@ for i = numOfPart
   cfg.bpfreq    = [31 90];
   cfg.filtorder = fix(250 / filtCoeffDiv);
    cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
-                   '-H1', 'H2'};
+                   '-H1', '-H2'};
   
   data_bpfilt_gamma = RPS_bpFiltering(cfg, data_eyecor);
 
