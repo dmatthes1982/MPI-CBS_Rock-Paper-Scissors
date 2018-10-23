@@ -30,7 +30,8 @@ toi       = ft_getopt(cfg, 'toi', 0.4:0.4:2.8);
 cfg                 = [];
 cfg.method          = 'wavelet';
 cfg.output          = 'pow';
-cfg.channel         = 'all';                                                % calculate spectrum for specified channel
+cfg.channel         = {'all', '-V1', '-V2', '-H1', '-H2', '-REF', ...       % calculate spectrum for specified channel
+                       '-EOGV', '-EOGH'};
 cfg.trials          = 'all';                                                % calculate spectrum for every trial  
 cfg.keeptrials      = 'yes';                                                % do not average over trials
 cfg.pad             = 'maxperlen';                                          % do not use padding

@@ -27,7 +27,8 @@ foi = ft_getopt(cfg, 'foi', 1:1:50);
 cfg                 = [];
 cfg.method          = 'mtmfft';
 cfg.output          = 'pow';
-cfg.channel         = 'all';                                                % calculate spectrum for all channels
+cfg.channel         = {'all', '-V1', '-V2', '-H1', '-H2', '-REF', ...       % calculate spectrum for specified channel
+                       '-EOGV', '-EOGH'};
 cfg.trials          = 'all';                                                % calculate spectrum for every trial  
 cfg.keeptrials      = 'yes';                                                % do not average over trials
 cfg.pad             = 'maxperlen';                                          % do not use padding
