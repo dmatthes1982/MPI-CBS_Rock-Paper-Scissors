@@ -37,11 +37,11 @@ fprintf('\n');
 
 selection = false;
 while selection == false
-  cprintf([0,0.6,0], 'Do you want to use the default threshold (0.8) for EOG-artifact estimation?\n');
+  cprintf([0,0.6,0], 'Do you want to use the default threshold (0.8) for EOG-artifact estimation for both participants?\n');
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     selection = true;
-    threshold = 0.8;
+    threshold = [0.8 0.8];
   elseif strcmp('n', x)
     selection = true;
     threshold = [];
@@ -52,29 +52,32 @@ end
 fprintf('\n');
 
 if isempty(threshold)
-  selection = false;
-  while selection == false
-    cprintf([0,0.6,0], 'Specify a threshold value in a range between 0 and 1!\n');
-    x = input('Value: ');
-    if isnumeric(x)
-      if (x < 0 || x > 1)
+  for i = 1:1:2                                                             % specify a independent threshold for each participant
+    selection = false;
+    while selection == false
+      cprintf([0,0.6,0], 'Specify a threshold value for participant %d in a range between 0 and 1!\n', i);
+      x = input('Value: ');
+      if isnumeric(x)
+        if (x < 0 || x > 1)
+          cprintf([1,0.5,0], 'Wrong input!\n');
+          selection = false;
+        else
+          threshold(i) = x;
+          selection = true;
+        end
+      else
         cprintf([1,0.5,0], 'Wrong input!\n');
         selection = false;
-      else
-        threshold = x;
-        selection = true;
       end
-    else
-      cprintf([1,0.5,0], 'Wrong input!\n');
-      selection = false;
     end
   end
 fprintf('\n');  
 end
 
 % Write selected settings to settings file
-file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
-if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
+settings_file = [desPath '00_settings/' ...
+                          sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(settings_file, 'file') == 2)                                     % check if settings file already exist
   cfg = [];
   cfg.desFolder   = [desPath '00_settings/'];
   cfg.type        = 'settings';
@@ -83,12 +86,11 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   RPS_createTbl(cfg);                                                       % create settings file
 end
 
-T = readtable(file_path);                                                   % update settings table
+T = readtable(settings_file);                                               % update settings table
 warning off;
-T.ICAcorrVal(numOfPart) = threshold;
+T.ICAcorrVal1(numOfPart) = threshold(1);
+T.ICAcorrVal2(numOfPart) = threshold(2);
 warning on;
-delete(file_path);
-writetable(T, file_path);
 
 for i = numOfPart
   cfg             = [];
@@ -132,6 +134,23 @@ for i = numOfPart
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
 
+  % add eye-artifact related components to the settings file
+  if isempty(data_eogcomp.part1.elements)
+    EOGcompPart1 = {'---'};
+  else
+    EOGcompPart1 = {strjoin(data_eogcomp.part1.elements,',')};
+  end
+  if isempty(data_eogcomp.part2.elements)
+    EOGcompPart2 = {'---'};
+  else
+    EOGcompPart2 = {strjoin(data_eogcomp.part2.elements,',')};
+  end
+  warning off;
+  T.EOGcompPart1(i) = EOGcompPart1;
+  T.EOGcompPart2(i) = EOGcompPart2;
+  warning on;
+
+  % load preprocessed data
   fprintf('The eye-artifact related components and the unmixing matrix of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_eogcomp', data_eogcomp);
@@ -145,7 +164,7 @@ for i = numOfPart
   fprintf('Load preprocessed data...\n');
   RPS_loadData( cfg );
   
-  % Remove eye artifacts
+  % remove eye artifacts
   data_eyecor = RPS_removeEOGArt(data_eogcomp, data_preproc);
   
   clear data_eogcomp data_preproc
@@ -167,5 +186,10 @@ for i = numOfPart
   clear data_eyecor
 end
 
+% store settings table
+delete(settings_file);
+writetable(T, settings_file);
+
 %% clear workspace
-clear file_path cfg sourceList numOfSources i threshold selection x T
+clear file_path cfg sourceList numOfSources i threshold selection x T ...
+      settings_file EOGcompPart1 EOGcompPart2
