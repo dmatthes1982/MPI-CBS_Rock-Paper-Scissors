@@ -6,9 +6,9 @@ function [ data ] = RPS_phaseLockVal( cfg, data )
 % Use as
 %   [ data ] = RPS_phaseLockVal( cfg, data )
 %
-% where the input data have to be the result from RPS_HILBERTPHASE
+% where the input data has to be the result of RPS_HILBERTPHASE
 %
-% The configuration options are
+% The configuration option is
 %   cfg.winlen    = length of window over which the PLV will be calculated. (default: 1 sec)
 %                   minimum = 1 sec
 % 
@@ -30,7 +30,7 @@ function [ data ] = RPS_phaseLockVal( cfg, data )
 %
 % See also RPS_DATASTRUCTURE, RPS_HILBERTPHASE
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS 
+% Copyright (C) 2017-2018, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get config option

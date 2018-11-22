@@ -111,13 +111,19 @@ for i = numOfPart
   fprintf('Load raw data...\n');
   RPS_loadData( cfg );
   
-  % Concatenated raw trials to a continuous stream
+  % concatenated raw trials to a continuous stream
   data_continuous = RPS_concatData( data_raw );
   
   fprintf('\n');
+
+  % detect noisy channels automatically
+  data_noisy = RPS_estNoisyChan( data_continuous );
   
+  fprintf('\n');
+
   % select corrupted channels
-  data_badchan = RPS_selectBadChan( data_continuous );
+  data_badchan = RPS_selectBadChan( data_continuous, data_noisy );
+  clear data_noisy
   
   % export the bad channels in a *.mat file
   cfg             = [];

@@ -4,7 +4,7 @@ function [ data ] = RPS_preprocessing( cfg, data )
 % Use as
 %   [ data ] = RPS_preprocessing(cfg, data)
 %
-% where the input data have to be the result from RPS_IMPORTATASET
+% where the input data has to be the result of RPS_IMPORTATASET
 %
 % The configuration options are
 %   cfg.bpfreq            = passband range [begin end] (default: [0.1 48])
@@ -47,7 +47,7 @@ end
 cfgBP                   = [];
 cfgBP.bpfilter          = 'yes';                                            % use bandpass filter
 cfgBP.bpfreq            = bpfreq;                                           % bandpass range  
-cfgBP.bpfilttype        = bpfilttype;                                       % bandpass filter type = fir      
+cfgBP.bpfilttype        = bpfilttype;                                       % bandpass filter type
 cfgBP.bpinstabilityfix  = bpinstabilityfix;                                 % deal with filter instability
 cfgBP.dftfilter         = dftfilter;                                        % dft filter for line noise removal
 cfgBP.dftfreq           = dftfreq;                                          % line noise frequencies

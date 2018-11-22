@@ -30,8 +30,6 @@ function RPS_easyArtfctmapPlot(cfg, cfg_autoart)
 part  = ft_getopt(cfg, 'part', 1);                                          % get number of participant
 cond  = ft_getopt(cfg, 'condition', 2);                                     % get condition number/string
 
-
-
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
 

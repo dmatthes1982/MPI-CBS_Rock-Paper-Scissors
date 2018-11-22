@@ -94,9 +94,9 @@ for i = 1:1:8
 % -------------------------------------------------------------------------
   cfgView               = [];
   cfgView.ylim          = [-200 200];
-  cfgView.blocksize     = 120;
+  cfgView.blocksize     = 60;
   cfgView.viewmode      = 'vertical';
-  cfgView.continuous    = 'yes';
+  cfgView.continuous    = 'no';
   cfgView.channel       = 'all';
   cfgView.showcallinfo  = 'no';
   if i < 5

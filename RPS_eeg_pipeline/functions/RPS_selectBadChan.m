@@ -1,20 +1,32 @@
-function [ data_badchan ] = RPS_selectBadChan( data_raw )
+function [ data_badchan ] = RPS_selectBadChan( data_raw, data_noisy )
 % RPS_SELECTBADCHAN can be used for selecting bad channels visually. The
-% data will be presented in the fieldtrip databrowser view and the bad
-% channels will be marked in the RPS_CHANNELCHECKBOX gui. The function
-% returns a fieldtrip-like datastructure which includes only a cell array 
-% for each participant with the selected bad channels.
+% data will be presented in two different ways. The first fieldtrip
+% databrowser view shows the time course of each channel. The second view
+% shows the total power of each channel and is highlighting outliers. The
+% bad channels can be marked within the JAI_CHANNELCHECKBOX gui.
 %
 % Use as
-%   [ data_badchan ] = RPS_selectBadChan( data_raw )
+%   [ data_badchan ] = RPS_selectBadChan( data_raw, data_noisy )
 %
-% where the input has to be raw data
+% where the first input has to be concatenated raw data and second one has
+% to be the rsult of JAI_ESTNOISYCHAN.
 %
 % The function requires the fieldtrip toolbox
 %
-% SEE also RPS_DATABROWSER and RPS_CHANNELCHECKBOX
+% SEE also JAI_DATABROWSER, JAI_ESTNOISYCHAN and JAI_CHANNELCHECKBOX
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
+
+% -------------------------------------------------------------------------
+% Check data
+% -------------------------------------------------------------------------
+if numel(data_raw.FP.part1.trialinfo) ~= 1 || numel(data_raw.FP.part2.trialinfo) ~= 1
+  error('First dataset has more than one trial. Data has to be concatenated!');
+end
+
+if ~isfield(data_noisy.FP.part1, 'totalpow')
+  error('Second dataset has to be the result of JAI_ESTNOISYCHAN!');
+end
 
 % -------------------------------------------------------------------------
 % General settings
@@ -29,7 +41,7 @@ for i = 1:1:8
 % ------------------------------------------------------------------------- 
   cfg             = [];
   cfg.ylim        = [-200 200];
-  cfg.blocksize   = 120;
+  cfg.blocksize   = 60;
   cfg.part        = participants(i);
   cfg.condition   = conditions(i);
   cfg.plotevents  = 'no';
@@ -38,10 +50,14 @@ for i = 1:1:8
 % Selection of bad channels
 % -------------------------------------------------------------------------
   fprintf('<strong>Select bad channels of participant %d in condition %s...</strong>\n', ...
-          cfg.part, condString{i});
+          participants(i), condString{i});
+  RPS_easyTotalPowerBarPlot( cfg, data_noisy );
+  fig = gcf;                                                                % default position is [560 528 560 420]
+  fig.Position = [0 528 560 420];                                           % --> first figure will be placed on the left side of figure 2
   RPS_databrowser( cfg, data_raw );
   badLabel = RPS_channelCheckbox();
   close(gcf);                                                               % close also databrowser view when the channelCheckbox will be closed
+  close(gcf);                                                               % close also total power diagram when the channelCheckbox will be closed
   if any(strcmp(badLabel, 'TP10'))
     warning backtrace off;
     warning(['You have repaired ''TP10'', accordingly selecting linked ' ...
@@ -65,24 +81,32 @@ for i = 1:1:8
   else
     label = [];
   end
-  
+
   switch i
     case 1
+      data_badchan.FP.part1         = data_noisy.FP.part1;
       data_badchan.FP.part1.badChan = label;   
     case 2
+      data_badchan.PD.part1         = data_noisy.PD.part1;
       data_badchan.PD.part1.badChan = label;  
     case 3
+      data_badchan.PS.part1         = data_noisy.PS.part1;
       data_badchan.PS.part1.badChan = label;  
     case 4
-      data_badchan.C.part1.badChan = label;  
+      data_badchan.C.part1          = data_noisy.C.part1;
+      data_badchan.C.part1.badChan  = label;
     case 5
+      data_badchan.FP.part2         = data_noisy.FP.part2;
       data_badchan.FP.part2.badChan = label;  
     case 6
+      data_badchan.PD.part2         = data_noisy.PD.part2;
       data_badchan.PD.part2.badChan = label;  
     case 7
+      data_badchan.PS.part2         = data_noisy.PS.part2;
       data_badchan.PS.part2.badChan = label;  
     case 8
-      data_badchan.C.part2.badChan = label;  
+      data_badchan.C.part2          = data_noisy.C.part2;
+      data_badchan.C.part2.badChan  = label;
   end
 end
 
