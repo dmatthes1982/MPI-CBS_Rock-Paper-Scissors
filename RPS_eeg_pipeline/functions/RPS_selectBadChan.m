@@ -3,17 +3,17 @@ function [ data_badchan ] = RPS_selectBadChan( data_raw, data_noisy )
 % data will be presented in two different ways. The first fieldtrip
 % databrowser view shows the time course of each channel. The second view
 % shows the total power of each channel and is highlighting outliers. The
-% bad channels can be marked within the JAI_CHANNELCHECKBOX gui.
+% bad channels can be marked within the RPS_CHANNELCHECKBOX gui.
 %
 % Use as
 %   [ data_badchan ] = RPS_selectBadChan( data_raw, data_noisy )
 %
 % where the first input has to be concatenated raw data and second one has
-% to be the rsult of JAI_ESTNOISYCHAN.
+% to be the result of RPS_ESTNOISYCHAN.
 %
 % The function requires the fieldtrip toolbox
 %
-% SEE also JAI_DATABROWSER, JAI_ESTNOISYCHAN and JAI_CHANNELCHECKBOX
+% SEE also RPS_DATABROWSER, RPS_ESTNOISYCHAN and RPS_CHANNELCHECKBOX
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -25,7 +25,7 @@ if numel(data_raw.FP.part1.trialinfo) ~= 1 || numel(data_raw.FP.part2.trialinfo)
 end
 
 if ~isfield(data_noisy.FP.part1, 'totalpow')
-  error('Second dataset has to be the result of JAI_ESTNOISYCHAN!');
+  error('Second dataset has to be the result of RPS_ESTNOISYCHAN!');
 end
 
 % -------------------------------------------------------------------------
