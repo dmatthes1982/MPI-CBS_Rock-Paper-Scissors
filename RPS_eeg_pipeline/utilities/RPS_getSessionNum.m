@@ -6,7 +6,7 @@ function [ num ] = RPS_getSessionNum( cfg )
 %   [ num ] = RPS_getSessionNum( cfg )
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedDataOld/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01843/eegData/DualEEG_RPS_processedData/')
 %   cfg.subFolder   = name of subfolder (default: '01_raw/')
 %   cfg.filename    = filename (default: 'RPS_d01_01_raw')
 %
@@ -17,7 +17,7 @@ function [ num ] = RPS_getSessionNum( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedDataOld/');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01843/eegData/DualEEG_RPS_processedData/');
 subFolder   = ft_getopt(cfg, 'subFolder', '01_raw/');
 filename    = ft_getopt(cfg, 'filename', 'RPS_d01_01_raw');
 

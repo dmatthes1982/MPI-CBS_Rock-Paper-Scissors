@@ -6,7 +6,7 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 %   [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedDataOld/07b_mplv/')
+%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/07b_mplv/')
 %   cfg.session   = session number (default: 1)
 %   cfg.passband  = select passband of interest (default: alpha)
 %                   (accepted values: alpha, beta, gamma, gammahigh)
@@ -21,7 +21,7 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01843/eegData/DualEEG_RPS_processedDataOld/07b_mplv/');
+              '/data/pt_01843/eegData/DualEEG_RPS_processedData/07b_mplv/');
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', 'alpha');
 
