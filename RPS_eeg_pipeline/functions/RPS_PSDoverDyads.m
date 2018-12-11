@@ -6,7 +6,7 @@ function  [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
 %   [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/08b_pwelch/')
+%   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedDataOld/08b_pwelch/')
 %   cfg.session   = session number (default: 1)
 %
 % This function requires the fieldtrip toolbox
@@ -19,7 +19,7 @@ function  [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01843/eegData/DualEEG_RPS_processedData/08b_pwelch/');
+              '/data/pt_01843/eegData/DualEEG_RPS_processedDataOld/08b_pwelch/');
 session   = ft_getopt(cfg, 'session', 1);
 
 % -------------------------------------------------------------------------

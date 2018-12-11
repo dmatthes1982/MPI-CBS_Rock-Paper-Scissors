@@ -44,7 +44,7 @@ clear newPaths
 % Session selection
 % -------------------------------------------------------------------------
 fprintf('\n<strong>Session selection...</strong>\n');
-srcPath = [path 'DualEEG_RPS_processedData/'];
+srcPath = [path 'DualEEG_RPS_processedDataOld/'];
 srcPath = [srcPath  '07b_mplv/'];
 
 fileList     = dir([srcPath, 'RPS_d*_07b_mplvAlpha_*.mat']);
