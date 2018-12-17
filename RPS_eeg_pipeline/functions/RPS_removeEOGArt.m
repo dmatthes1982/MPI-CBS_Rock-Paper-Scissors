@@ -17,23 +17,23 @@ function [ data ] = RPS_removeEOGArt( data_eogcomp, data )
 
 fprintf('<strong>Cleanig data of participant 1 from eye-artifacts...</strong>\n');
 fprintf('Condition FreePlay...\n');
-data.FP.part1 = removeArtifacts(data_eogcomp.part1, data.FP.part1);
+data.FP.part1 = removeArtifacts(data_eogcomp.FP.part1, data.FP.part1);
 fprintf('Condition PredDiff...\n');
-data.PD.part1 = removeArtifacts(data_eogcomp.part1, data.PD.part1);
+data.PD.part1 = removeArtifacts(data_eogcomp.PD.part1, data.PD.part1);
 fprintf('Condition PredSame...\n');
-data.PS.part1 = removeArtifacts(data_eogcomp.part1, data.PS.part1);
+data.PS.part1 = removeArtifacts(data_eogcomp.PS.part1, data.PS.part1);
 fprintf('Condition Control...\n');        
-data.C.part1 = removeArtifacts(data_eogcomp.part1, data.C.part1);
+data.C.part1 = removeArtifacts(data_eogcomp.C.part1, data.C.part1);
 
 fprintf('<strong>Cleanig data of participant 2 from eye-artifacts...</strong>\n');
 fprintf('Condition FreePlay...\n');
-data.FP.part2 = removeArtifacts(data_eogcomp.part2, data.FP.part2);
+data.FP.part2 = removeArtifacts(data_eogcomp.FP.part2, data.FP.part2);
 fprintf('Condition PredDiff...\n');
-data.PD.part2 = removeArtifacts(data_eogcomp.part2, data.PD.part2);
+data.PD.part2 = removeArtifacts(data_eogcomp.PD.part2, data.PD.part2);
 fprintf('Condition PredSame...\n');
-data.PS.part2 = removeArtifacts(data_eogcomp.part2, data.PS.part2);
+data.PS.part2 = removeArtifacts(data_eogcomp.PS.part2, data.PS.part2);
 fprintf('Condition Control...\n');        
-data.C.part2 = removeArtifacts(data_eogcomp.part2, data.C.part2);
+data.C.part2 = removeArtifacts(data_eogcomp.C.part2, data.C.part2);
 
 end
 

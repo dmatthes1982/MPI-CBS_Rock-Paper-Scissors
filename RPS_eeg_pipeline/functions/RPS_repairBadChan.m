@@ -1,14 +1,12 @@
-function [ data_repaired ] = RPS_repairBadChan( data_badchan, data_raw )
+function [ data_repaired ] = RPS_repairBadChan( data_badchan, data_eyecor )
 % RPS_REPAIRBADCHAN can be used for repairing previously selected bad
 % channels. For repairing this function uses the weighted neighbour
-% approach. After the repairing operation, the result will be displayed in
-% the fieldtrip databrowser for verification purpose.
+% approach.
 %
 % Use as
-%   [ data_repaired ] = RPS_repairBadChan( data_badchan, data_raw )
+%   [ data_repaired ] = RPS_repairBadChan( data_badchan, data_eyecor )
 %
-% where data_raw has to be raw data and data_badchan the result of
-% RPS_SELECTBADCHAN.
+% where data_badchan has to be the result of RPS_SELECTBADCHAN.
 %
 % Used layout and neighbour definitions:
 %   mpi_customized_acticap32.mat
@@ -16,14 +14,9 @@ function [ data_repaired ] = RPS_repairBadChan( data_badchan, data_raw )
 %
 % The function requires the fieldtrip toolbox
 %
-% SEE also RPS_DATABROWSER and FT_CHANNELREPAIR
+% SEE also FT_CHANNELREPAIR
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
-
-% -------------------------------------------------------------------------
-% General settings
-% -------------------------------------------------------------------------
-condString = {'FP','PD','PS','C','FP','PD','PS','C'};
 
 % -------------------------------------------------------------------------
 % Load layout and neighbour definitions
@@ -49,94 +42,88 @@ for i = 1:1:8
     case 1
       fprintf('<strong>Repairing bad channels of participant 1...</strong>\n');
       fprintf('<strong>Condition FreePlay...</strong>\n');
-      data = data_raw.FP.part1;
-      cfg.badchannel = data_badchan.FP.part1.badChan;
+      data = data_eyecor.FP.part1;
+      cfg.missingchannel = data_badchan.FP.part1.badChan;
     case 2
-      fprintf('\n<strong>Condition PredDiff...</strong>\n');
-      data = data_raw.PD.part1;
-      cfg.badchannel = data_badchan.PD.part1.badChan;
+      fprintf('<strong>Condition PredDiff...</strong>\n');
+      data = data_eyecor.PD.part1;
+      cfg.missingchannel = data_badchan.PD.part1.badChan;
     case 3
-      fprintf('\n<strong>Condition PredSame...</strong>\n');
-      data = data_raw.PS.part1;
-      cfg.badchannel = data_badchan.PS.part1.badChan;
+      fprintf('<strong>Condition PredSame...</strong>\n');
+      data = data_eyecor.PS.part1;
+      cfg.missingchannel = data_badchan.PS.part1.badChan;
     case 4
-      fprintf('\n<strong>Condition Control...</strong>\n');
-      data = data_raw.C.part1;
-      cfg.badchannel = data_badchan.C.part1.badChan;
+      fprintf('<strong>Condition Control...</strong>\n');
+      data = data_eyecor.C.part1;
+      cfg.missingchannel = data_badchan.C.part1.badChan;
     case 5
-      fprintf('\n<strong>Repairing bad channels of participant 2...</strong>\n');
+      fprintf('<strong>Repairing bad channels of participant 2...</strong>\n');
       fprintf('<strong>Condition FreePlay...</strong>\n');
-      data = data_raw.FP.part2;
-      cfg.badchannel = data_badchan.FP.part2.badChan;
+      data = data_eyecor.FP.part2;
+      cfg.missingchannel = data_badchan.FP.part2.badChan;
     case 6
-      fprintf('\n<strong>Condition PredDiff...</strong>\n');
-      data = data_raw.PD.part2;
-      cfg.badchannel = data_badchan.PD.part2.badChan;
+      fprintf('<strong>Condition PredDiff...</strong>\n');
+      data = data_eyecor.PD.part2;
+      cfg.missingchannel = data_badchan.PD.part2.badChan;
     case 7
-      fprintf('\n<strong>Condition PredSame...</strong>\n');
-      data = data_raw.PS.part2;
-      cfg.badchannel = data_badchan.PS.part2.badChan;
+      fprintf('<strong>Condition PredSame...</strong>\n');
+      data = data_eyecor.PS.part2;
+      cfg.missingchannel = data_badchan.PS.part2.badChan;
     case 8
-      fprintf('\n<strong>Condition Control...</strong>\n');
-      data = data_raw.C.part2;
-      cfg.badchannel = data_badchan.C.part2.badChan;      
+      fprintf('<strong>Condition Control...</strong>\n');
+      data = data_eyecor.C.part2;
+      cfg.missingchannel = data_badchan.C.part2.badChan;      
   end
   
-  if isempty(cfg.badchannel)
+  if isempty(cfg.missingchannel)
     fprintf('All channels are good, no repairing operation required!\n');
   else
+    ft_warning off;
     data = ft_channelrepair(cfg, data);
+    ft_warning on;
     data = removefields(data, {'elec'});
   end
+  fprintf('\n');
 
-% -------------------------------------------------------------------------
-% Visual verification
-% -------------------------------------------------------------------------
-  cfgView               = [];
-  cfgView.ylim          = [-200 200];
-  cfgView.blocksize     = 60;
-  cfgView.viewmode      = 'vertical';
-  cfgView.continuous    = 'no';
-  cfgView.channel       = 'all';
-  cfgView.showcallinfo  = 'no';
-  if i < 5
-    part = 1;
-  else
-    part = 2;
-  end
-    
-  fprintf('\n<strong>Verification view for participant %d in condition %s...</strong>\n',...
-          part, condString{i});
-  ft_warning off;
-  ft_databrowser( cfgView, data );
-  commandwindow;                                                            % set focus to commandwindow
-  input('Press enter to continue!:');
-  close(gcf);
-  ft_warning on;
-  
+  label = [lay.label; {'REF'; 'EOGV'; 'EOGH'}];
+  data = correctChanOrder( data, label);
+
 % -------------------------------------------------------------------------
 % Copy result into output structure
 % -------------------------------------------------------------------------
   switch i
     case 1
-      data_repaired.FP.part1 = data;
+      data_repaired.FP.part1  = data;
     case 2
-      data_repaired.PD.part1 = data;
+      data_repaired.PD.part1  = data;
     case 3
-      data_repaired.PS.part1 = data;
+      data_repaired.PS.part1  = data;
     case 4
-      data_repaired.C.part1 = data;
+      data_repaired.C.part1   = data;
     case 5
-      data_repaired.FP.part2 = data;
+      data_repaired.FP.part2  = data;
     case 6
-      data_repaired.PD.part2 = data;
+      data_repaired.PD.part2  = data;
     case 7
-      data_repaired.PS.part2 = data;
+      data_repaired.PS.part2  = data;
     case 8
-      data_repaired.C.part2 = data;
+      data_repaired.C.part2   = data;
   end  
 end
 
 fprintf('\n');
+
+end
+
+% -------------------------------------------------------------------------
+% Local function - move corrected channel to original position
+% -------------------------------------------------------------------------
+function [ dataTmp ] = correctChanOrder( dataTmp, label )
+
+[~, pos]  = ismember(label, dataTmp.label);
+pos       = pos(~ismember(pos, 0));
+ 
+dataTmp.label = dataTmp.label(pos);
+dataTmp.trial = cellfun(@(x) x(pos, :), dataTmp.trial, 'UniformOutput', false);
 
 end

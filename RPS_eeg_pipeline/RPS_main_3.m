@@ -1,8 +1,8 @@
 %% check if basic variables are defined
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = '02_preproc/';
-  cfg.filename  = 'RPS_d01_02_preproc';
+  cfg.subFolder = '02b_preproc1/';
+  cfg.filename  = 'RPS_d01_02b_preproc1';
   sessionStr    = sprintf('%03d', RPS_getSessionNum( cfg ));                % estimate current session number
 end
 
@@ -11,7 +11,7 @@ if ~exist('desPath', 'var')
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in preprocessed data folder
-  sourceList    = dir([strcat(desPath, '02_preproc/'), ...
+  sourceList    = dir([strcat(desPath, '02b_preproc1/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('RPS_d%d_02_preproc_', sessionStr, '.mat'));
+                    strcat('RPS_d%d_02b_preproc1_', sessionStr, '.mat'));
   end
 end
 
@@ -39,8 +39,8 @@ fprintf('\n');
 
 for i = numOfPart
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('RPS_d%02d_02_preproc', i);
+  cfg.srcFolder   = strcat(desPath, '02b_preproc1/');
+  cfg.filename    = sprintf('RPS_d%02d_02b_preproc1', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('<strong>Dyad %d</strong>\n', i);
@@ -48,9 +48,9 @@ for i = numOfPart
   RPS_loadData( cfg );
   
   % Concatenated preprocessed trials to a continuous stream
-  data_continuous = RPS_concatData( data_preproc );
+  data_continuous = RPS_concatData( data_preproc1 );
   
-  clear data_preproc
+  clear data_preproc1
   fprintf('\n');
   
   % Detect and reject transient artifacts (200uV delta within 200 ms. 
@@ -76,25 +76,8 @@ for i = numOfPart
   clear data_continuous cfg_autoart
   fprintf('\n');
   
-  % Concatenated cleaned data of all conditions to a continuous stream
-  cfg                 = [];
-  cfg.showcallinfo    = 'no';
-  ft_info off;
-  ft_warning off;
-  data_cleaned.part1  = ft_appenddata(cfg, data_cleaned.FP.part1, ...
-                                      data_cleaned.PD.part1, ...
-                                      data_cleaned.PS.part1, ...
-                                      data_cleaned.C.part1);
-  data_cleaned.part2  = ft_appenddata(cfg, data_cleaned.FP.part2, ...
-                                      data_cleaned.PD.part2, ...
-                                      data_cleaned.PS.part2, ...
-                                      data_cleaned.C.part2);
-  ft_warning on;
-  ft_info on;
-  data_cleaned.part1.fsample  = data_cleaned.FP.part1.fsample;
-  data_cleaned.part2.fsample  = data_cleaned.FP.part2.fsample;
-  data_cleaned        = removefields(data_cleaned, {'FP', 'PD', 'PS', 'C'});
-  data_cleaned        = RPS_concatData( data_cleaned );
+  % Concatenated cleaned data to a continuous stream
+  data_cleaned = RPS_concatData( data_cleaned );
   
   % ICA decomposition
   cfg               = [];

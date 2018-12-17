@@ -1,8 +1,8 @@
 %% check if basic variables are defined and import segmented data
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = '04b_eyecor/';
-  cfg.filename  = 'RPS_d01_04b_eyecor';
+  cfg.subFolder = 'data_preproc2/';
+  cfg.filename  = 'RPS_d01_data_preproc2';
   sessionStr    = sprintf('%03d', RPS_getSessionNum( cfg ));                % estimate current session number
 end
 
@@ -11,7 +11,7 @@ if ~exist('desPath', 'var')
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
-  sourceList    = dir([strcat(desPath, '04b_eyecor/'), ...
+  sourceList    = dir([strcat(desPath, 'data_preproc2/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('RPS_d%d_04b_eyecor_', sessionStr, '.mat'));
+                    strcat('RPS_d%d_data_preproc2_', sessionStr, '.mat'));
   end
 end
 
@@ -36,14 +36,14 @@ for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n', i);
   
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '04b_eyecor/');
-  cfg.filename    = sprintf('RPS_d%02d_04b_eyecor', i);
+  cfg.srcFolder   = strcat(desPath, 'data_preproc2/');
+  cfg.filename    = sprintf('RPS_d%02d_data_preproc2', i);
   cfg.sessionStr  = sessionStr;
   
-  fprintf('Load eye-artifact corrected data...\n\n');
+  fprintf('Load preprocessed data...\n\n');
   RPS_loadData( cfg );
   
-  filtCoeffDiv = 500 / data_eyecor.FP.part1.fsample;                        % estimate sample frequency dependent divisor of filter length
+  filtCoeffDiv = 500 / data_preproc2.FP.part1.fsample;                        % estimate sample frequency dependent divisor of filter length
 
   % bandpass filter data at alpha (8-12 Hz)
   cfg           = [];
@@ -52,7 +52,7 @@ for i = numOfPart
   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
                    '-H1', '-H2'}; 
   
-  data_bpfilt_alpha = RPS_bpFiltering(cfg, data_eyecor);
+  data_bpfilt_alpha = RPS_bpFiltering(cfg, data_preproc2);
   
   % export the filtered data into a *.mat file
   cfg             = [];
@@ -76,7 +76,7 @@ for i = numOfPart
   cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
                    '-H1', '-H2'};
   
-  data_bpfilt_beta = RPS_bpFiltering(cfg, data_eyecor);
+  data_bpfilt_beta = RPS_bpFiltering(cfg, data_preproc2);
 
   % export the filtered data into a *.mat file
   cfg             = [];
@@ -100,7 +100,7 @@ for i = numOfPart
    cfg.channel   = {'all', '-REF', '-EOGV', '-EOGH', '-V1', '-V2', ...
                    '-H1', '-H2'};
   
-  data_bpfilt_gamma = RPS_bpFiltering(cfg, data_eyecor);
+  data_bpfilt_gamma = RPS_bpFiltering(cfg, data_preproc2);
 
   % export the filtered data into a *.mat file
   cfg             = [];
@@ -115,7 +115,7 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   RPS_saveData(cfg, 'data_bpfilt_gamma', data_bpfilt_gamma);
   fprintf('Data stored!\n\n');
-  clear data_bpfilt_gamma data_eyecor
+  clear data_bpfilt_gamma data_preproc2
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

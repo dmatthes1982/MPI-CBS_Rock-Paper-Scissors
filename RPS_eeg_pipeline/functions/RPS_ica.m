@@ -42,24 +42,24 @@ if isfield(data, 'part1')
   data.part2 = ft_componentanalysis(cfg, data.part2);
 else
   fprintf('\n<strong>ICA decomposition for participant 1...</strong>\n');
-  fprintf('Condition FreePlay...\n');
-  data.FP.part1   = ft_componentanalysis(data.FP.part1); 
-  fprintf('Condition PredDiff...\n');
-  data.PD.part1   = ft_componentanalysis(data.PD.part1); 
-  fprintf('Condition PredSame...\n');
-  data.PS.part1   = ft_componentanalysis(data.PS.part1); 
-  fprintf('Condition Control...\n');        
-  data.C.part1   = ft_componentanalysis(data.C.part1); 
+  fprintf('\n<strong>Condition FreePlay...</strong>\n');
+  data.FP.part1   = ft_componentanalysis(cfg, data.FP.part1);
+  fprintf('\n<strong>Condition PredDiff...</strong>\n');
+  data.PD.part1   = ft_componentanalysis(cfg, data.PD.part1);
+  fprintf('\n<strong>Condition PredSame...</strong>\n');
+  data.PS.part1   = ft_componentanalysis(cfg, data.PS.part1);
+  fprintf('\n<strong>Condition Control...</strong>\n');
+  data.C.part1    = ft_componentanalysis(cfg, data.C.part1);
 
   fprintf('\n<strong>ICA decomposition for participant 2...</strong>\n');
-  fprintf('Condition FreePlay...\n');
-  data.FP.part2   = ft_componentanalysis(data.FP.part2); 
-  fprintf('Condition PredDiff...\n');
-  data.PD.part2   = ft_componentanalysis(data.PD.part2); 
-  fprintf('Condition PredSame...\n');
-  data.PS.part2   = ft_componentanalysis(data.PS.part2); 
-  fprintf('Condition Control...\n');        
-  data.C.part2   = ft_componentanalysis(data.C.part2);
+  fprintf('\n<strong>Condition FreePlay...</strong>\n');
+  data.FP.part2   = ft_componentanalysis(cfg, data.FP.part2);
+  fprintf('\n<strong>Condition PredDiff...</strong>\n');
+  data.PD.part2   = ft_componentanalysis(cfg, data.PD.part2);
+  fprintf('\n<strong>Condition PredSame...</strong>\n');
+  data.PS.part2   = ft_componentanalysis(cfg, data.PS.part2);
+  fprintf('\n<strong>Condition Control...</strong>\n');
+  data.C.part2    = ft_componentanalysis(cfg, data.C.part2);
 end
 
 end
