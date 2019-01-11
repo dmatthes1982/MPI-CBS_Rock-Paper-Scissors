@@ -82,6 +82,7 @@ cfg.continuous                    = 'no';
 cfg.channel                       = channel;
 cfg.plotevents                    = plotevents;
 cfg.event                         = event;
+cfg.artifactalpha                 = 0.7;
 cfg.showcallinfo                  = 'no';
 
 fprintf('Databrowser - Condition: %d - Participant: %d\n', cond, part);
