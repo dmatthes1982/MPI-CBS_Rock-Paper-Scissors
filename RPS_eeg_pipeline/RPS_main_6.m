@@ -1,8 +1,8 @@
 %% check if basic variables are defined and import segmented data
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = 'data_preproc2/';
-  cfg.filename  = 'RPS_d01_data_preproc2';
+  cfg.subFolder = '04c_preproc2/';
+  cfg.filename  = 'RPS_d01_04c_preproc2';
   sessionStr    = sprintf('%03d', RPS_getSessionNum( cfg ));                % estimate current session number
 end
 
@@ -11,7 +11,7 @@ if ~exist('desPath', 'var')
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
-  sourceList    = dir([strcat(desPath, 'data_preproc2/'), ...
+  sourceList    = dir([strcat(desPath, '04c_preproc2/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('RPS_d%d_data_preproc2_', sessionStr, '.mat'));
+                    strcat('RPS_d%d_04c_preproc2_', sessionStr, '.mat'));
   end
 end
 
@@ -36,8 +36,8 @@ for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n', i);
   
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, 'data_preproc2/');
-  cfg.filename    = sprintf('RPS_d%02d_data_preproc2', i);
+  cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
+  cfg.filename    = sprintf('RPS_d%02d_04c_preproc2', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('Load preprocessed data...\n\n');
