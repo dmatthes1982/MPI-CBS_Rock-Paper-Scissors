@@ -19,40 +19,42 @@ function [ data_eogcomp ] = RPS_verifyComp( data_eogcomp, data_icacomp )
 % -------------------------------------------------------------------------
 fprintf('<strong>Verify EOG-correlating components at participant 1</strong>\n');
 fprintf('<strong>Condition FreePlay...</strong>\n');
-data_eogcomp.FP.part1 = corrComp(data_eogcomp.FP.part1, data_icacomp.FP.part1);
+data_eogcomp.FP.part1 = verifyComp(data_eogcomp.FP.part1, data_icacomp.FP.part1);
 fprintf('\n<strong>Condition PredDiff...</strong>\n');
-data_eogcomp.PD.part1 = corrComp(data_eogcomp.PD.part1, data_icacomp.PD.part1);
+data_eogcomp.PD.part1 = verifyComp(data_eogcomp.PD.part1, data_icacomp.PD.part1);
 fprintf('\n<strong>Condition PredSame...</strong>\n');
-data_eogcomp.PS.part1 = corrComp(data_eogcomp.PS.part1, data_icacomp.PS.part1);
+data_eogcomp.PS.part1 = verifyComp(data_eogcomp.PS.part1, data_icacomp.PS.part1);
 fprintf('\n<strong>Condition Control...</strong>\n');
-data_eogcomp.C.part1  = corrComp(data_eogcomp.C.part1, data_icacomp.C.part1);
+data_eogcomp.C.part1  = verifyComp(data_eogcomp.C.part1, data_icacomp.C.part1);
 
 
 fprintf('\n<strong>Verify EOG-correlating components at participant 2</strong>\n');
 fprintf('<strong>Condition FreePlay...</strong>\n');
-data_eogcomp.FP.part2 = corrComp(data_eogcomp.FP.part2, data_icacomp.FP.part2);
+data_eogcomp.FP.part2 = verifyComp(data_eogcomp.FP.part2, data_icacomp.FP.part2);
 fprintf('\n<strong>Condition PredDiff...</strong>\n');
-data_eogcomp.PD.part2 = corrComp(data_eogcomp.PD.part2, data_icacomp.PD.part2);
+data_eogcomp.PD.part2 = verifyComp(data_eogcomp.PD.part2, data_icacomp.PD.part2);
 fprintf('\n<strong>Condition PredSame...</strong>\n');
-data_eogcomp.PS.part2 = corrComp(data_eogcomp.PS.part2, data_icacomp.PS.part2);
+data_eogcomp.PS.part2 = verifyComp(data_eogcomp.PS.part2, data_icacomp.PS.part2);
 fprintf('\n<strong>Condition Control...</strong>\n');
-data_eogcomp.C.part2  = corrComp(data_eogcomp.C.part2, data_icacomp.C.part2);
+data_eogcomp.C.part2  = verifyComp(data_eogcomp.C.part2, data_icacomp.C.part2);
 
 end
 
 %--------------------------------------------------------------------------
 % SUBFUNCTION which does the verification of the EOG-correlating components
 %--------------------------------------------------------------------------
-function [ dataEOGComp ] = corrComp( dataEOGComp, dataICAcomp )
+function [ dataEOGComp ] = verifyComp( dataEOGComp, dataICAcomp )
 
 numOfElements = 1:length(dataEOGComp.elements);
 
 if ~isempty(numOfElements)
+  idx = find(ismember(dataICAcomp.label, dataEOGComp.elements))';
+
   cfg               = [];
   cfg.layout        = 'mpi_002_customized_acticap32.mat';
   cfg.viewmode      = 'component';
   cfg.zlim          = 'maxabs';
-  cfg.channel       = find(ismember(dataICAcomp.label, dataEOGComp.elements))';
+  cfg.channel       = idx;
   cfg.blocksize     = 30;
   cfg.showcallinfo  = 'no';
 
@@ -69,7 +71,15 @@ if ~isempty(numOfElements)
   while selection == false
     fprintf('Do you want to deselect some of theses components?\n')
     for i = numOfElements
-      fprintf('[%d] - %s\n', i, dataEOGComp.elements{i});
+      [~, pos] = max(abs([dataEOGComp.eoghCorr(idx(i)) ...
+                      dataEOGComp.eogvCorr(idx(i))]));
+      if pos == 1
+        corrVal = dataEOGComp.eoghCorr(idx(i)) * 100;
+      else
+        corrVal = dataEOGComp.eogvCorr(idx(i)) * 100;
+      end
+      fprintf('[%d] - %s - %2.1f %% correlation \n', i, ...
+                      dataEOGComp.elements{i}, corrVal);
     end
     fprintf('Comma-seperate your selection and put it in squared brackets!\n');
     fprintf('Press simply enter if you do not want to deselect any component!\n');
