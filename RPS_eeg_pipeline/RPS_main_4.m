@@ -66,7 +66,7 @@ while selection == false
   if strcmp('y', x)
     selection = true;
     threshold = {[0.8 0.8 0.8 0.8], [0.8 0.8 0.8 0.8]};
-    thresholdString = {'[0.8,0.8,0.8,0.8]', '[0.8,0.8,0.8,0.8,]'};
+    thresholdString = {'[0.8,0.8,0.8,0.8]', '[0.8,0.8,0.8,0.8]'};
   elseif strcmp('n', x)
     selection = true;
     threshold = [];
