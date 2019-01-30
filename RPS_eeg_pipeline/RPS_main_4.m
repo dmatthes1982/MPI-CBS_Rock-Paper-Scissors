@@ -27,8 +27,9 @@ end
 %% part 4
 % 1. Find EOG-like ICA Components (Correlation with EOGV and EOGH, 80 %
 %    confirmity)
-% 2. Verify the estimated components by using the ft_databrowser function
-% 3. Remove eye artifacts
+% 2. Verify the estimated components by using the ft_icabrowser function
+%    and add further bad components to the selection
+% 3. Correct EEG data
 % 4. Recovery of bad channels
 % 5. Re-referencing
 
@@ -127,7 +128,7 @@ warning on;
 for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n\n', i);
 
-  %% Eye artifact correction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% ICA-based artifact correction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   fprintf('<strong>ICA-based artifact correction</strong>\n\n');
 
   cfg             = [];
@@ -154,13 +155,14 @@ for i = numOfPart
   clear data_eogchan
   fprintf('\n');
   
-  % Verify the estimated components
+  % Verify EOG-like ICA Components and add further bad components to the
+  % selection
   data_eogcomp      = RPS_selectBadComp(data_eogcomp, data_icacomp);
   
   clear data_icacomp
   fprintf('\n');
 
-  % export the determined eog components and the unmixing matrix into 
+  % export the selected ICA components and the unmixing matrix into
   % a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '04a_eogcomp/');
@@ -175,56 +177,56 @@ for i = numOfPart
   RPS_saveData(cfg, 'data_eogcomp', data_eogcomp);
   fprintf('Data stored!\n\n');
 
-  % add bad labels of bad channels to the settings file
+  % add selected ICA components to the settings file
   if isempty(data_eogcomp.FP.part1.elements)
-    EOGcompFPp1 = {'---'};
+    ICAcompFPp1 = {'---'};
   else
-    EOGcompFPp1 = {strjoin(data_eogcomp.FP.part1.elements,',')};
+    ICAcompFPp1 = {strjoin(data_eogcomp.FP.part1.elements,',')};
   end
   if isempty(data_eogcomp.FP.part2.elements)
-    EOGcompFPp2 = {'---'};
+    ICAcompFPp2 = {'---'};
   else
-    EOGcompFPp2 = {strjoin(data_eogcomp.FP.part2.elements,',')};
+    ICAcompFPp2 = {strjoin(data_eogcomp.FP.part2.elements,',')};
   end
   if isempty(data_eogcomp.PD.part1.elements)
-    EOGcompPDp1 = {'---'};
+    ICAcompPDp1 = {'---'};
   else
-    EOGcompPDp1 = {strjoin(data_eogcomp.PD.part1.elements,',')};
+    ICAcompPDp1 = {strjoin(data_eogcomp.PD.part1.elements,',')};
   end
   if isempty(data_eogcomp.PD.part2.elements)
-    EOGcompPDp2 = {'---'};
+    ICAcompPDp2 = {'---'};
   else
-    EOGcompPDp2 = {strjoin(data_eogcomp.PD.part2.elements,',')};
+    ICAcompPDp2 = {strjoin(data_eogcomp.PD.part2.elements,',')};
   end
   if isempty(data_eogcomp.PS.part1.elements)
-    EOGcompPSp1 = {'---'};
+    ICAcompPSp1 = {'---'};
   else
-    EOGcompPSp1 = {strjoin(data_eogcomp.PS.part1.elements,',')};
+    ICAcompPSp1 = {strjoin(data_eogcomp.PS.part1.elements,',')};
   end
   if isempty(data_eogcomp.PS.part2.elements)
-    EOGcompPSp2 = {'---'};
+    ICAcompPSp2 = {'---'};
   else
-    EOGcompPSp2 = {strjoin(data_eogcomp.PS.part2.elements,',')};
+    ICAcompPSp2 = {strjoin(data_eogcomp.PS.part2.elements,',')};
   end
   if isempty(data_eogcomp.C.part1.elements)
-    EOGcompCp1 = {'---'};
+    ICAcompCp1 = {'---'};
   else
-    EOGcompCp1 = {strjoin(data_eogcomp.C.part1.elements,',')};
+    ICAcompCp1 = {strjoin(data_eogcomp.C.part1.elements,',')};
   end
   if isempty(data_eogcomp.C.part2.elements)
-    EOGcompCp2 = {'---'};
+    ICAcompCp2 = {'---'};
   else
-    EOGcompCp2 = {strjoin(data_eogcomp.C.part2.elements,',')};
+    ICAcompCp2 = {strjoin(data_eogcomp.C.part2.elements,',')};
   end
   warning off;
-  T.EOGcompFPp1(i) = EOGcompFPp1;
-  T.EOGcompFPp2(i) = EOGcompFPp2;
-  T.EOGcompPDp1(i) = EOGcompPDp1;
-  T.EOGcompPDp2(i) = EOGcompPDp2;
-  T.EOGcompPSp1(i) = EOGcompPSp1;
-  T.EOGcompPSp2(i) = EOGcompPSp2;
-  T.EOGcompCp1(i)  = EOGcompCp1;
-  T.EOGcompCp2(i)  = EOGcompCp2;
+  T.ICAcompFPp1(i) = ICAcompFPp1;
+  T.ICAcompFPp2(i) = ICAcompFPp2;
+  T.ICAcompPDp1(i) = ICAcompPDp1;
+  T.ICAcompPDp2(i) = ICAcompPDp2;
+  T.ICAcompPSp1(i) = ICAcompPSp1;
+  T.ICAcompPSp2(i) = ICAcompPSp2;
+  T.ICAcompCp1(i)  = ICAcompCp1;
+  T.ICAcompCp2(i)  = ICAcompCp2;
   warning on;
 
   % store settings table
@@ -240,7 +242,7 @@ for i = numOfPart
   fprintf('Load bandpass filtered data...\n');
   RPS_loadData( cfg );
   
-  % remove eye artifacts
+  % correct EEG signals
   data_eyecor = RPS_correctSignals(data_eogcomp, data_preproc1);
   
   clear data_eogcomp data_preproc1
@@ -307,9 +309,9 @@ for i = numOfPart
         selection = true;
       elseif strcmp('n', x)
         clear file_path cfg sourceList numOfSources i threshold selection x T ...
-              settings_file reference refchannel EOGcompFPp1 EOGcompFPp2 ...
-              EOGcompPDp1 EOGcompPDp2 EOGcompPSp1 EOGcompPSp2 EOGcompCp1 ...
-              EOGcompCp2 thresholdString
+              settings_file reference refchannel ICAcompFPp1 ICAcompFPp2 ...
+              ICAcompPDp1 ICAcompPDp2 ICAcompPSp1 ICAcompPSp2 ICAcompCp1 ...
+              ICAcompCp2 thresholdString
         return;
       else
         selection = false;
@@ -321,6 +323,6 @@ end
 
 %% clear workspace
 clear file_path cfg sourceList numOfSources i threshold selection x T ...
-      settings_file reference refchannel EOGcompFPp1 EOGcompFPp2 ...
-      EOGcompPDp1 EOGcompPDp2 EOGcompPSp1 EOGcompPSp2 EOGcompCp1 ...
-      EOGcompCp2 thresholdString
+      settings_file reference refchannel ICAcompFPp1 ICAcompFPp2 ...
+      ICAcompPDp1 ICAcompPDp2 ICAcompPSp1 ICAcompPSp2 ICAcompCp1 ...
+      ICAcompCp2 thresholdString

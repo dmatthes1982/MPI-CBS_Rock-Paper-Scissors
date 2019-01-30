@@ -43,7 +43,9 @@ data_eogcomp.C.part2  = selectComp(data_eogcomp.C.part2, data_icacomp.C.part2);
 end
 
 %--------------------------------------------------------------------------
-% SUBFUNCTION which does the verification of the EOG-correlating components
+% SUBFUNCTION which provides the ft_icabrowser for verification of the
+% EOG-correlating components and for the selection of further bad
+% components.
 %--------------------------------------------------------------------------
 function [ dataEOGComp ] = selectComp( dataEOGComp, dataICAcomp )
 
