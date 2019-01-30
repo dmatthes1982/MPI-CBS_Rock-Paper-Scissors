@@ -149,13 +149,13 @@ for i = numOfPart
   cfg         = [];
   cfg.threshold = threshold;
   
-  data_eogcomp      = RPS_corrComp(cfg, data_icacomp, data_eogchan);
+  data_eogcomp      = RPS_detEOGComp(cfg, data_icacomp, data_eogchan);
   
   clear data_eogchan
   fprintf('\n');
   
   % Verify the estimated components
-  data_eogcomp      = RPS_verifyComp(data_eogcomp, data_icacomp);
+  data_eogcomp      = RPS_selectBAdComp(data_eogcomp, data_icacomp);
   
   clear data_icacomp
   fprintf('\n');
@@ -241,7 +241,7 @@ for i = numOfPart
   RPS_loadData( cfg );
   
   % remove eye artifacts
-  data_eyecor = RPS_removeEOGArt(data_eogcomp, data_preproc1);
+  data_eyecor = RPS_correctSignals(data_eogcomp, data_preproc1);
   
   clear data_eogcomp data_preproc1
   fprintf('\n');

@@ -1,4 +1,4 @@
-function [ data_eogcomp ] = RPS_verifyComp( data_eogcomp, data_icacomp )
+function [ data_eogcomp ] = RPS_selectBadComp( data_eogcomp, data_icacomp )
 % RPS_VERIFYCOMP is a function to verify visually the ICA components having 
 % a high correlation with one of the measured EOG signals.
 %

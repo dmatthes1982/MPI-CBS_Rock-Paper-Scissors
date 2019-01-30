@@ -1,4 +1,4 @@
-function [ data ] = RPS_removeEOGArt( data_eogcomp, data )
+function [ data ] = RPS_correctSignals( data_eogcomp, data )
 % RPS_REMOVEEOGART is a function which removes eye artifacts from data
 % using in advance estimated ica components
 %
