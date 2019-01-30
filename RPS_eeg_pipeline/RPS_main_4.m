@@ -32,7 +32,7 @@ end
 % 4. Recovery of bad channels
 % 5. Re-referencing
 
-cprintf([0,0.6,0], '<strong>[4] - Preproc II: eye artifacts correction, bad channel recovery, re-referencing</strong>\n');
+cprintf([0,0.6,0], '<strong>[4] - Preproc II: ICA-based artifact correction, bad channel recovery, re-referencing</strong>\n');
 fprintf('\n');
 
 % favoured reference
@@ -128,7 +128,7 @@ for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n\n', i);
 
   %% Eye artifact correction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  fprintf('<strong>Eye artifact correction</strong>\n\n');
+  fprintf('<strong>ICA-based artifact correction</strong>\n\n');
 
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '03a_icacomp/');
@@ -155,7 +155,7 @@ for i = numOfPart
   fprintf('\n');
   
   % Verify the estimated components
-  data_eogcomp      = RPS_selectBAdComp(data_eogcomp, data_icacomp);
+  data_eogcomp      = RPS_selectBadComp(data_eogcomp, data_icacomp);
   
   clear data_icacomp
   fprintf('\n');

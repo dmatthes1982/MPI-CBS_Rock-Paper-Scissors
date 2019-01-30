@@ -1,110 +1,91 @@
 function [ data_eogcomp ] = RPS_selectBadComp( data_eogcomp, data_icacomp )
-% RPS_VERIFYCOMP is a function to verify visually the ICA components having 
-% a high correlation with one of the measured EOG signals.
+% RPS_ELECTBADCOMP is a function for exploring previously estimated ICA
+% components visually. Within the GUI, each component can be set to either
+% keep or reject for a later artifact correction operation. The result of
+% RPS_DETEOGCOMP are preselected, but it should be visually explored too.
 %
 % Use as
-%   [ data_eogcomp ] = RPS_verifyComp( data_eogcomp, data_icacomp )
+%   [ data_eogcomp ] = RPS_selectBadComp( data_eogcomp, data_icacomp )
 %
-% where the input data_eogcomp has to be the result of RPS_CORRCOMP ans 
-% data_icacomp the result of RPS_ICA
+% where the input data_eogcomp has to be the result of RPS_DETEOGCOMP
+% and data_icacomp the result of RPS_ICA
 %
 % This function requires the fieldtrip toolbox
 %
-% See also RPS_CORRCOMP, RPS_ICA and FT_DATABROWSER
+% See also RPS_DETEOGCOMP, RPS_ICA and FT_DATABROWSER
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Verify correlating components
 % -------------------------------------------------------------------------
-fprintf('<strong>Verify EOG-correlating components at participant 1</strong>\n');
+fprintf('<strong>Select ICA components which shall be subtracted from data of participant 1</strong>\n');
 fprintf('<strong>Condition FreePlay...</strong>\n');
-data_eogcomp.FP.part1 = verifyComp(data_eogcomp.FP.part1, data_icacomp.FP.part1);
+data_eogcomp.FP.part1 = selectComp(data_eogcomp.FP.part1, data_icacomp.FP.part1);
 fprintf('\n<strong>Condition PredDiff...</strong>\n');
-data_eogcomp.PD.part1 = verifyComp(data_eogcomp.PD.part1, data_icacomp.PD.part1);
+data_eogcomp.PD.part1 = selectComp(data_eogcomp.PD.part1, data_icacomp.PD.part1);
 fprintf('\n<strong>Condition PredSame...</strong>\n');
-data_eogcomp.PS.part1 = verifyComp(data_eogcomp.PS.part1, data_icacomp.PS.part1);
+data_eogcomp.PS.part1 = selectComp(data_eogcomp.PS.part1, data_icacomp.PS.part1);
 fprintf('\n<strong>Condition Control...</strong>\n');
-data_eogcomp.C.part1  = verifyComp(data_eogcomp.C.part1, data_icacomp.C.part1);
+data_eogcomp.C.part1  = selectComp(data_eogcomp.C.part1, data_icacomp.C.part1);
 
 
-fprintf('\n<strong>Verify EOG-correlating components at participant 2</strong>\n');
+fprintf('\n<strong>Select ICA components which shall be subtracted from data of participant 2</strong>\n');
 fprintf('<strong>Condition FreePlay...</strong>\n');
-data_eogcomp.FP.part2 = verifyComp(data_eogcomp.FP.part2, data_icacomp.FP.part2);
+data_eogcomp.FP.part2 = selectComp(data_eogcomp.FP.part2, data_icacomp.FP.part2);
 fprintf('\n<strong>Condition PredDiff...</strong>\n');
-data_eogcomp.PD.part2 = verifyComp(data_eogcomp.PD.part2, data_icacomp.PD.part2);
+data_eogcomp.PD.part2 = selectComp(data_eogcomp.PD.part2, data_icacomp.PD.part2);
 fprintf('\n<strong>Condition PredSame...</strong>\n');
-data_eogcomp.PS.part2 = verifyComp(data_eogcomp.PS.part2, data_icacomp.PS.part2);
+data_eogcomp.PS.part2 = selectComp(data_eogcomp.PS.part2, data_icacomp.PS.part2);
 fprintf('\n<strong>Condition Control...</strong>\n');
-data_eogcomp.C.part2  = verifyComp(data_eogcomp.C.part2, data_icacomp.C.part2);
+data_eogcomp.C.part2  = selectComp(data_eogcomp.C.part2, data_icacomp.C.part2);
 
 end
 
 %--------------------------------------------------------------------------
 % SUBFUNCTION which does the verification of the EOG-correlating components
 %--------------------------------------------------------------------------
-function [ dataEOGComp ] = verifyComp( dataEOGComp, dataICAcomp )
+function [ dataEOGComp ] = selectComp( dataEOGComp, dataICAcomp )
 
 numOfElements = 1:length(dataEOGComp.elements);
+idx = find(ismember(dataICAcomp.label, dataEOGComp.elements))';
 
-if ~isempty(numOfElements)
-  idx = find(ismember(dataICAcomp.label, dataEOGComp.elements))';
+fprintf(['Select components to reject!\n'...
+         'Components which exceeded the selected EOG correlation '...'
+         'threshold are already marked as bad.\n'...
+         'These are:\n']);
 
-  cfg               = [];
-  cfg.layout        = 'mpi_002_customized_acticap32.mat';
-  cfg.viewmode      = 'component';
-  cfg.zlim          = 'maxabs';
-  cfg.channel       = idx;
-  cfg.blocksize     = 30;
-  cfg.showcallinfo  = 'no';
-
-  ft_info off;
-  ft_databrowser(cfg, dataICAcomp);
-  set(gcf, 'Position', [0, 0, 1000, 500]);
-  movegui(gcf, 'center');
-  colormap jet;
-  ft_info on;
-
-  commandwindow;
-  selection = false;
-
-  while selection == false
-    fprintf('Do you want to deselect some of theses components?\n')
-    for i = numOfElements
-      [~, pos] = max(abs([dataEOGComp.eoghCorr(idx(i)) ...
-                      dataEOGComp.eogvCorr(idx(i))]));
-      if pos == 1
-        corrVal = dataEOGComp.eoghCorr(idx(i)) * 100;
-      else
-        corrVal = dataEOGComp.eogvCorr(idx(i)) * 100;
-      end
-      fprintf('[%d] - %s - %2.1f %% correlation \n', i, ...
-                      dataEOGComp.elements{i}, corrVal);
-    end
-    fprintf('Comma-seperate your selection and put it in squared brackets!\n');
-    fprintf('Press simply enter if you do not want to deselect any component!\n');
-    x = input('\nPlease make your choice! (i.e. [1,2,3]): ');
-
-    if ~isempty(x)
-      if ~all(ismember(x, numOfElements))
-        selection = false;
-        fprintf('At least one of the selected components does not exist.\n');
-      else
-        selection = true;
-        fprintf('Component(s) %d will not used for eye artifact correction\n', x);
-
-        dataEOGComp.elements = dataEOGComp.elements(~ismember(numOfElements,x));
-      end
-    else
-      selection = true;
-      fprintf('No Component will be rejected.\n');
-    end
+for i = numOfElements
+  [~, pos] = max(abs([dataEOGComp.eoghCorr(idx(i)) ...
+                  dataEOGComp.eogvCorr(idx(i))]));
+  if pos == 1
+    corrVal = dataEOGComp.eoghCorr(idx(i)) * 100;
+  else
+    corrVal = dataEOGComp.eogvCorr(idx(i)) * 100;
   end
-
-  close(gcf);
-else
-  cprintf([1,0.5,0],'No component has passed the selected correlation threshold. Nothing to verify!\n');
-  cprintf([1,0.5,0],'IMPORTANT: The following cleaning operation will keep the data as it is!\n');
+  fprintf('[%d] - component %d - %2.1f %% correlation\n', i, idx(i), corrVal);
 end
+
+filepath = fileparts(mfilename('fullpath'));                                % load cap layout
+load(sprintf('%s/../layouts/mpi_002_customized_acticap32.mat', filepath), ...
+     'lay');
+
+cfg               = [];
+cfg.rejcomp       = idx;
+cfg.blocksize     = 30;
+cfg.layout        = lay;
+cfg.colormap      = 'jet';
+cfg.showcallinfo  = 'no';
+
+ft_warning off;
+badComp = ft_icabrowser(cfg, dataICAcomp);
+ft_warning on;
+
+if sum(badComp) == 0
+  cprintf([1,0.5,0],'No component is selected!\n');
+  cprintf([1,0.5,0],'NOTE: The following cleaning operation will keep the data unchanged!\n');
+end
+
+dataEOGComp.elements = dataICAcomp.label(badComp);
 
 end

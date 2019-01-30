@@ -1,21 +1,21 @@
 function [ data ] = RPS_correctSignals( data_eogcomp, data )
-% RPS_REMOVEEOGART is a function which removes eye artifacts from data
-% using in advance estimated ica components
+% RPS_CORRECTSIGNALS is a function which removes artifacts from data
+% using previously estimated ica components
 %
 % Use as
-%   [ data ] = RPS_removeEOGArt( data_eogcomp, data )
+%   [ data ] = RPS_correctSignals( data_eogcomp, data )
 %
-% where data_eogcomp has to be the result of RPS_VERIFYCOMP or 
-% RPS_CORRCOMP and data has to be the result of RPS_PREPROCESSING
+% where data_eogcomp has to be the result of RPS_SELECTBADCOMP or
+% RPS_DETEOGCOMP and data has to be the result of RPS_PREPROCESSING
 %
 % This function requires the fieldtrip toolbox
 %
-% See also RPS_VERIFYCOMP, RPS_CORRCOMP, RPS_PREPROCESSING,
+% See also RPS_SELECTBADCOMP, RPS_DETEOGCOMP, RPS_PREPROCESSING,
 % FT_COMPONENTANALYSIS and FT_REJECTCOMPONENT
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
-fprintf('<strong>Cleanig data of participant 1 from eye-artifacts...</strong>\n');
+fprintf('<strong>Artifact correction with data of participant 1...</strong>\n');
 fprintf('Condition FreePlay...\n');
 data.FP.part1 = removeArtifacts(data_eogcomp.FP.part1, data.FP.part1);
 fprintf('Condition PredDiff...\n');
@@ -25,7 +25,7 @@ data.PS.part1 = removeArtifacts(data_eogcomp.PS.part1, data.PS.part1);
 fprintf('Condition Control...\n');        
 data.C.part1 = removeArtifacts(data_eogcomp.C.part1, data.C.part1);
 
-fprintf('<strong>Cleanig data of participant 2 from eye-artifacts...</strong>\n');
+fprintf('<strong>Artifact correction with data of participant 2...</strong>\n');
 fprintf('Condition FreePlay...\n');
 data.FP.part2 = removeArtifacts(data_eogcomp.FP.part2, data.FP.part2);
 fprintf('Condition PredDiff...\n');
@@ -49,7 +49,7 @@ cfg.demean        = 'no';
 cfg.showcallinfo  = 'no';
 
 ft_info off;
-dataComp = ft_componentanalysis(cfg, dataOfPart);                           % estimate components with the in previous part 3 calculated unmixing matrix
+dataComp = ft_componentanalysis(cfg, dataOfPart);                           % estimate components by using the in previous part 3 calculated unmixing matrix
 ft_info on;
 
 for i=1:length(dataEOG.elements)

@@ -1,9 +1,9 @@
 function [ data_eogcomp ] = RPS_detEOGComp( cfg, data_icacomp, data_sensor )
-% RPS_CORRCOMP estimates components which have a high correlation (> 80%) 
-% with the EOGV and EOGH components of the original data
+% RPS_DETEOGCOMP determines components with a high correlation (> 80%)
+% in respect of EOGV and EOGH components of the original data.
 %
 % Use as
-%   [ data_eogcomp ] = RPS_corrComp( data_icacomp, data_sensor )
+%   [ data_eogcomp ] = RPS_detEOGComp( data_icacomp, data_sensor )
 %
 % The configuration options are
 %    cfg.threshold = correlation threshold for marking eog-like components for each participant and condition
@@ -16,7 +16,7 @@ function [ data_eogcomp ] = RPS_detEOGComp( cfg, data_icacomp, data_sensor )
 %
 % See also RPS_ICA and RPS_SELECTDATA
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -34,7 +34,7 @@ end
 % -------------------------------------------------------------------------
 % Estimate correlating components
 % -------------------------------------------------------------------------
-fprintf('<strong>Estimate EOG-correlating components at participant 1...</strong>\n');
+fprintf('<strong>Determine EOG-correlating components at participant 1...</strong>\n');
 fprintf('Condition FreePlay...\n');
 data_eogcomp.FP.part1 = corrComp(data_icacomp.FP.part1, data_sensor.FP.part1, threshold{1}(1));
 fprintf('Condition PredDiff...\n');
@@ -44,7 +44,7 @@ data_eogcomp.PS.part1 = corrComp(data_icacomp.PS.part1, data_sensor.PS.part1, th
 fprintf('Condition Control...\n');
 data_eogcomp.C.part1  = corrComp(data_icacomp.C.part1, data_sensor.C.part1, threshold{1}(4));
 
-fprintf('<strong>Estimate EOG-correlating components at participant 2...</strong>\n');
+fprintf('<strong>Determine EOG-correlating components at participant 2...</strong>\n');
 fprintf('Condition FreePlay...\n');
 data_eogcomp.FP.part2 = corrComp(data_icacomp.FP.part2, data_sensor.FP.part2, threshold{2}(1));
 fprintf('Condition PredDiff...\n');
