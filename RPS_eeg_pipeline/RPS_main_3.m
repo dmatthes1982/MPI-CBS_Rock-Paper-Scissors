@@ -60,7 +60,7 @@ for i = numOfPart
   cfg.channel     = {'all', '-H1', '-H2', '-V1' '-V2', '-EOGV', ...         % use all channels for transient artifact detection expect EOGV, EOGH and REF
                       '-EOGH', '-REF'};
   cfg.method      = 'range';
-  cfg.sliding     = 'yes';
+  cfg.sliding     = 'no';
   cfg.continuous  = 'yes';
   cfg.trllength   = 200;                                                    % minimal subtrial length: 200 msec
   cfg.overlap     = 50;                                                     % 50 % overlapping
@@ -72,7 +72,7 @@ for i = numOfPart
   cfg             = [];
   cfg.channel     = {'V1', 'V2', 'H1', 'H2'};                               % use only H1, H2, V1 and V2
   cfg.method      = 'range';
-  cfg.sliding     = 'yes';
+  cfg.sliding     = 'no';
   cfg.continuous  = 'yes';
   cfg.trllength   = 200;                                                    % minimal subtrial length: 200 msec
   cfg.overlap     = 50;                                                     % 50 % overlapping
