@@ -1,9 +1,9 @@
-function  [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
-% RPS_PSDOVERDYADS estimates the mean of the power spectral density values 
-% for all conditions and over all participants.
+function  [ data_pwelchod ] = RPS_powOverDyads( cfg )
+% RPS_POWOVERDYADS estimates the mean of the power avtivity for all 
+% conditions and over all participants.
 %
 % Use as
-%   [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
+%   [ data_pwelchod ] = RPS_powOverDyads( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/08b_pwelch/')
@@ -13,7 +13,7 @@ function  [ data_pwelchod ] = RPS_PSDoverDyads( cfg )
 % 
 % See also RPS_PWELCH
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS 
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS 
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -32,7 +32,7 @@ load(sprintf('%s/../general/RPS_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-fprintf('<strong>Averaging PSD values over dyads...</strong>\n');
+fprintf('<strong>Averaging power values over dyads...</strong>\n');
 
 dyadsList   = dir([path, sprintf('RPS_d*_08b_pwelch_%03d.mat', session)]);
 dyadsList   = struct2cell(dyadsList);
@@ -133,7 +133,7 @@ end
 data(:,2:end) = [];
 
 % -------------------------------------------------------------------------
-% Estimate averaged power spectral density (over dyads)
+% Estimate averaged power spectrum (over dyads)
 % -------------------------------------------------------------------------
 for i=1:1:4
   data{i} = nanmean(data{i}, 4);

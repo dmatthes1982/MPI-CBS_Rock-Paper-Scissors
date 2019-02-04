@@ -1,9 +1,9 @@
-function RPS_easyPSDplot(cfg, data)
-% RPS_EASYPSDPLOT is a function, which makes it easier to plot the power
-% spectral density within a specific condition of the RPS_DATASTRUCTURE
+function RPS_easyPowPlot(cfg, data)
+% RPS_EASYPOWPLOT is a function, which makes it easier to plot the
+% signal power within a specific condition of the RPS_DATASTRUCTURE
 %
 % Use as
-%   RPS_easyPSDplot(cfg, data)
+%   RPS_easyPowPlot(cfg, data)
 %
 % where the input data have to be a result from RPS_PWELCH.
 %
@@ -22,7 +22,7 @@ function RPS_easyPSDplot(cfg, data)
 %
 % See also RPS_PWELCH, RPS_DATASTRUCTURE
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -97,6 +97,9 @@ if isnumeric(elec)                                                          % ch
     end
   end
 else
+  if ischar(elec)
+    elec = {elec};
+  end
   tmpElec = zeros(1, length(elec));
   for i=1:length(elec)
     tmpElec(i) = find(strcmp(label, elec{i}));
@@ -112,7 +115,7 @@ if ~ismember(avgelec, {'yes', 'no'})                                        % ch
 end
 
 % -------------------------------------------------------------------------
-% Plot power spectral density (PSD)
+% Plot power spectrum
 % -------------------------------------------------------------------------
 legend('-DynamicLegend');
 hold on;
@@ -129,9 +132,9 @@ else
 end
 
 if part == 0                                                                % set figure title
-  title(sprintf('PSD - Cond.: %d - Phase: %d', cond, phase));
+  title(sprintf('Power - Cond.: %d - Phase: %d', cond, phase));
 else
-  title(sprintf('PSD - Part.: %d - Cond.: %d - Phase: %d', ...
+  title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d', ...
         part, cond, phase));
 end
 
