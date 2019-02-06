@@ -71,7 +71,6 @@ end
 % Load settings file
 T = readtable(settings_file);                                               % update settings table
 warning off;
-T.dyad(numOfPart) = numOfPart;
 T.bandpass(numOfPart) = bandpass;
 T.lineNoiseFilt(numOfPart) = lineNoiseFilt;
 warning on;

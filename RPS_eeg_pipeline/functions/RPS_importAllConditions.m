@@ -8,6 +8,7 @@ function [ data, cfg_manart ] = RPS_importAllConditions( cfg )
 % The configuration options are
 %   cfg.path        = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
 %   cfg.dyad        = number of dyad
+%   cfg.noichan     = channels which are not of interest (default: [])
 %   cfg.continuous  = 'yes' or 'no' (default: 'no')
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
@@ -19,13 +20,14 @@ function [ data, cfg_manart ] = RPS_importAllConditions( cfg )
 %
 % See also FT_PREPROCESSING, RPS_DATASTRUCTURE, RPS_IMPORTDATASET
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
 path        = ft_getopt(cfg, 'path', []);
 dyad        = ft_getopt(cfg, 'dyad', []);
+noichan     = ft_getopt(cfg, 'noichan', []);
 continuous  = ft_getopt(cfg, 'continuous', 'no');
 
 if isempty(path)
@@ -39,10 +41,11 @@ end
 % -------------------------------------------------------------------------
 % Data import
 % -------------------------------------------------------------------------
-cfg = [];
-cfg.path = path;
-cfg.dyad = dyad;
-cfg.continuous = continuous;
+cfg             = [];
+cfg.path        = path;
+cfg.dyad        = dyad;
+cfg.noichan     = noichan;
+cfg.continuous  = continuous;
 
 % Condition 'FreePlay'
 cfg.condition = 'FP';

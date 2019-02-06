@@ -9,6 +9,7 @@ function [ data, cfg_manart ] = RPS_importDataset( cfg )
 %   cfg.path        = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_rawData/')
 %   cfg.condition   = condition string ('C', 'FP', 'PD', 'PS')
 %   cfg.dyad        = number of dyad
+%   cfg.noichan       = channels which are not of interest (default: [])
 %   cfg.continuous  = 'yes' or 'no' (default: 'no')
 %
 % The second output variable holds a artifact definition, which is created
@@ -26,7 +27,7 @@ function [ data, cfg_manart ] = RPS_importDataset( cfg )
 %
 % See also FT_PREPROCESSING, RPS_DATASTRUCTURE
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -34,6 +35,7 @@ function [ data, cfg_manart ] = RPS_importDataset( cfg )
 path        = ft_getopt(cfg, 'path', []);
 condition   = ft_getopt(cfg, 'condition', []);
 dyad        = ft_getopt(cfg, 'dyad', []);
+noichan     = ft_getopt(cfg, 'noichan', []);
 continuous  = ft_getopt(cfg, 'continuous', 'no');
 
 if isempty(path)
@@ -223,25 +225,32 @@ end
 % -------------------------------------------------------------------------
 % Data import
 % -------------------------------------------------------------------------
-cfg.channel = {'all', '-F3',   '-F4',   '-CP5',   '-CP6'    ...             % exclude channels which are not connected
-                      '-F3_1', '-F4_1', '-CP5_1', '-CP6_1'  ...
-                      '-F3_2', '-F4_2', '-CP5_2', '-CP6_2'  ...
-                      '-T7', '-T8', '-P7', '-P8', '-TP10'   ...             % exclude all general bad channels
-                      '-T7_1', '-T7_2', '-T8_1', '-T8_2',   ...
-                      '-P7_1', '-P7_2', '-P8_1', '-P8_2',   ...
-                      '-TP10_1', '-TP10_2'};                       
+if ~isempty(noichan)
+  noichan = cellfun(@(x) strcat('-', x), noichan, ...
+                          'UniformOutput', false);
+  noichanp1 = cellfun(@(x) strcat(x, '_1'), noichan, ...
+                          'UniformOutput', false);
+  noichanp2 = cellfun(@(x) strcat(x, '_2'), noichan, ...
+                          'UniformOutput', false);
+  cfg.channel = [{'all'} noichan noichanp1 noichanp2];                      % exclude channels which are not of interest
+else
+  cfg.channel = 'all';
+end
+
 dataTmp = ft_preprocessing(cfg);                                            % import data
 
+numOfChan = numel(dataTmp.label)/2;
+
 data.part1 = dataTmp;                                                       % split dataset into two datasets, one for each participant
-data.part1.label = strrep(dataTmp.label(1:23), '_1', '');
+data.part1.label = strrep(dataTmp.label(1:numOfChan), '_1', '');
 for i=1:1:length(dataTmp.trial)
-  data.part1.trial{i} = dataTmp.trial{i}(1:23,:);
+  data.part1.trial{i} = dataTmp.trial{i}(1:numOfChan,:);
 end
 
 data.part2 = dataTmp;
-data.part2.label = strrep(dataTmp.label(24:46), '_2', '');
+data.part2.label = strrep(dataTmp.label(numOfChan+1:end), '_2', '');
 for i=1:1:length(dataTmp.trial)
-  data.part2.trial{i} = dataTmp.trial{i}(24:46,:);
+  data.part2.trial{i} = dataTmp.trial{i}(numOfChan+1:end,:);
 end
 
 % -------------------------------------------------------------------------

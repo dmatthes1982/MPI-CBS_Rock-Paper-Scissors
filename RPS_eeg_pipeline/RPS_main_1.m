@@ -37,11 +37,78 @@ end
 cprintf([0,0.6,0], '<strong>[1] - Data import</strong>\n');
 fprintf('\n');
 
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Select channels, which are NOT of interest?\n');
+  fprintf('[1] - reject F3, F4, CP5, CP6 (unconnected channels)\n');
+  fprintf('[2] - reject F3, F4, CP5, CP6, T7, T8, P7, P8, TP10\n');
+  fprintf('[3] - reject specific selection\n');
+  x = input('Option: ');
+
+  switch x
+    case 1
+      selection = true;
+      noichan = {'F3', 'F4', 'CP5', 'CP6'};
+      noichanStr = {'-F3,-F4,-CP5,-CP6'};
+    case 2
+      selection = true;
+      noichan = {'F3', 'F4', 'CP5', 'CP6', 'T7', 'T8', 'P7', 'P8', 'TP10'};
+      noichanStr = {'-F3,-F4,-CP5,-CP6,-T7,-T8,-P7,-P8,-TP10'};
+    case 3
+      selection = true;
+      cprintf([0,0.6,0], '\nAvailable channels will be determined. Please wait...\n');
+
+      load('layouts/mpi_002_customized_acticap32.mat', 'lay')
+      label = lay.label(1:end-2);
+      loc   = ~ismember(label, {'V1', 'V2', 'H1', 'H2'});                   % remove EOG-related electrodes from options to avoid errors
+      label = label(loc);
+
+      sel = listdlg('PromptString', ...                                     % open the dialog window --> the user can select the channels wich are not of interest
+              'Which channels are NOT of interest...', ...
+              'ListString', label, ...
+              'ListSize', [220, 300] );
+
+      noichan = label(sel)';
+      channels = {strjoin(noichan,',')};
+
+      fprintf('You have unselected the following channels:\n');
+      fprintf('%s\n', channels{1});
+
+      noichanStr = cellfun(@(x) strcat('-', x), noichan, ...
+                          'UniformOutput', false);
+      noichanStr = {strjoin(noichanStr,',')};
+
+    otherwise
+      cprintf([1,0.5,0], 'Wrong input!\n');
+  end
+end
+fprintf('\n');
+
+% Create settings file if not existing
+settings_file = [desPath '00_settings/' ...
+                  sprintf('settings_%s', sessionStr) '.xls'];
+if ~(exist(settings_file, 'file') == 2)                                     % check if settings file already exist
+  cfg = [];
+  cfg.desFolder   = [desPath '00_settings/'];
+  cfg.type        = 'settings';
+  cfg.sessionStr  = sessionStr;
+
+  RPS_createTbl(cfg);                                                       % create settings file
+end
+
+% Load settings file
+T = readtable(settings_file);
+warning off;
+T.dyad(numOfPart)     = numOfPart;
+T.noiChan(numOfPart)  = noichanStr;
+warning on;
+
 %% import data from brain vision eeg files %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i = numOfPart
   cfg             = [];
   cfg.path        = srcPath;
   cfg.dyad        = i;
+  cfg.noichan     = noichan;
   cfg.continuous  = 'no';
 
   fprintf('<strong>Import data of dyad %d</strong> from: %s ...\n', i, cfg.path);
@@ -78,5 +145,10 @@ for i = numOfPart
   clear cfg_manart
 end
 
+% store settings table
+delete(settings_file);
+writetable(T, settings_file);
+
 %% clear workspace
-clear file_path cfg sourceList numOfSources i
+clear file_path cfg sourceList numOfSources i T settings_file lay ...
+      noichan noichanStr
