@@ -14,6 +14,9 @@ function RPS_easyPowPlot(cfg, data)
 %                     2 - plot data of participant 2   
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
+%   cfg.baseline    = baseline phase (default: [], can by any valid phase)
+%                     the values of the baseline phase will be subtracted
+%                     from the values of the selected phase (cfg.phase)
 %   cfg.electrode   = number of electrodes (default: {'Cz'} repsectively [10])
 %                     examples: {'Cz'}, {'F7', 'Fz', 'F8'}, [10] or [2, 1, 3]
 %   cfg.avgelec     = plot average over selected electrodes, options: 'yes' or 'no' (default: 'no')
@@ -27,17 +30,18 @@ function RPS_easyPowPlot(cfg, data)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part  = ft_getopt(cfg, 'part', 1);
-cond  = ft_getopt(cfg, 'condition', 2);
-phase = ft_getopt(cfg, 'phase', 11);
-elec  = ft_getopt(cfg, 'electrode', {'Cz'});
-avgelec = ft_getopt(cfg, 'avgelec', 'no');
+part      = ft_getopt(cfg, 'part', 1);
+condition = ft_getopt(cfg, 'condition', 2);
+phase     = ft_getopt(cfg, 'phase', 11);
+baseline  = ft_getopt(cfg, 'baseline', []);
+elec      = ft_getopt(cfg, 'electrode', {'Cz'});
+avgelec   = ft_getopt(cfg, 'avgelec', 'no');
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = RPS_checkCondition( cond );                                          % check cfg.condition definition   
-switch cond
+condition = RPS_checkCondition( condition );                                % check cfg.condition definition
+switch condition
   case 1
     data = data.FP;
   case 2
@@ -47,7 +51,7 @@ switch cond
   case 4
     data = data.C;
   otherwise
-    error('Condition %d is not valid', cond);
+    error('Condition %d is not valid', condition);
 end
 
 if ~ismember(part, [0,1,2])                                                 % check cfg.part definition
@@ -90,6 +94,15 @@ else
   trialNum = ismember(trialinfo, phase);
 end
 
+if ~isempty(baseline)
+  baseline    = RPS_checkPhase( baseline );                                 % check cfg.baseline definition
+  if isempty(find(trialinfo == baseline, 1))
+    error('The selected dataset contains no condition %d.', baseline);
+  else
+    baseNum = ismember(trialinfo, baseline);
+  end
+end
+
 if isnumeric(elec)                                                          % check cfg.electrode
   for i=1:length(elec)
     if elec(i) < 1 || elec(i) > 32
@@ -120,22 +133,41 @@ end
 legend('-DynamicLegend');
 hold on;
 
+if isempty(baseline)                                                        % extract the powerspctrm matrix
+  powData = squeeze(data.powspctrm(trialNum,:,:));
+else
+  powData = squeeze(data.powspctrm(trialNum,:,:)) - ...                     % subtract baseline condition
+            squeeze(data.powspctrm(baseNum,:,:));
+end
+
+
 if strcmp(avgelec, 'no')
   for i = 1:1:length(elec)
-    plot(data.freq, squeeze(data.powspctrm(trialNum, elec(i),:)), ...
+    plot(data.freq, powData(elec(i),:), ...
         'DisplayName', data.label{elec(i)});
   end
 else
   labelString = strjoin(data.label(elec), ',');
-  plot(data.freq, mean(squeeze(data.powspctrm(trialNum, elec,:)), 1), ...
-        'DisplayName', labelString);
+  plot(data.freq, mean(powData(elec,:), 1), 'DisplayName', labelString);
 end
 
-if part == 0                                                                % set figure title
-  title(sprintf('Power - Cond.: %d - Phase: %d', cond, phase));
+% set figure title
+if part == 0
+  if isempty(baseline)
+    title(sprintf('Power - Cond.: %d - Phase: %d', ...
+                    condition, phase));
+  else
+    title(sprintf('Power - Cond.: %d - Phase: %d-%d', ...
+                    condition, phase, baseline));
+  end
 else
-  title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d', ...
-        part, cond, phase));
+  if isempty(baseline)
+    title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d', ...
+                    part, condition, phase));
+  else
+    title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d-%d', ...
+                    part, condition, phase, baseline));
+  end
 end
 
 xlabel('frequency in Hz');                                                  % set xlabel

@@ -12,8 +12,11 @@ function RPS_easyMultiPowPlot(cfg, data)
 %                     0 - plot the averaged data
 %                     1 - plot data of participant 1
 %                     2 - plot data of participant 2   
-%   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
+%   cfg.conditionition   = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
+%   cfg.baseline    = baseline phase (default: [], can by any valid phase)
+%                     the values of the baseline phase will be subtracted
+%                     from the values of the selected phase (cfg.phase)
 %
 % This function requires the fieldtrip toolbox
 %
@@ -24,15 +27,16 @@ function RPS_easyMultiPowPlot(cfg, data)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-cfg.part  = ft_getopt(cfg, 'part', 1);
-cfg.cond  = ft_getopt(cfg, 'condition', 2);
-cfg.phase = ft_getopt(cfg, 'phase', 11);
+cfg.part      = ft_getopt(cfg, 'part', 1);
+cfg.condition = ft_getopt(cfg, 'condition', 2);
+cfg.phase     = ft_getopt(cfg, 'phase', 11);
+cfg.baseline  = ft_getopt(cfg, 'baseline', []);
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
 
-cfg.cond = RPS_checkCondition( cfg.cond );                                  % check cfg.condition definition   
-switch cfg.cond
+cfg.condition = RPS_checkCondition( cfg.condition );                        % check cfg.condition definition
+switch cfg.condition
   case 1
     dataPlot = data.FP;
   case 2
@@ -84,6 +88,15 @@ else
   trialNum = find(ismember(trialinfo, cfg.phase));
 end
 
+if ~isempty(cfg.baseline)
+  cfg.baseline    = RPS_checkPhase( cfg.baseline );                         % check cfg.baseline definition
+  if isempty(find(trialinfo == cfg.baseline, 1))
+    error('The selected dataset contains no condition %d.', cfg.baseline);
+  else
+    baseNum = ismember(trialinfo, cfg.baseline);
+  end
+end
+
 % -------------------------------------------------------------------------
 % Load layout informations
 % -------------------------------------------------------------------------
@@ -101,12 +114,22 @@ chanHeight        = lay.height(sellay);
 % -------------------------------------------------------------------------
 % Multi power plot 
 % -------------------------------------------------------------------------
-datamatrix  = squeeze(dataPlot.powspctrm(trialNum, selchan, :));            %#ok<FNDSB> % extract the powerspctrm matrix    
+if isempty(cfg.baseline)                                                    % extract the powerspctrm matrix
+  datamatrix = squeeze(dataPlot.powspctrm(trialNum,selchan,:));
+else
+  datamatrix = squeeze(dataPlot.powspctrm(trialNum,selchan,:)) - ...        % subtract baseline condition
+                squeeze(dataPlot.powspctrm(baseNum,selchan,:));
+end
+
 xval        = dataPlot.freq;                                                % extract the freq vector
 xmax        = max(xval);                                                    % determine the frequency maximum
 val         = ~ismember(selchan, eogvchan);                                 
-ymaxchan    = selchan(val);
-ymax        = max(max(datamatrix(ymaxchan, 1:48)));                         % determine the power maximum of all channels expect V1 und V2
+ychan       = selchan(val);
+ymin        = min(min(datamatrix(ychan, 1:48)));                            % determine the power minimum of all channels expect V1 und V2
+if(ymin > 0)
+  ymin = 0;
+end
+ymax        = max(max(datamatrix(ychan, 1:48)));                            % determine the power maximum of all channels expect V1 und V2
 
 hold on;                                                                    % hold the figure
 cla;                                                                        % clear all axis
@@ -120,18 +143,18 @@ ft_plot_lay(lay, 'box', 0, 'label', 0, 'outline', 1, 'point', 'no', ...
 % plot the channels
 for k=1:length(selchan) 
   yval = datamatrix(k, :);
-  setChanBackground([0 xmax], [0 ymax], chanX(k), chanY(k), ...             % set background of the channel boxes to white
+  setChanBackground([0 xmax], [ymin ymax], chanX(k), chanY(k), ...          % set background of the channel boxes to white
                     chanWidth(k), chanHeight(k));
   ft_plot_vector(xval, yval, 'width', chanWidth(k), 'height', chanHeight(k),...
                 'hpos', chanX(k), 'vpos', chanY(k), 'hlim', [0 xmax], ...
-                'vlim', [0 ymax], 'box', 0);
+                'vlim', [ymin ymax], 'box', 0);
 end
 
 % add the comment field
 k = find(strcmp('COMNT', lay.label));
 comment = date;
 comment = sprintf('%0s\nxlim=[%.3g %.3g]', comment, 0, xmax);
-comment = sprintf('%0s\nylim=[%.3g %.3g]', comment, 0, ymax);
+comment = sprintf('%0s\nylim=[%.3g %.3g]', comment, ymin, ymax);
 
 ft_plot_text(lay.pos(k, 1), lay.pos(k, 2), sprintf(comment), ...
              'FontSize', 8, 'FontWeight', []);
@@ -141,15 +164,26 @@ k = find(strcmp('SCALE', lay.label));
 if ~isempty(k)
   x = lay.pos(k,1);
   y = lay.pos(k,2);
-  plotScales([0 xmax], [0 ymax], x, y, chanWidth(1), chanHeight(1));
+  plotScales([0 xmax], [ymin ymax], x, y, chanWidth(1), chanHeight(1));
 end
 
 % set figure title
 if cfg.part == 0
-  title(sprintf('Power - Cond.: %d - Phase: %d', cfg.cond, cfg.phase));
+  if isempty(cfg.baseline)
+    title(sprintf('Power - Cond.: %d - Phase: %d', ...
+                    cfg.condition, cfg.phase));
+  else
+    title(sprintf('Power - Cond.: %d - Phase: %d-%d', ...
+                    cfg.condition, cfg.phase, cfg.baseline));
+  end
 else
-  title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d', cfg.part, ...
-                cfg.phase, cfg.cond));
+  if isempty(cfg.baseline)
+    title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d', ...
+                    cfg.part, cfg.condition, cfg.phase));
+  else
+    title(sprintf('Power - Part.: %d - Cond.: %d - Phase: %d-%d', ...
+                    cfg.part, cfg.condition, cfg.phase, cfg.baseline));
+  end
 end
 
 axis tight;                                                                 % format the layout

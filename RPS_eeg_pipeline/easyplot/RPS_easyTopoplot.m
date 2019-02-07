@@ -14,7 +14,10 @@ function RPS_easyTopoplot(cfg , data)
 %                     2 - plot data of participant 2   
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
-%   cfg.freqrange   = limits for frequency in Hz (e.g. [6 9] or 10) (default: 10) 
+%   cfg.baseline    = baseline phase (default: [], can by any valid phase)
+%                     the values of the baseline phase will be subtracted
+%                     from the values of the selected phase (cfg.phase)
+%   cfg.freqlim     = limits for frequency in Hz (e.g. [6 9] or 10) (default: 10)
 %
 % This function requires the fieldtrip toolbox
 %
@@ -25,10 +28,11 @@ function RPS_easyTopoplot(cfg , data)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part        = ft_getopt(cfg, 'part', 1);
-condition   = ft_getopt(cfg, 'condition', 2);
-phase       = ft_getopt(cfg, 'phase', 11);
-freqrange   = ft_getopt(cfg, 'freqrange', 10);
+part      = ft_getopt(cfg, 'part', 1);
+condition = ft_getopt(cfg, 'condition', 2);
+phase     = ft_getopt(cfg, 'phase', 11);
+baseline  = ft_getopt(cfg, 'baseline', []);
+freqlim   = ft_getopt(cfg, 'freqlim', 10);
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
@@ -86,8 +90,17 @@ else
   trialNum = ismember(trialinfo, phase);
 end
 
-if numel(freqrange) == 1
-  freqrange = [freqrange freqrange];
+if ~isempty(cfg.baseline)
+  cfg.baseline    = RPS_checkPhase( cfg.baseline );                         % check cfg.baseline definition
+  if isempty(find(trialinfo == cfg.baseline, 1))
+    error('The selected dataset contains no condition %d.', cfg.baseline);
+  else
+    baseNum = ismember(trialinfo, cfg.baseline);
+  end
+end
+
+if numel(freqlim) == 1
+  freqlim = [freqlim freqlim];
 end
 
 % -------------------------------------------------------------------------
@@ -98,7 +111,7 @@ load(sprintf('%s/../layouts/mpi_002_customized_acticap32.mat', ...
 
 cfg               = [];
 cfg.parameter     = 'powspctrm';
-cfg.xlim          = freqrange;
+cfg.xlim          = freqlim;
 cfg.zlim          = 'maxmin';
 cfg.trials        = trialNum;
 cfg.colormap      = 'jet';
@@ -109,14 +122,31 @@ cfg.gridscale     = 200;                                                    % gr
 cfg.layout        = lay;
 cfg.showcallinfo  = 'no';
 
+if ~isempty(baseline)                                                       % subtract baseline condition
+  data.powspctrm(trialNum,:,:) = data.powspctrm(trialNum,:,:) - ...
+                                  data.powspctrm(baseNum,:,:);
+end
+
 ft_topoplotER(cfg, data);
 
-if part ~= 0
-  title(sprintf(['Power - Participant %d - Condition %d - Phase %d - '...
-                'Freqrange [%d %d]'], part, condition, phase, freqrange));
+if part == 0                                                                % set figure title
+  if isempty(baseline)
+    title(sprintf('Power - Condition %d - Phase %d - Freqrange [%d %d]',...
+              condition, phase, freqlim));
+  else
+    title(sprintf(['Power - Condition %d - Phase %d-%d - Freqrange ' ...
+              '[%d %d]'], condition, phase, baseline, freqlim));
+  end
 else
-  title(sprintf('Power - Condition %d - Phase %d - Freqrange [%d %d]', ...
-                condition, phase, freqrange));
+  if isempty(baseline)
+    title(sprintf(['Power - Participant %d - Condition %d - Phase ' ...
+              '%d - Freqrange [%d %d]'], part, condition, phase, ...
+              freqlim));
+  else
+    title(sprintf(['Power - Participant %d - Condition %d - '...
+              'Phase %d-%d - Freqrange [%d %d]'], part, condition, ...
+              phase, baseline, freqlim));
+  end
 end
 
 set(gcf, 'Position', [0, 0, 750, 550]);

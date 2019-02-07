@@ -11,24 +11,26 @@ function RPS_easyMPLVplot( cfg, data )
 % The configuration options are
 %   cfg.condition = condition (default: 2 or 'PredDiff', see RPS_DATASTRUCTURE)
 %   cfg.phase     = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
+%   cfg.electrode = electrodes of interest (e.g. {'C3', 'Cz', 'C4'}, default: 'all')
 %
 % This function requires the fieldtrip toolbox.
 %
 % See also RPS_DATASTRUCTURE, PLOT, RPS_PHASELOCKVAL, RPS_CALCMEANPLV
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-cond      = ft_getopt(cfg, 'condition', 2);
+condition = ft_getopt(cfg, 'condition', 2);
 phase     = ft_getopt(cfg, 'phase', 11);
+electrode = ft_getopt(cfg, 'electrode', 'all');
 
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
-switch cond
+condition = RPS_checkCondition( condition );                                % check cfg.condition definition
+switch condition
   case 1
     if isfield(data.FP, 'dyad')
       dataPlot = data.FP.dyad;
@@ -54,7 +56,7 @@ switch cond
       dataPlot = data.C;
     end
   otherwise
-    error('Condition %d is not valid', cond);
+    error('Condition %d is not valid', condition);
 end
 
 trialinfo = dataPlot.trialinfo;                                             % get trialinfo
@@ -66,18 +68,33 @@ if isempty(trl)
 end
 
 % -------------------------------------------------------------------------
-% Plot mPLV representation
+% Select a subset of available electrodes
 % -------------------------------------------------------------------------
 label = dataPlot.label;
-components = 1:1:length(label);
+mPLV  = dataPlot.mPLV{trl};
 
+if ~isstring(electrode) && iscell(electrode)
+  tf    = ismember(label, electrode);
+  label = label(tf);
+  mPLV = mPLV(tf,tf);
+end
+
+if ~isempty(label)
+  components = 1:1:length(label);
+else
+  error('One have to specify at least one valid channel!');
+end
+
+% -------------------------------------------------------------------------
+% Plot mPLV representation
+% -------------------------------------------------------------------------
 colormap jet;
-imagesc(components, components, dataPlot.mPLV{trl});
+imagesc(components, components, mPLV);
 set(gca, 'XTick', components,'XTickLabel', label);                          % use labels instead of numbers for the axis description
 set(gca, 'YTick', components,'YTickLabel', label);
 set(gca,'xaxisLocation','top');                                             % move xlabel to the top
-title(sprintf(' mean Phase Locking Values (PLV) in Phase %d of Condition: %d', ...
-                phase, cond));   
+title(sprintf(' mean Phase Locking Values in Phase %d of Condition: %d',...
+                phase, condition));
 colorbar;
 
 end
