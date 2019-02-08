@@ -63,7 +63,7 @@ if tfr == true
 
     cfg         = [];
     cfg.foi     = 2:1:50;                                                   % frequency of interest
-    cfg.toi     = 0:0.5:3;                                                  % time of interest
+    cfg.toi     = 0:0.5:60;                                                 % time of interest
 
     data_tfr = RPS_timeFreqanalysis( cfg, data_preproc2 );
 

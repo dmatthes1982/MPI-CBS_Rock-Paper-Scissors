@@ -16,30 +16,30 @@ function RPS_easyMultiTFRplot(cfg, data)
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS data structure)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS data structure)
 %   cfg.trial       = numbers of trials (i.e.: 1, 'all', [1:60], [1,12,25,53] (default: 1)
-%   cfg.freqlimits  = [begin end] (default: [2 30])
-%   cfg.timelimits  = [begin end] (default: [0 3])
+%   cfg.freqlim     = [begin end] (default: [2 30])
+%   cfg.timelim     = [begin end] (default: [0 3])
 %
 % This function requires the fieldtrip toolbox
 %
 % See also FT_MULTIPLOTTFR, RPS_TIMEFREQANALYSIS
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part    = ft_getopt(cfg, 'part', 1);
-cond    = ft_getopt(cfg, 'condition', 2);
-phase = ft_getopt(cfg, 'phase', 11);
-trl     = ft_getopt(cfg, 'trial', 1);
-freqlim = ft_getopt(cfg, 'freqlimits', [2 30]);
-timelim = ft_getopt(cfg, 'timelimits', [0 3]);
+part      = ft_getopt(cfg, 'part', 1);
+condition = ft_getopt(cfg, 'condition', 2);
+phase     = ft_getopt(cfg, 'phase', 11);
+trl       = ft_getopt(cfg, 'trial', 1);
+freqlim   = ft_getopt(cfg, 'freqlim', [2 30]);
+timelim   = ft_getopt(cfg, 'timelim', [0 3]);
 
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
-switch cond
+condition = RPS_checkCondition( condition );                                % check cfg.condition definition
+switch condition
   case 1
     dataPlot = data.FP;
   case 2
@@ -49,7 +49,7 @@ switch cond
   case 4
     dataPlot = data.C;
   otherwise
-    error('Condition %d is not valid', cond);
+    error('Condition %d is not valid', condition);
 end
 
 switch part                                                                 % check validity of cfg.part
@@ -134,9 +134,8 @@ cfg.showcallinfo  = 'no';                                                   % su
 
 ft_multiplotTFR(cfg, dataPlot);
 title(sprintf('Cond.: %d - Part.: %d - Phase.: %d - Trial of Phase: %s', ...
-      cond, part, phase, trlInCond));
+      condition, part, phase, trlInCond));
 
 ft_warning on;
 
 end
-

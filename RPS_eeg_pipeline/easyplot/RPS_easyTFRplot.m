@@ -17,31 +17,31 @@ function RPS_easyTFRplot(cfg, data)
 %   cfg.phase       = phase (default: 11 or 'Prediction', see RPS_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = numbers of trials (i.e.: 1, 'all', [1:60], [1,12,25,53] (default: 1)
-%   cfg.freqlimit   = [begin end] (default: [2 50])
-%   cfg.timelimit   = [begin end] (default: [0 3])
+%   cfg.freqlim     = [begin end] (default: [2 50])
+%   cfg.timelim     = [begin end] (default: [0 3])
 %
 % This function requires the fieldtrip toolbox
 %
 % See also FT_SINGLEPLOTTFR, RPS_TIMEFREQANALYSIS
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part    = ft_getopt(cfg, 'part', 1);
-cond    = ft_getopt(cfg, 'condition', 2);
-phase   = ft_getopt(cfg, 'phase', 11);
-elec    = ft_getopt(cfg, 'electrode', 'Cz');
-trl     = ft_getopt(cfg, 'trial', 1);
-freqlim = ft_getopt(cfg, 'freqlimit', [2 50]);
-timelim = ft_getopt(cfg, 'timelimit', [0 3]);
+part      = ft_getopt(cfg, 'part', 1);
+condition = ft_getopt(cfg, 'condition', 2);
+phase     = ft_getopt(cfg, 'phase', 11);
+elec      = ft_getopt(cfg, 'electrode', 'Cz');
+trl       = ft_getopt(cfg, 'trial', 1);
+freqlim   = ft_getopt(cfg, 'freqlim', [2 50]);
+timelim   = ft_getopt(cfg, 'timelim', [0 3]);
 
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = RPS_checkCondition( cond );                                          % check cfg.condition definition    
-switch cond
+condition = RPS_checkCondition( condition );                                % check cfg.condition definition
+switch condition
   case 1
     dataPlot = data.FP;
   case 2
@@ -51,7 +51,7 @@ switch cond
   case 4
     dataPlot = data.C;
   otherwise
-    error('Condition %d is not valid', cond);
+    error('Condition %d is not valid', condition);
 end
 
 switch part                                                                 % check validity of cfg.part
@@ -97,7 +97,8 @@ else
     numTrials = length(trials);
     trl = unique(trl);
     if numTrials < max(trl)
-      error('The selected dataset contains only %d trials.', numTrials);
+      error('The selected dataset contains only %d trials for phase %d.',... 
+              numTrials, phase);
     else
       trlInCond = sprintf('[%d', trl(1));
       if length(trl) > 1
@@ -113,15 +114,24 @@ end
 
 label = dataPlot.label;                                                     % get labels
 
-if isnumeric(elec)
-  if ~ismember(elec,  1:1:32)
-    error('cfg.elec hast to be a number between 1 and 32 or a existing label like ''Cz''.');
+if isnumeric(elec)                                                          % check cfg.electrode
+  for i=1:length(elec)
+    if elec(i) < 1 || elec(i) > 32
+      error('cfg.elec has to be a numbers between 1 and 32 or a existing labels like {''Cz''}.');
+    end
   end
 else
-  elec = find(strcmp(label, elec));
-  if isempty(elec)
-    error('cfg.elec hast to be a existing label like ''Cz''or a number between 1 and 32.');
+  if ischar(elec)
+    elec = {elec};
   end
+  tmpElec = zeros(1, length(elec));
+  for i=1:length(elec)
+    tmpElec(i) = find(strcmp(label, elec{i}));
+    if isempty(tmpElec(i))
+      error('cfg.elec has to be a cell array of existing labels like ''Cz''or a vector of numbers between 1 and 32.');
+    end
+  end
+  elec = tmpElec;
 end
 
 % -------------------------------------------------------------------------
@@ -142,9 +152,9 @@ cfg.showcallinfo    = 'no';                                                 % su
 colormap jet;                                                               % use the older and more common colormap
 
 ft_singleplotTFR(cfg, dataPlot);
+labelString = strjoin(dataPlot.label(elec), ',');
 title(sprintf('Cond.: %d - Part.: %d - Phase: %d - Trial of Phase: %s - Elec.: %s', ...
-      cond, part, phase, trlInCond, ...
-      strrep(dataPlot.label{elec}, '_', '\_')));
+      condition, part, phase, trlInCond, labelString));
 
 xlabel('time in sec');                                                      % set xlabel
 ylabel('frequency in Hz');                                                  % set ylabel
@@ -152,4 +162,3 @@ ylabel('frequency in Hz');                                                  % se
 ft_warning on;
 
 end
-
