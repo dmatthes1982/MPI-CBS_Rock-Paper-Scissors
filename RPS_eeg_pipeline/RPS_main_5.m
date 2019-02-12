@@ -144,6 +144,23 @@ while selection == false
 end
 fprintf('\n');
 
+% handle existing manual selected artifacts
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Do you want to load existing manual selected artifacts?\n');
+  y = input('Select [y/n]: ','s');
+  if strcmp('y', y)
+    selection = true;
+    importArt = true;
+  elseif strcmp('n', y)
+    selection = true;
+    importArt = false;
+  else
+    selection = false;
+  end
+end
+fprintf('\n');
+
 % Write selected settings to settings file
 file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
 if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
@@ -201,18 +218,71 @@ for i = numOfPart
   cfg.mad         = threshold;                                              % mad: multiples of median absolute deviation
 
   cfg_autoart   = RPS_autoArtifact(cfg, data_preproc2);                     % auto artifact detection
-  
+
+  % import existing manual selected artifacts
+  if importArt == true
+    cfg             = [];
+    cfg.srcFolder   = strcat(desPath, '05b_allart/');
+    cfg.filename    = sprintf('RPS_d%02d_05b_allart', i);
+    cfg.sessionStr  = sessionStr;
+
+    filename = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
+                      '.mat');
+
+    if ~exist( filename, 'file')
+      cprintf([1,0.5,0], ['\nThere are no manual defined artifacts existing'...
+                          ' for dyad %d.\n'], i);
+    else
+      fprintf('\nImport existing manual defined artifacts...\n');
+      RPS_loadData( cfg );
+      cfg_autoart.FP.part1.artfctdef.visual = cfg_allart.FP.part1.artfctdef.visual;
+      cfg_autoart.PD.part1.artfctdef.visual = cfg_allart.PD.part1.artfctdef.visual;
+      cfg_autoart.PS.part1.artfctdef.visual = cfg_allart.PS.part1.artfctdef.visual;
+      cfg_autoart.C.part1.artfctdef.visual  = cfg_allart.C.part1.artfctdef.visual;
+      cfg_autoart.FP.part2.artfctdef.visual = cfg_allart.FP.part2.artfctdef.visual;
+      cfg_autoart.PD.part2.artfctdef.visual = cfg_allart.PD.part2.artfctdef.visual;
+      cfg_autoart.PS.part2.artfctdef.visual = cfg_allart.PS.part2.artfctdef.visual;
+      cfg_autoart.C.part2.artfctdef.visual  = cfg_allart.C.part2.artfctdef.visual;
+      clear cfg_allart filename
+    end
+  end
+
   % verify automatic detected artifacts / manual artifact detection
   cfg           = [];
-  cfg.threshArt = cfg_autoart;
+  cfg.artifact  = cfg_autoart;
   if strcmp(reject_bad_cycles, 'y')
-    cfg.manArt    = cfg_manart;
+    cfg.artifact.FP.part1.artfctdef.xxx = cfg_manart.FP.part1.artfctdef.xxx;
+    cfg.artifact.PD.part1.artfctdef.xxx = cfg_manart.PD.part1.artfctdef.xxx;
+    cfg.artifact.PS.part1.artfctdef.xxx = cfg_manart.PS.part1.artfctdef.xxx;
+    cfg.artifact.C.part1.artfctdef.xxx  = cfg_manart.C.part1.artfctdef.xxx;
+    cfg.artifact.FP.part2.artfctdef.xxx = cfg_manart.FP.part2.artfctdef.xxx;
+    cfg.artifact.PD.part2.artfctdef.xxx = cfg_manart.PD.part2.artfctdef.xxx;
+    cfg.artifact.PS.part2.artfctdef.xxx = cfg_manart.PS.part2.artfctdef.xxx;
+    cfg.artifact.C.part2.artfctdef.xxx  = cfg_manart.C.part2.artfctdef.xxx;
   end
   cfg.dyad      = i;
   
   cfg_allart    = RPS_manArtifact(cfg, data_preproc2);                 
   
   % export the automatic selected artifacts into a *.mat file
+  cfg_autoart.FP.part1.artfctdef  = ...
+          removefields(cfg_autoart.FP.part1.artfctdef, {'visual'});
+  cfg_autoart.PD.part1.artfctdef  = ...
+          removefields(cfg_autoart.PD.part1.artfctdef, {'visual'});
+  cfg_autoart.PS.part1.artfctdef  = ...
+          removefields(cfg_autoart.PS.part1.artfctdef, {'visual'});
+  cfg_autoart.C.part1.artfctdef   = ...
+          removefields(cfg_autoart.C.part1.artfctdef, {'visual'});
+
+  cfg_autoart.FP.part2.artfctdef  = ...
+          removefields(cfg_autoart.FP.part2.artfctdef, {'visual'});
+  cfg_autoart.PD.part2.artfctdef  = ...
+          removefields(cfg_autoart.PD.part2.artfctdef, {'visual'});
+  cfg_autoart.PS.part2.artfctdef  = ...
+          removefields(cfg_autoart.PS.part2.artfctdef, {'visual'});
+  cfg_autoart.C.part2.artfctdef   = ...
+          removefields(cfg_autoart.C.part2.artfctdef, {'visual'});
+
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05a_autoart/');
   cfg.filename    = sprintf('RPS_d%02d_05a_autoart', i);
@@ -265,4 +335,4 @@ end
 %% clear workspace
 clear file_path numOfSources sourceList cfg i x y selection T threshold ...
       method winsize sliding default_threshold threshold_range ...
-      reject_bad_cycles
+      reject_bad_cycles importArt

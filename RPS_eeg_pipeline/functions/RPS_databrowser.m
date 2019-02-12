@@ -12,8 +12,7 @@ function [ cfgArtifacts ] = RPS_databrowser( cfg, data )
 %   cfg.dyad        = number of dyad (no default value)
 %   cfg.part        = number of participant (default: 1)
 %   cfg.condition   = condition (default: 2 or 'PredDiff', see RPS data structure)
-%   cfg.threshArt   = Nx2 matrix with threshold artifact segments (default: [])
-%   cfg.manArt      = Nx2 matrix with manual artifact segments (default: [])
+%   cfg.artifact    = structure with artifact specification, e.g. output of FT_ARTIFACT_THRESHOLD (default: [])
 %   cfg.channel     = channels of interest (default: 'all')
 %   cfg.ylim        = vertical scaling (default: [-100 100]);
 %   cfg.blocksize   = duration in seconds for cutting the data up (default: [])
@@ -26,7 +25,7 @@ function [ cfgArtifacts ] = RPS_databrowser( cfg, data )
 % See also RPS_IMPORTALLCONDITIONS, RPS_PREPROCESSING, RPS_SEGMENTATION, 
 % RPS_DATASTRUCTURE, FT_DATABROWSER
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -34,8 +33,7 @@ function [ cfgArtifacts ] = RPS_databrowser( cfg, data )
 dyad        = ft_getopt(cfg, 'dyad', []);
 part        = ft_getopt(cfg, 'part', 1);
 cond        = ft_getopt(cfg, 'condition', 2);
-threshArt   = ft_getopt(cfg, 'threshArt', []);
-manArt      = ft_getopt(cfg, 'manArt', []);
+artifact    = ft_getopt(cfg, 'artifact', []);
 channel     = ft_getopt(cfg, 'channel', 'all');
 ylim        = ft_getopt(cfg, 'ylim', [-100 100]);
 blocksize   = ft_getopt(cfg, 'blocksize', []);
@@ -72,18 +70,17 @@ end
 % -------------------------------------------------------------------------
 % Configure and start databrowser
 % -------------------------------------------------------------------------
-cfg                               = [];
-cfg.ylim                          = ylim;
-cfg.blocksize                     = blocksize;
-cfg.viewmode                      = 'vertical';
-cfg.artfctdef.threshold.artifact  = threshArt;
-cfg.artfctdef.xxx.artifact        = manArt;
-cfg.continuous                    = 'no';
-cfg.channel                       = channel;
-cfg.plotevents                    = plotevents;
-cfg.event                         = event;
-cfg.artifactalpha                 = 0.7;
-cfg.showcallinfo                  = 'no';
+cfg               = [];
+cfg.ylim          = ylim;
+cfg.blocksize     = blocksize;
+cfg.viewmode      = 'vertical';
+cfg.artfctdef     = artifact;
+cfg.continuous    = 'no';
+cfg.channel       = channel;
+cfg.plotevents    = plotevents;
+cfg.event         = event;
+cfg.artifactalpha = 0.7;
+cfg.showcallinfo  = 'no';
 
 fprintf('Databrowser - Condition: %d - Participant: %d\n', cond, part);
 
