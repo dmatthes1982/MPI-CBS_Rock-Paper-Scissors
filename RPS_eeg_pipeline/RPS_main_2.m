@@ -178,7 +178,7 @@ for i = numOfPart
   fprintf('<strong>Basic preprocessing of good channels</strong>\n');
 
   cfg                   = [];
-  cfg.bpfreq            = bpRange;                                          % passband from 1 to either 48 or 200 Hz
+  cfg.bpfreq            = bpRange;                                          % passband from 1 to either 48 or 98 Hz
   cfg.bpfilttype        = 'but';
   cfg.bpinstabilityfix  = 'split';
   cfg.dftfilter         = lnRemoval;                                        % dft filter for additional line noise removal
@@ -212,7 +212,7 @@ for i = numOfPart
 end
 
 %% clear workspace
-clear file_path cfg sourceList numOfSources i selection x reference T ...
+clear file_path cfg sourceList numOfSources i selection x T ...
       bandpass bpRange lineNoiseFilt lnRemoval bChanFPp1 bChanFPp2 ...
       bChanPDp1 bChanPDp2 bChanPSp1 bChanPSp2 bChanCp1 bChanCp2 ...
       settings_file
