@@ -17,6 +17,7 @@ function RPS_easyMultiPowPlot(cfg, data)
 %   cfg.baseline    = baseline phase (default: [], can by any valid phase)
 %                     the values of the baseline phase will be subtracted
 %                     from the values of the selected phase (cfg.phase)
+%   cfg.log         = use a logarithmic scale for the y axis, options: 'yes' or 'no' (default: 'no')
 %
 % This function requires the fieldtrip toolbox
 %
@@ -31,6 +32,7 @@ cfg.part      = ft_getopt(cfg, 'part', 1);
 cfg.condition = ft_getopt(cfg, 'condition', 2);
 cfg.phase     = ft_getopt(cfg, 'phase', 11);
 cfg.baseline  = ft_getopt(cfg, 'baseline', []);
+cfg.log       = ft_getopt(cfg, 'log', 'no');
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
@@ -119,6 +121,10 @@ if isempty(cfg.baseline)                                                    % ex
 else
   datamatrix = squeeze(dataPlot.powspctrm(trialNum,selchan,:)) - ...        % subtract baseline condition
                 squeeze(dataPlot.powspctrm(baseNum,selchan,:));
+end
+
+if strcmp(cfg.log, 'yes')
+  datamatrix = 10 * log10( datamatrix );
 end
 
 xval        = dataPlot.freq;                                                % extract the freq vector

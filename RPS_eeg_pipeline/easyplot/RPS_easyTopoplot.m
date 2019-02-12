@@ -18,6 +18,7 @@ function RPS_easyTopoplot(cfg , data)
 %                     the values of the baseline phase will be subtracted
 %                     from the values of the selected phase (cfg.phase)
 %   cfg.freqlim     = limits for frequency in Hz (e.g. [6 9] or 10) (default: 10)
+%   cfg.zlim        = limits for color dimension, 'maxmin', 'maxabs', 'zeromax', 'minzero', or [zmin zmax] (default = 'maxmin')
 %
 % This function requires the fieldtrip toolbox
 %
@@ -33,6 +34,7 @@ condition = ft_getopt(cfg, 'condition', 2);
 phase     = ft_getopt(cfg, 'phase', 11);
 baseline  = ft_getopt(cfg, 'baseline', []);
 freqlim   = ft_getopt(cfg, 'freqlim', 10);
+zlim      = ft_getopt(cfg, 'zlim', 10);
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
@@ -112,7 +114,7 @@ load(sprintf('%s/../layouts/mpi_002_customized_acticap32.mat', ...
 cfg               = [];
 cfg.parameter     = 'powspctrm';
 cfg.xlim          = freqlim;
-cfg.zlim          = 'maxmin';
+cfg.zlim          = zlim;
 cfg.trials        = trialNum;
 cfg.colormap      = 'jet';
 cfg.marker        = 'on';
