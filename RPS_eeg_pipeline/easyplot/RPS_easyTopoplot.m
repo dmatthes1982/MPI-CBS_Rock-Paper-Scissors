@@ -19,6 +19,7 @@ function RPS_easyTopoplot(cfg , data)
 %                     from the values of the selected phase (cfg.phase)
 %   cfg.freqlim     = limits for frequency in Hz (e.g. [6 9] or 10) (default: 10)
 %   cfg.zlim        = limits for color dimension, 'maxmin', 'maxabs', 'zeromax', 'minzero', or [zmin zmax] (default = 'maxmin')
+%   cfg.showeogv    = 'yes' or 'no' (default: 'no'), show vertical eye electrodes in topoplot
 %
 % This function requires the fieldtrip toolbox
 %
@@ -35,6 +36,7 @@ phase     = ft_getopt(cfg, 'phase', 11);
 baseline  = ft_getopt(cfg, 'baseline', []);
 freqlim   = ft_getopt(cfg, 'freqlim', 10);
 zlim      = ft_getopt(cfg, 'zlim', 'maxmin');
+showeogv  = ft_getopt(cfg, 'showeogv', 'no');
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
@@ -85,19 +87,19 @@ end
 
 trialinfo = data.trialinfo;                                                 % get trialinfo
 
-phase = RPS_checkPhase( phase );                                            % check cfg.condition definition    
+phase = RPS_checkPhase( phase );                                            % check cfg.phase definition
 if isempty(find(trialinfo == phase, 1))
   error('The selected dataset contains no condition %d.', phase);
 else
   trialNum = ismember(trialinfo, phase);
 end
 
-if ~isempty(cfg.baseline)
-  cfg.baseline    = RPS_checkPhase( cfg.baseline );                         % check cfg.baseline definition
-  if isempty(find(trialinfo == cfg.baseline, 1))
-    error('The selected dataset contains no condition %d.', cfg.baseline);
+if ~isempty(baseline)
+  baseline    = RPS_checkPhase( baseline );                                 % check cfg.baseline definition
+  if isempty(find(trialinfo == baseline, 1))
+    error('The selected dataset contains no condition %d.', baseline);
   else
-    baseNum = ismember(trialinfo, cfg.baseline);
+    baseNum = ismember(trialinfo, baseline);
   end
 end
 
@@ -110,6 +112,14 @@ end
 % -------------------------------------------------------------------------
 load(sprintf('%s/../layouts/mpi_002_customized_acticap32.mat', ...
               filepath), 'lay');
+
+if strcmp(showeogv, 'no')
+  tf = ~ismember(lay.label, {'V1','V2'});                                   %#ok<NODEF>
+  lay.pos     = lay.pos(tf,:);
+  lay.label   = lay.label(tf);
+  lay.width   = lay.width(tf);
+  lay.height  = lay.height(tf);
+end
 
 cfg               = [];
 cfg.parameter     = 'powspctrm';
