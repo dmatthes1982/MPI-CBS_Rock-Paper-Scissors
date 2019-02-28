@@ -106,7 +106,12 @@ if strcmp(continuous, 'no')
     cfgD.feedback             = 'error';
     cfgD.trialdef.eventvalue  = decisionvalues;
 
-    cfgD = ft_definetrial(cfgD);                                            % extract decision markers
+    try
+      cfgD = ft_definetrial(cfgD);                                          % extract decision markers
+    catch
+      cfgD.trl = zeros(0,4);
+    end
+
     decisionList = [cfgD.trl(:,4), cfgD.trl(:,1)];                          % create a decision list
 
     begCycle = cfg.trl(ismember(cfg.trl(:,4), ...
