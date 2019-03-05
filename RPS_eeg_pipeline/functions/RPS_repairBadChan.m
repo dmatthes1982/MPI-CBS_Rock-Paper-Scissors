@@ -85,7 +85,7 @@ for i = 1:1:8
   end
   fprintf('\n');
 
-  label = [lay.label; {'REF'; 'EOGV'; 'EOGH'}];
+  label = [lay.label; {'EOGV'; 'EOGH'}];
   data = correctChanOrder( data, label);
 
 % -------------------------------------------------------------------------
