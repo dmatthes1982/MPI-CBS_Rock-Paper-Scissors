@@ -35,66 +35,34 @@ end
 fprintf('\n');
 
 if avgOverDyads == true
-  cfg = [];
-  cfg.path = strcat(desPath, '07b_mplv/');
-  cfg.session = str2double(sessionStr);
-  cfg.passband = 'alpha';
+  % passband specifications
+  [pbSpec(1:3).fileSuffix]  = deal('Alpha','Beta','Gamma');
+  [pbSpec(1:3).name]        = deal('alpha','beta','gamma');
 
-  data_mplvod_alpha = RPS_mPLVoverDyads( cfg );
+  for i = 1:1:numel(pbSpec)
+    cfg               = [];
+    cfg.path          = strcat(desPath, '07b_mplv/');
+    cfg.session       = str2double(sessionStr);
+    cfg.passband      = pbSpec(i).name;
 
-  cfg.passband = 'beta';
+    data_mplvod   = RPS_mPLVoverDyads( cfg );
 
-  data_mplvod_beta = RPS_mPLVoverDyads( cfg );
+    % export the averaged PLVs into a *.mat file
+    cfg             = [];
+    cfg.desFolder   = strcat(desPath, '09a_mplvod/');
+    cfg.filename    = sprintf('RPS_09a_mplvod%s', pbSpec(i).fileSuffix);
+    cfg.sessionStr  = sessionStr;
 
-  cfg.passband = 'gamma';
-
-  data_mplvod_gamma = RPS_mPLVoverDyads( cfg );
-  
-  % export the averaged PLVs into a *.mat file
-  % alpha
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '09a_mplvod/');
-  cfg.filename    = 'RPS_09a_mplvodAlpha';
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
+    file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                      '.mat');
                    
-  fprintf('Saving mean PLVs over dyads at alpha (8-12Hz) in:\n'); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_mplvod_alpha', data_mplvod_alpha);
-  fprintf('Data stored!\n');
-  clear data_mplvod_alpha
-  
-  % beta
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '09a_mplvod/');
-  cfg.filename    = 'RPS_09a_mplvodBeta';
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                   '.mat');
-                   
-  fprintf('Saving mean PLVs over dyads at beta (13-30Hz) in:\n'); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_mplvod_beta', data_mplvod_beta);
-  fprintf('Data stored!\n');
-  clear data_mplvod_beta
-  
-  % gamma
-  cfg             = [];
-  cfg.desFolder   = strcat(desPath, '09a_mplvod/');
-  cfg.filename    = 'RPS_10a_mplvodGamma';
-  cfg.sessionStr  = sessionStr;
-
-  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
-                     '.mat');
-                   
-  fprintf('Saving mean PLVs over dyads at gamma (31-90Hz) in:\n'); 
-  fprintf('%s ...\n', file_path);
-  RPS_saveData(cfg, 'data_mplvod_gamma', data_mplvod_gamma);
-  fprintf('Data stored!\n\n');
-  clear data_mplvod_gamma
+    fprintf('Saving mean PLVs over dyads at %s (%g-%gHz) in:\n', ...
+              pbSpec(i).name, data_mplvod.bpFreq);
+    fprintf('%s ...\n', file_path);
+    RPS_saveData(cfg, 'data_mplvod', data_mplvod);
+    fprintf('Data stored!\n\n');
+    clear data_mplvod
+  end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,4 +148,4 @@ if avgOverDyads == true
 end
 
 %% clear workspace
-clear cfg file_path avgOverDyads x choise
+clear cfg file_path avgOverDyads x choise i pbSpec

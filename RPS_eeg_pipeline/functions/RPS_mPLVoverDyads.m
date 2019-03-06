@@ -1,9 +1,9 @@
-function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
+function [ data_mplvod ] = RPS_mPLVoverDyads( cfg )
 % RPS_MPLVOVERDYADS estimates the mean of the phase locking values within 
 % the different phases and conditions over all dyads.
 %
 % Use as
-%   [ data_mplv ] = RPS_mPLVoverDyads( cfg )
+%   [ data_mplvod ] = RPS_mPLVoverDyads( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01843/eegData/DualEEG_RPS_processedData/07b_mplv/')
@@ -15,7 +15,7 @@ function [ data_mplv ] = RPS_mPLVoverDyads( cfg )
 % 
 % See also RPS_CALCMEANPLV
 
-% Copyright (C) 2017, Daniel Matthes, MPI CBS 
+% Copyright (C) 2017-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -25,11 +25,11 @@ path      = ft_getopt(cfg, 'path', ...
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', 'alpha');
 
-bands     = {'alpha', 'beta', 'gamma', 'gammahigh'};
-suffix    = {'Alpha', 'Beta', 'Gamma', 'Gammahigh'};
+bands     = {'alpha', 'beta', 'gamma'};
+suffix    = {'Alpha', 'Beta', 'Gamma'};
 
 if ~any(strcmp(passband, bands))
-  error('Define cfg.passband could only be ''alpha'', ''beta'', ''gamma'' or ''gammahigh''.');
+  error('Define cfg.passband could only be ''alpha'', ''beta'' or ''gamma''.');
 else
   fileSuffix = suffix{strcmp(passband, bands)};
 end
@@ -77,10 +77,10 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load and organize data
 % -------------------------------------------------------------------------
-data_mplv.FP.trialinfo = generalDefinitions.phaseNum{1};
-data_mplv.PD.trialinfo = generalDefinitions.phaseNum{2};
-data_mplv.PS.trialinfo = generalDefinitions.phaseNum{3};
-data_mplv.C.trialinfo  = generalDefinitions.phaseNum{4};
+data_mplvod.FP.trialinfo = generalDefinitions.phaseNum{1};
+data_mplvod.PD.trialinfo = generalDefinitions.phaseNum{2};
+data_mplvod.PS.trialinfo = generalDefinitions.phaseNum{3};
+data_mplvod.C.trialinfo  = generalDefinitions.phaseNum{4};
 
 data{4, numOfDyads} = [];
 trialinfo{4, numOfDyads} = [];
@@ -90,26 +90,24 @@ for i=1:1:numOfDyads
                     fileSuffix, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
-  load(file, sprintf('data_mplv_%s', passband));
-  eval(['data_mplv_in=' sprintf('data_mplv_%s', passband) ';']);
-  eval(['clear ' sprintf('data_mplv_%s', passband)]);
-  data{1, i} = data_mplv_in.FP.dyad.mPLV;
-  trialinfo{1, i} = data_mplv_in.FP.dyad.trialinfo;
-  data{2, i} = data_mplv_in.PD.dyad.mPLV;
-  trialinfo{2, i} = data_mplv_in.PD.dyad.trialinfo;
-  data{3, i} = data_mplv_in.PS.dyad.mPLV;
-  trialinfo{3, i} = data_mplv_in.PS.dyad.trialinfo;
-  data{4, i} = data_mplv_in.C.dyad.mPLV;
-  trialinfo{4, i} = data_mplv_in.C.dyad.trialinfo;
+  load(file, 'data_mplv');
+  data{1, i} = data_mplv.FP.dyad.mPLV;
+  trialinfo{1, i} = data_mplv.FP.dyad.trialinfo;
+  data{2, i} = data_mplv.PD.dyad.mPLV;
+  trialinfo{2, i} = data_mplv.PD.dyad.trialinfo;
+  data{3, i} = data_mplv.PS.dyad.mPLV;
+  trialinfo{3, i} = data_mplv.PS.dyad.trialinfo;
+  data{4, i} = data_mplv.C.dyad.mPLV;
+  trialinfo{4, i} = data_mplv.C.dyad.trialinfo;
   if i == 1
-    data_mplv.centerFreq  = data_mplv_in.centerFreq;
-    data_mplv.bpFreq      = data_mplv_in.bpFreq;
-    data_mplv.FP.label    = data_mplv_in.FP.dyad.label;
-    data_mplv.PD.label    = data_mplv_in.PD.dyad.label;
-    data_mplv.PS.label    = data_mplv_in.PS.dyad.label;
-    data_mplv.C.label     = data_mplv_in.C.dyad.label;
+    data_mplvod.centerFreq  = data_mplv.centerFreq;
+    data_mplvod.bpFreq      = data_mplv.bpFreq;
+    data_mplvod.FP.label    = data_mplv.FP.dyad.label;
+    data_mplvod.PD.label    = data_mplv.PD.dyad.label;
+    data_mplvod.PS.label    = data_mplv.PS.dyad.label;
+    data_mplvod.C.label     = data_mplv.C.dyad.label;
   end
-  clear data_mplv_in
+  clear data_mplv
 end
 fprintf('\n');
 
@@ -139,11 +137,11 @@ for i=1:1:4
   data{i} = squeeze(num2cell(data{i}, [1 2]))';
 end
 
-data_mplv.FP.mPLV = data{1};
-data_mplv.PD.mPLV = data{2};
-data_mplv.PS.mPLV = data{3};
-data_mplv.C.mPLV = data{4};
-data_mplv.dyads = listOfDyads;
+data_mplvod.FP.mPLV = data{1};
+data_mplvod.PD.mPLV = data{2};
+data_mplvod.PS.mPLV = data{3};
+data_mplvod.C.mPLV = data{4};
+data_mplvod.dyads = listOfDyads;
 
 end
 
