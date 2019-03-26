@@ -10,11 +10,11 @@ RPS_init;
 LASTN = maxNumCompThreads(4);                                               %#ok<NASGU>
 clear LASTN
 
-cprintf([0,0.6,0], '<strong>----------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>Rock, paper, scissors project - data processing</strong>\n');
 cprintf([0,0.6,0], '<strong>Version: 0.3</strong>\n');
 cprintf([0,0.6,0], 'Copyright (C) 2017-2019, Daniel Matthes, MPI CBS\n');
-cprintf([0,0.6,0], '<strong>----------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
 % Path settings

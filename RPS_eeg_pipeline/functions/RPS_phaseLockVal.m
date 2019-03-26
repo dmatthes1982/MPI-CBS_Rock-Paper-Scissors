@@ -180,7 +180,7 @@ data_out.PLV              = PLV;
 data_out.time             = time;
 data_out.label            = dataPart1.label;
 data_out.cfg              = cfgPLV;
-data_out.cfg.previous{1}  = dataPart1.cfg;
-data_out.cfg.previous{2}  = dataPart2.cfg;
+%data_out.cfg.previous{1}  = dataPart1.cfg;
+%data_out.cfg.previous{2}  = dataPart2.cfg;
 
 end
