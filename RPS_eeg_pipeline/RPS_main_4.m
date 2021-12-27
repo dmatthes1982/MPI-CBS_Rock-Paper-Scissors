@@ -25,6 +25,8 @@ if ~exist('numOfPart', 'var')                                               % es
 end
 
 %% part 4
+% Estimation and correction of eye artifacts
+% Processing steps:
 % 1. Find EOG-like ICA Components (Correlation with EOGV and EOGH, 80 %
 %    confirmity)
 % 2. Verify the estimated components by using the ft_icabrowser function
@@ -55,6 +57,7 @@ while selection == false
   if(mastoid == true)
     fprintf('[2] - Linked mastoid (''TP9'', ''TP10'')\n');
   end
+  fprintf('[3] - Robust average reference\n');
   x = input('Option: ');
 
   if x == 1
@@ -65,6 +68,10 @@ while selection == false
      selection = true;
      refchannel = 'TP10';
      reference = {'LM'};
+  elseif x == 3                                                             %IRA_MOD
+     selection = true;
+     refchannel = 'RAR';
+     reference = {'RobustAvg'};     
   else
     cprintf([1,0.5,0], 'Wrong input!\n\n');
   end
@@ -286,7 +293,7 @@ for i = numOfPart
   RPS_loadData( cfg );
 
   data_eyecor = RPS_repairBadChan( data_badchan, data_eyecor );
-  clear data_badchan
+  
 
   %% re-referencing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   fprintf('<strong>Rereferencing</strong>\n');
@@ -295,7 +302,13 @@ for i = numOfPart
   cfg.refchannel        = refchannel;
 
   ft_info off;
-  data_preproc2 = RPS_reref( cfg, data_eyecor);
+  if strcmp('RobustAvg', reference(1))                                      %IRA_MOD
+      data_preproc2 = RPS_robustRef(data_eyecor, data_badchan);
+  else
+      data_preproc2 = RPS_reref( cfg, data_eyecor);
+  end
+  clear data_badchan
+  
   ft_info on;
 
   cfg             = [];
